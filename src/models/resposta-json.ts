@@ -8,5 +8,6 @@ export type RespostaJSON = {
     expedidas: number
     naoConvocados: number
     convocados: number
-    listagem?: { nome: string, situacao: string }[]
+    ultimaAtualizacao: Date
+    listagem: { nome: string, situacao: string }[]
 }

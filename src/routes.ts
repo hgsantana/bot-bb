@@ -6,5 +6,5 @@ import { root } from "./rotas/root";
 export const routes = Router()
 
 routes.get("/", root)
-routes.get("/dadosAtualizados", dadosAtualizados)
-routes.get("/listagemCompleta", listagemCompleta)
+routes.get("/dadosAtualizados/:tipo", dadosAtualizados)
+routes.get("/listagemCompleta/:tipo", listagemCompleta)
