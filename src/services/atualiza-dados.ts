@@ -53,94 +53,86 @@ export const atualizaTudo = async () => {
 
 const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") => {
     console.log(`Consultando ${listagem.length} registros de ${tipo}...`)
-    return new Promise<void>(resolve => {
-        const colecaoIndices = new Set()
-        const inicio = new Date().getTime()
-        let erros: Candidato[] = []
-        let indice = 0
-        const intervalo: any = setInterval(async () => {
-            if (indice >= listagem.length) return clearInterval(intervalo)
-            const dados = new URLSearchParams({
-                "formulario": "formulario",
-                "publicadorformvalue": ",802,0,0,2,0,1",
-                "formulario:nomePesquisa": listagem[indice].nome,
-                "formulario:cpfPesquisa": "",
-                "formulario:j_id16": "Confirmar",
-                "javax.faces.ViewState": "j_id1",
-            }).toString()
-            const indiceAtual = indice
-            indice++
+    // return new Promise<void>(resolve => {
+    const inicio = new Date().getTime()
+    let erros: Candidato[] = []
+    for await (const candidato of listagem) {
+        const dados = new URLSearchParams({
+            "formulario": "formulario",
+            "publicadorformvalue": ",802,0,0,2,0,1",
+            "formulario:nomePesquisa": candidato.nome,
+            "formulario:cpfPesquisa": "",
+            "formulario:j_id16": "Confirmar",
+            "javax.faces.ViewState": "j_id1",
+        }).toString()
 
-            try {
-                const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
-                const cookies = getCookies.headers['set-cookie']
-                let Cookie = ""
-                if (cookies) Cookie = cookies[0]
-                const headers = {
-                    Cookie,
-                    "Content-Type": "application/x-www-form-urlencoded"
+        try {
+            const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
+            const cookies = getCookies.headers['set-cookie']
+            let Cookie = ""
+            if (cookies) Cookie = cookies[0]
+            const headers = {
+                Cookie,
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+            const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
+                dados,
+                {
+                    headers
                 }
-                const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
-                    dados,
-                    {
-                        headers
-                    }
-                )
-                const match = resposta.data.match(/<form[\s\S]*?<\/form>/i)
-                if (match) {
-                    const campoIndice = match[0].match(/id="formulario:j_id17:(.)*?col02/gi)
-                    if (campoIndice) {
-                        const novosDados = new URLSearchParams({
-                            publicadorformvalue: ",802,0,0,2,0,1",
-                            formulario: "formulario",
-                            autoScroll: "",
-                            "javax.faces.ViewState": "j_id2",
-                            [campoIndice[campoIndice.length - 1].replace('id="', '')]: campoIndice[campoIndice.length - 1].replace('id="', '')
-                        }).toString()
-                        const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
-                            novosDados,
-                            {
-                                headers
-                            })
-                        const novoMatch = respostaFinal.data.match(/<form[\s\S]*?<\/form>/i)
-                        if (novoMatch) {
-                            const candidatoTratado = trataCandidato(novoMatch[0])
-                            if (candidatoTratado) {
-                                listagem[indiceAtual].nome = candidatoTratado.nome
-                                listagem[indiceAtual].situacao = candidatoTratado.situacao
-                            }
-                        }
-                    } else {
-                        const candidatoTratado = trataCandidato(match[0])
+            )
+            const match = resposta.data.match(/<form[\s\S]*?<\/form>/i)
+            if (match) {
+                const campoIndice = match[0].match(/id="formulario:j_id17:(.)*?col02/gi)
+                if (campoIndice) {
+                    const novosDados = new URLSearchParams({
+                        publicadorformvalue: ",802,0,0,2,0,1",
+                        formulario: "formulario",
+                        autoScroll: "",
+                        "javax.faces.ViewState": "j_id2",
+                        [campoIndice[campoIndice.length - 1].replace('id="', '')]: campoIndice[campoIndice.length - 1].replace('id="', '')
+                    }).toString()
+                    const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
+                        novosDados,
+                        {
+                            headers
+                        })
+                    const novoMatch = respostaFinal.data.match(/<form[\s\S]*?<\/form>/i)
+                    if (novoMatch) {
+                        const candidatoTratado = trataCandidato(novoMatch[0])
                         if (candidatoTratado) {
-                            listagem[indiceAtual].nome = candidatoTratado.nome
-                            listagem[indiceAtual].situacao = candidatoTratado.situacao
+                            candidato.nome = candidatoTratado.nome
+                            candidato.situacao = candidatoTratado.situacao
                         }
                     }
-                }
-            } catch (error: any) {
-                erros.push(listagem[indiceAtual])
-                console.log("Erro:", {
-                    nome: listagem[indiceAtual].nome,
-                    codigo: error?.code || error?.err
-                })
-            }
-            colecaoIndices.add(indiceAtual)
-            if (colecaoIndices.size == listagem.length) {
-                const fim = new Date().getTime()
-                const tempo = (fim - inicio)
-                console.log("Erros:", erros)
-                console.log(`Batch ${tipo} executada em ${tempo} ms.`)
-                if (erros.length) {
-                    console.log("Refazendo erros...");
-                    resolve(await atualizaDados(erros, tipo))
                 } else {
-                    atualizaJSON(tipo)
-                    resolve()
+                    const candidatoTratado = trataCandidato(match[0])
+                    if (candidatoTratado) {
+                        candidato.nome = candidatoTratado.nome
+                        candidato.situacao = candidatoTratado.situacao
+                    }
                 }
             }
-        }, 100)
-    })
+        } catch (error: any) {
+            erros.push(candidato)
+            console.log("Erro:", {
+                nome: candidato.nome,
+                codigo: error?.code || error?.err
+            })
+        }
+    }
+    const fim = new Date().getTime()
+    const tempo = (fim - inicio)
+    console.log("Erros:", erros)
+    console.log(`Batch ${tipo} executada em ${tempo} ms.`)
+    if (erros.length) {
+        console.log("Refazendo erros...");
+        await atualizaDados(erros, tipo)
+    } else {
+        atualizaJSON(tipo)
+    }
+
+    // })
 }
 
 const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
