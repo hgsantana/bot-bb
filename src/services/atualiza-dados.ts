@@ -48,7 +48,7 @@ export const atualizaTudo = async () => {
     await atualizaDados(RESPOSTA_COMERCIAL.listagem, "COMERCIAL")
     setTimeout(() => {
         atualizaTudo()
-    }, 1000 * 60 * 30);
+    }, 1000 * 60 * 60);
 }
 
 const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") => {
