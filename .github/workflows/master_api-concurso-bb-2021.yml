@@ -36,4 +36,4 @@ jobs:
         app-name: 'api-concurso-bb-2021'
         slot-name: 'Production'
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_652031A84E93442F89D4FB5F0382EDAD }}
-        package: .
+        package: dist
