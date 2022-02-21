@@ -138,7 +138,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                     resolve()
                 }
             }
-        }, 100)
+        }, 200)
     })
 }
 
