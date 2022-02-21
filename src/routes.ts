@@ -5,4 +5,4 @@ import { dadosCompletos } from "./rotas/dados-completos";
 export const routes = Router()
 
 routes.get("/dadosAtualizados/:tipo", dadosAtualizados)
-routes.get("/listagemCompleta/:tipo", dadosCompletos)
+routes.get("/dadosCompletos/:tipo", dadosCompletos)
