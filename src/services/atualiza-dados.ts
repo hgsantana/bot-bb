@@ -122,7 +122,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                 }
             } catch (error: any) {
                 erros.push(candidato)
-                console.log("Erro:", {
+                console.warn("Erro:", {
                     nome: candidato.nome,
                     tipo: error?.message || error?.msg
                 })
