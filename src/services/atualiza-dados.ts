@@ -68,9 +68,10 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
         }
         const axiosConfig: AxiosRequestConfig = {
             headers,
-            timeout: 500
+            timeout: 200
         }
 
+        let viewState = 1
         for await (const candidato of listagem) {
             const dados = new URLSearchParams({
                 "formulario": "formulario",
@@ -78,8 +79,9 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                 "formulario:nomePesquisa": candidato.nome,
                 "formulario:cpfPesquisa": "",
                 "formulario:j_id16": "Confirmar",
-                "javax.faces.ViewState": "j_id1",
+                "javax.faces.ViewState": "j_id" + viewState,
             }).toString()
+            viewState++
 
             try {
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
@@ -94,9 +96,10 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                             publicadorformvalue: ",802,0,0,2,0,1",
                             formulario: "formulario",
                             autoScroll: "",
-                            "javax.faces.ViewState": "j_id2",
+                            "javax.faces.ViewState": "j_id" + viewState,
                             [campoIndice[campoIndice.length - 1].replace('id="', '')]: campoIndice[campoIndice.length - 1].replace('id="', '')
                         }).toString()
+                        viewState++
                         const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
                             novosDados,
                             axiosConfig
