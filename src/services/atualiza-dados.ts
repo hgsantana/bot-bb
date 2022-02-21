@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import { AGENTES_COMERCIAL, AGENTES_TI } from '../data/nomes'
 import { Candidato } from '../models/candidato'
 import { RespostaJSON } from '../models/resposta-json'
@@ -66,6 +66,10 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
             Cookie,
             "Content-Type": "application/x-www-form-urlencoded"
         }
+        const axiosConfig: AxiosRequestConfig = {
+            headers,
+            timeout: 200
+        }
 
         for await (const candidato of listagem) {
             const dados = new URLSearchParams({
@@ -80,9 +84,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
             try {
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
                     dados,
-                    {
-                        headers
-                    }
+                    axiosConfig
                 )
                 const match = resposta.data.match(/<form[\s\S]*?<\/form>/i)
                 if (match) {
@@ -97,9 +99,8 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                         }).toString()
                         const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
                             novosDados,
-                            {
-                                headers
-                            })
+                            axiosConfig
+                        )
                         const novoMatch = respostaFinal.data.match(/<form[\s\S]*?<\/form>/i)
                         if (novoMatch) {
                             const candidatoTratado = trataCandidato(novoMatch[0])
