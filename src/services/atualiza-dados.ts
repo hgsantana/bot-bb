@@ -68,7 +68,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
         }
         const axiosConfig: AxiosRequestConfig = {
             headers,
-            timeout: 200
+            timeout: 500
         }
 
         let viewState = 1
