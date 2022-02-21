@@ -51,7 +51,7 @@ export const atualizaTudo = async () => {
     }, 1000 * 60 * 60);
 }
 
-const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
+const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 200) => {
     console.log(`Consultando ${listagem.length} registros de ${tipo}...`)
     return new Promise<void>(resolve => {
         const colecaoIndices = new Set()
