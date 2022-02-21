@@ -122,7 +122,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                 erros.push(listagem[indiceAtual])
                 console.log("Erro:", {
                     nome: listagem[indiceAtual].nome,
-                    codigo: error?.code
+                    codigo: error?.code || error?.err
                 })
             }
             colecaoIndices.add(indiceAtual)
@@ -133,7 +133,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
                 if (erros.length) {
                     console.log("Refazendo erros...");
-                    await atualizaDados(erros, tipo)
+                    resolve(await atualizaDados(erros, tipo))
                 } else {
                     atualizaJSON(tipo)
                     resolve()
