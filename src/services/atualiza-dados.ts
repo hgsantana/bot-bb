@@ -51,7 +51,7 @@ export const atualizaTudo = async () => {
     }, 1000 * 60 * 60);
 }
 
-const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") => {
+const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
     console.log(`Consultando ${listagem.length} registros de ${tipo}...`)
     return new Promise<void>(resolve => {
         const colecaoIndices = new Set()
@@ -132,13 +132,13 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
                 if (erros.length) {
                     console.log("Corrigindo erros...");
-                    resolve(await atualizaDados(erros, tipo))
+                    resolve(await atualizaDados(erros, tipo, msIntervalo + 100))
                 } else {
                     atualizaJSON(tipo)
                     resolve()
                 }
             }
-        }, 200)
+        }, msIntervalo)
     })
 }
 
