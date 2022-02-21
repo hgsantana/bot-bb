@@ -139,7 +139,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                     resolve()
                 }
             }
-        }, 80)
+        }, 100)
     })
 }
 
