@@ -68,7 +68,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
         }
         const axiosConfig: AxiosRequestConfig = {
             headers,
-            timeout: 200
+            timeout: 500
         }
 
         for await (const candidato of listagem) {
@@ -121,7 +121,8 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                 erros.push(candidato)
                 console.log("Erro:", {
                     nome: candidato.nome,
-                    codigo: error?.code || error?.err
+                    codigo: error?.code || error?.err,
+                    mensagem: error?.message || error?.msg
                 })
             }
         }
