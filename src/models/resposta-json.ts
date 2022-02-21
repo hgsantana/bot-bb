@@ -1,7 +1,10 @@
+import { Candidato } from "./candidato"
+
 export type RespostaJSON = {
     empossados: number
     cancelados: number
     desistentes: number
+    inaptos: number
     qualificados: number
     emQualificacao: number
     autorizadas: number
@@ -9,5 +12,5 @@ export type RespostaJSON = {
     naoConvocados: number
     convocados: number
     ultimaAtualizacao: Date
-    listagem: { nome: string, situacao: string }[]
+    listagem: Candidato[]
 }
