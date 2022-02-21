@@ -4,8 +4,9 @@
   "description": "",
   "main": "src/main.ts",
   "scripts": {
-    "start": "ts-node src/main.ts",
-    "build": "webpack"
+    "start": "npx ts-node src/main.ts",
+    "dev": "npx nodemon src/main.ts",
+    "build": "npx webpack"
   },
   "keywords": [],
   "author": "",

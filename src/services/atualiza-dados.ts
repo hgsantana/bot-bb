@@ -121,8 +121,7 @@ const atualizaDados = async (listagem: Candidato[], tipo: "TI" | "COMERCIAL") =>
                 erros.push(candidato)
                 console.log("Erro:", {
                     nome: candidato.nome,
-                    codigo: error?.code || error?.err,
-                    mensagem: error?.message || error?.msg
+                    tipo: error?.message || error?.msg
                 })
             }
         }
