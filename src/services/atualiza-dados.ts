@@ -4,7 +4,7 @@ import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
 import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
 import { MacroRegiao } from '../models/macro-regiao'
-import { RespostaJSON } from '../models/resposta-json'
+import { RespostaAlteracoes, RespostaJSON } from '../models/resposta-json'
 
 export let RESPOSTA_TI: RespostaJSON = {
     empossados: 0,
@@ -36,9 +36,44 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     macroRegioes: AGENTES_COMERCIAL
 }
 
+export const ALTERACOES_TI: RespostaAlteracoes = {
+    candidatosAlterados: [],
+    autorizadas: [],
+    cancelados: [],
+    convocados: [],
+    desistentes: [],
+    emQualificacao: [],
+    empossados: [],
+    expedidas: [],
+    inaptos: [],
+    naoConvocados: [],
+    qualificados: [],
+    ultimaAtualizacao: new Date()
+}
+
+export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
+    autorizadas: [],
+    cancelados: [],
+    convocados: [],
+    desistentes: [],
+    emQualificacao: [],
+    empossados: [],
+    expedidas: [],
+    inaptos: [],
+    naoConvocados: [],
+    qualificados: [],
+    ultimaAtualizacao: new Date(),
+    candidatosAlterados: [],
+}
+
+let ALTERADOS_TI: Candidato[] = []
+let ALTERADOS_COMERCIAL: Candidato[] = []
+
 export const iniciar = async () => {
     RESPOSTA_TI = await buscaDados("TI") || RESPOSTA_TI
     RESPOSTA_COMERCIAL = await buscaDados("COMERCIAL") || RESPOSTA_COMERCIAL
+    atualizaAlteracoes("COMERCIAL", {})
+    atualizaAlteracoes("TI", {})
     atualizaTudo({ dados_comercial: RESPOSTA_COMERCIAL.macroRegioes, dados_ti: RESPOSTA_TI.macroRegioes })
 }
 
@@ -125,13 +160,21 @@ const atualizaDados = async (macroRegioes: MacroRegiao[], tipo: "TI" | "COMERCIA
                         if (novoMatch) {
                             const situacao = retornaSituacao(novoMatch[0])
                             if (situacao) {
-                                candidato.situacao = situacao
+                                if (candidato.situacao != situacao) {
+                                    if (tipo == "TI") ALTERADOS_TI.push(candidato)
+                                    else ALTERADOS_COMERCIAL.push(candidato)
+                                    candidato.situacao = situacao
+                                }
                             } else throw { code: "SEM SITUAÇÃO" }
                         } else throw { code: "SEM FORM" }
                     } else {
                         const situacao = retornaSituacao(match[0])
                         if (situacao) {
-                            candidato.situacao = situacao
+                            if (candidato.situacao != situacao) {
+                                if (tipo == "TI") ALTERADOS_TI.push(candidato)
+                                else ALTERADOS_COMERCIAL.push(candidato)
+                                candidato.situacao = situacao
+                            }
                         } else throw { code: "SEM SITUAÇÃO" }
                     }
                 } else throw { code: "SEM FORM" }
@@ -216,14 +259,22 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
                         if (novoMatch) {
                             const situacao = retornaSituacao(novoMatch[0])
                             if (situacao) {
-                                candidato.situacao = situacao
-                            }
+                                if (candidato.situacao != situacao) {
+                                    if (tipo == "TI") ALTERADOS_TI.push(candidato)
+                                    else ALTERADOS_COMERCIAL.push(candidato)
+                                    candidato.situacao = situacao
+                                }
+                            } else throw { code: "SEM SITUAÇÃO" }
                         }
                     } else {
                         const situacao = retornaSituacao(match[0])
                         if (situacao) {
-                            candidato.situacao = situacao
-                        }
+                            if (candidato.situacao != situacao) {
+                                if (tipo == "TI") ALTERADOS_TI.push(candidato)
+                                else ALTERADOS_COMERCIAL.push(candidato)
+                                candidato.situacao = situacao
+                            }
+                        } else throw { code: "SEM SITUAÇÃO" }
                     }
                 }
             } catch (error: any) {
@@ -296,6 +347,8 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
     }
     salvaDados(json, tipo)
+    if (tipo == "TI") atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_TI })
+    else atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_COMERCIAL })
 }
 
 const retornaSituacao = (matchFormulario: string) => {
@@ -316,7 +369,12 @@ const retornaSituacao = (matchFormulario: string) => {
 
 const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON | null> => {
     try {
-        const arquivo = await fs.open(`backup_${tipo}.json`, 'r')
+        await fs.readdir("./backups")
+    } catch (error) {
+        await fs.mkdir("./backups")
+    }
+    try {
+        const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'r')
         const conteudo = await arquivo.readFile()
         await arquivo.close()
         if (conteudo.toString()) {
@@ -334,7 +392,68 @@ const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON | null
 
 const salvaDados = async (dados: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
     const dadosString = JSON.stringify(dados)
-    const arquivo = await fs.open(`backup_${tipo}.json`, 'w+')
+    const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'w+')
     await arquivo.writeFile(dadosString)
     await arquivo.close()
+}
+
+const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterados }: { json?: RespostaJSON, candidatosAlterados?: Candidato[] }) => {
+    if (tipo == "TI") {
+        if (json) {
+            ALTERACOES_TI.autorizadas[1] = json.autorizadas
+            ALTERACOES_TI.cancelados[1] = json.cancelados
+            ALTERACOES_TI.convocados[1] = json.convocados
+            ALTERACOES_TI.desistentes[1] = json.desistentes
+            ALTERACOES_TI.emQualificacao[1] = json.emQualificacao
+            ALTERACOES_TI.empossados[1] = json.empossados
+            ALTERACOES_TI.expedidas[1] = json.expedidas
+            ALTERACOES_TI.inaptos[1] = json.inaptos
+            ALTERACOES_TI.naoConvocados[1] = json.naoConvocados
+            ALTERACOES_TI.qualificados[1] = json.qualificados
+            ALTERACOES_TI.ultimaAtualizacao = new Date()
+            ALTERACOES_TI.candidatosAlterados = candidatosAlterados || ALTERACOES_TI.candidatosAlterados
+        } else {
+            ALTERACOES_TI.autorizadas = [RESPOSTA_TI.autorizadas, RESPOSTA_TI.autorizadas]
+            ALTERACOES_TI.cancelados = [RESPOSTA_TI.cancelados, RESPOSTA_TI.cancelados]
+            ALTERACOES_TI.convocados = [RESPOSTA_TI.convocados, RESPOSTA_TI.convocados]
+            ALTERACOES_TI.desistentes = [RESPOSTA_TI.desistentes, RESPOSTA_TI.desistentes]
+            ALTERACOES_TI.emQualificacao = [RESPOSTA_TI.emQualificacao, RESPOSTA_TI.emQualificacao]
+            ALTERACOES_TI.empossados = [RESPOSTA_TI.empossados, RESPOSTA_TI.empossados]
+            ALTERACOES_TI.expedidas = [RESPOSTA_TI.expedidas, RESPOSTA_TI.expedidas]
+            ALTERACOES_TI.inaptos = [RESPOSTA_TI.inaptos, RESPOSTA_TI.inaptos]
+            ALTERACOES_TI.naoConvocados = [RESPOSTA_TI.naoConvocados, RESPOSTA_TI.naoConvocados]
+            ALTERACOES_TI.qualificados = [RESPOSTA_TI.qualificados, RESPOSTA_TI.qualificados]
+            ALTERACOES_TI.ultimaAtualizacao = new Date()
+        }
+    } else {
+        if (json) {
+            ALTERACOES_COMERCIAL.autorizadas[1] = json.autorizadas
+            ALTERACOES_COMERCIAL.cancelados[1] = json.cancelados
+            ALTERACOES_COMERCIAL.convocados[1] = json.convocados
+            ALTERACOES_COMERCIAL.desistentes[1] = json.desistentes
+            ALTERACOES_COMERCIAL.emQualificacao[1] = json.emQualificacao
+            ALTERACOES_COMERCIAL.empossados[1] = json.empossados
+            ALTERACOES_COMERCIAL.expedidas[1] = json.expedidas
+            ALTERACOES_COMERCIAL.inaptos[1] = json.inaptos
+            ALTERACOES_COMERCIAL.naoConvocados[1] = json.naoConvocados
+            ALTERACOES_COMERCIAL.qualificados[1] = json.qualificados
+            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date()
+            ALTERACOES_COMERCIAL.candidatosAlterados = candidatosAlterados || ALTERACOES_COMERCIAL.candidatosAlterados
+        } else {
+            ALTERACOES_COMERCIAL.autorizadas = [RESPOSTA_COMERCIAL.autorizadas, RESPOSTA_COMERCIAL.autorizadas]
+            ALTERACOES_COMERCIAL.cancelados = [RESPOSTA_COMERCIAL.cancelados, RESPOSTA_COMERCIAL.cancelados]
+            ALTERACOES_COMERCIAL.convocados = [RESPOSTA_COMERCIAL.convocados, RESPOSTA_COMERCIAL.convocados]
+            ALTERACOES_COMERCIAL.desistentes = [RESPOSTA_COMERCIAL.desistentes, RESPOSTA_COMERCIAL.desistentes]
+            ALTERACOES_COMERCIAL.emQualificacao = [RESPOSTA_COMERCIAL.emQualificacao, RESPOSTA_COMERCIAL.emQualificacao]
+            ALTERACOES_COMERCIAL.empossados = [RESPOSTA_COMERCIAL.empossados, RESPOSTA_COMERCIAL.empossados]
+            ALTERACOES_COMERCIAL.expedidas = [RESPOSTA_COMERCIAL.expedidas, RESPOSTA_COMERCIAL.expedidas]
+            ALTERACOES_COMERCIAL.inaptos = [RESPOSTA_COMERCIAL.inaptos, RESPOSTA_COMERCIAL.inaptos]
+            ALTERACOES_COMERCIAL.naoConvocados = [RESPOSTA_COMERCIAL.naoConvocados, RESPOSTA_COMERCIAL.naoConvocados]
+            ALTERACOES_COMERCIAL.qualificados = [RESPOSTA_COMERCIAL.qualificados, RESPOSTA_COMERCIAL.qualificados]
+            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date()
+        }
+
+    }
+    ALTERADOS_TI = []
+    ALTERADOS_COMERCIAL = []
 }
