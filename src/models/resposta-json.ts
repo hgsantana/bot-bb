@@ -1,4 +1,5 @@
 import { Candidato } from "./candidato"
+import { MacroRegiao } from "./macro-regiao"
 
 export type RespostaJSON = {
     empossados: number
@@ -12,5 +13,5 @@ export type RespostaJSON = {
     naoConvocados: number
     convocados: number
     ultimaAtualizacao: Date
-    listagem: Candidato[]
+    listagem: MacroRegiao[]
 }
