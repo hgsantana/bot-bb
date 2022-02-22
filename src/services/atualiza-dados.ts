@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios'
+import fs from 'fs/promises'
 import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
 import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
@@ -17,7 +18,7 @@ export let RESPOSTA_TI: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date(),
-    macroRegioes: []
+    macroRegioes: AGENTES_TI
 }
 
 export let RESPOSTA_COMERCIAL: RespostaJSON = {
@@ -32,14 +33,20 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date(),
-    macroRegioes: []
+    macroRegioes: AGENTES_COMERCIAL
 }
 
-export const atualizaTudo = async () => {
-    await atualizaDados(AGENTES_TI, "TI")
-    await atualizaDados(AGENTES_COMERCIAL, "COMERCIAL")
+export const iniciar = async () => {
+    RESPOSTA_TI = await buscaDados("TI") || RESPOSTA_TI
+    RESPOSTA_COMERCIAL = await buscaDados("COMERCIAL") || RESPOSTA_COMERCIAL
+    atualizaTudo({ dados_comercial: RESPOSTA_COMERCIAL.macroRegioes, dados_ti: RESPOSTA_TI.macroRegioes })
+}
+
+const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegiao[], dados_comercial: MacroRegiao[] }) => {
+    await atualizaDados(dados_ti, "TI")
+    await atualizaDados(dados_comercial, "COMERCIAL")
     setTimeout(() => {
-        atualizaTudo()
+        atualizaTudo({ dados_comercial, dados_ti })
     }, 1000 * 60 * 60);
 }
 
@@ -246,7 +253,6 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
 
 const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     let json: RespostaJSON = tipo == "COMERCIAL" ? RESPOSTA_COMERCIAL : RESPOSTA_TI
-    let macroRegioes: MacroRegiao[] = tipo == "COMERCIAL" ? AGENTES_COMERCIAL : AGENTES_TI
     json.autorizadas = 0
     json.cancelados = 0
     json.convocados = 0
@@ -257,7 +263,6 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     json.inaptos = 0
     json.naoConvocados = 0
     json.qualificados = 0
-    json.macroRegioes = macroRegioes
     json.ultimaAtualizacao = new Date()
     const candidatosNaoClassificados: Candidato[] = []
     json.macroRegioes.forEach(macro => {
@@ -290,6 +295,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     if (candidatosNaoClassificados.length) {
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
     }
+    salvaDados(json, tipo)
 }
 
 const retornaSituacao = (matchFormulario: string) => {
@@ -305,4 +311,30 @@ const retornaSituacao = (matchFormulario: string) => {
             .replace("&atilde;", "ã")
             .trim()
     }
+}
+
+
+const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON | null> => {
+    try {
+        const arquivo = await fs.open(`backup_${tipo}.json`, 'r')
+        const conteudo = await arquivo.readFile()
+        await arquivo.close()
+        if (conteudo.toString()) {
+            console.log(`Backup de ${tipo} localizado.`)
+            return JSON.parse(conteudo.toString())
+        } else {
+            console.log(`Backup de ${tipo} incompleto.`)
+            return null
+        }
+    } catch (error) {
+        console.log(`Ainda não há arquivo de backup de ${tipo}.`)
+        return null
+    }
+}
+
+const salvaDados = async (dados: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
+    const dadosString = JSON.stringify(dados)
+    const arquivo = await fs.open(`backup_${tipo}.json`, 'w+')
+    await arquivo.writeFile(dadosString)
+    await arquivo.close()
 }
