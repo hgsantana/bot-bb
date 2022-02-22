@@ -161,10 +161,11 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
         let erros: Candidato[] = []
         let indiceCandidato = 0
         const intervalo: any = setInterval(async () => {
+            const candidato = candidatos[indiceCandidato]
             const dados = new URLSearchParams({
                 "formulario": "formulario",
                 "publicadorformvalue": ",802,0,0,2,0,1",
-                "formulario:nomePesquisa": candidatos[indiceCandidato].nome,
+                "formulario:nomePesquisa": candidato.nome,
                 "formulario:cpfPesquisa": "",
                 "formulario:j_id16": "Confirmar",
                 "javax.faces.ViewState": "j_id1",
@@ -172,7 +173,6 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
             const ultimoCandidato = indiceCandidato == candidatos.length - 1
             if (ultimoCandidato) clearInterval(intervalo)
             else indiceCandidato++
-            const candidato = candidatos[indiceCandidato]
             try {
                 const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
                 const cookies = getCookies.headers['set-cookie']
