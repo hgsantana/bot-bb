@@ -400,6 +400,17 @@ const salvaDados = async (dados: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
 const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterados }: { json?: RespostaJSON, candidatosAlterados?: Candidato[] }) => {
     if (tipo == "TI") {
         if (json) {
+            ALTERACOES_TI.autorizadas[0] = ALTERACOES_TI.autorizadas[1]
+            ALTERACOES_TI.cancelados[0] = ALTERACOES_TI.cancelados[1]
+            ALTERACOES_TI.convocados[0] = ALTERACOES_TI.convocados[1]
+            ALTERACOES_TI.desistentes[0] = ALTERACOES_TI.desistentes[1]
+            ALTERACOES_TI.emQualificacao[0] = ALTERACOES_TI.emQualificacao[1]
+            ALTERACOES_TI.empossados[0] = ALTERACOES_TI.empossados[1]
+            ALTERACOES_TI.expedidas[0] = ALTERACOES_TI.expedidas[1]
+            ALTERACOES_TI.inaptos[0] = ALTERACOES_TI.inaptos[1]
+            ALTERACOES_TI.naoConvocados[0] = ALTERACOES_TI.naoConvocados[1]
+            ALTERACOES_TI.qualificados[0] = ALTERACOES_TI.qualificados[1]
+
             ALTERACOES_TI.autorizadas[1] = json.autorizadas
             ALTERACOES_TI.cancelados[1] = json.cancelados
             ALTERACOES_TI.convocados[1] = json.convocados
@@ -427,6 +438,17 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
         }
     } else {
         if (json) {
+            ALTERACOES_COMERCIAL.autorizadas[0] = ALTERACOES_COMERCIAL.autorizadas[1]
+            ALTERACOES_COMERCIAL.cancelados[0] = ALTERACOES_COMERCIAL.cancelados[1]
+            ALTERACOES_COMERCIAL.convocados[0] = ALTERACOES_COMERCIAL.convocados[1]
+            ALTERACOES_COMERCIAL.desistentes[0] = ALTERACOES_COMERCIAL.desistentes[1]
+            ALTERACOES_COMERCIAL.emQualificacao[0] = ALTERACOES_COMERCIAL.emQualificacao[1]
+            ALTERACOES_COMERCIAL.empossados[0] = ALTERACOES_COMERCIAL.empossados[1]
+            ALTERACOES_COMERCIAL.expedidas[0] = ALTERACOES_COMERCIAL.expedidas[1]
+            ALTERACOES_COMERCIAL.inaptos[0] = ALTERACOES_COMERCIAL.inaptos[1]
+            ALTERACOES_COMERCIAL.naoConvocados[0] = ALTERACOES_COMERCIAL.naoConvocados[1]
+            ALTERACOES_COMERCIAL.qualificados[0] = ALTERACOES_COMERCIAL.qualificados[1]
+
             ALTERACOES_COMERCIAL.autorizadas[1] = json.autorizadas
             ALTERACOES_COMERCIAL.cancelados[1] = json.cancelados
             ALTERACOES_COMERCIAL.convocados[1] = json.convocados
