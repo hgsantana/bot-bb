@@ -436,6 +436,7 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_TI.qualificados = [RESPOSTA_TI.qualificados, RESPOSTA_TI.qualificados]
             ALTERACOES_TI.ultimaAtualizacao = new Date()
         }
+        ALTERADOS_TI = []
     } else {
         if (json) {
             ALTERACOES_COMERCIAL.autorizadas[0] = ALTERACOES_COMERCIAL.autorizadas[1]
@@ -474,8 +475,6 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_COMERCIAL.qualificados = [RESPOSTA_COMERCIAL.qualificados, RESPOSTA_COMERCIAL.qualificados]
             ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date()
         }
-
+        ALTERADOS_COMERCIAL = []
     }
-    ALTERADOS_TI = []
-    ALTERADOS_COMERCIAL = []
 }
