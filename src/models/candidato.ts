@@ -1,7 +1,7 @@
 export type Candidato = {
     nome: string
     situacao: string
-    dataNascimento: Date
+    dataNascimento: string
     posicao: number
     tipo: string
 }
