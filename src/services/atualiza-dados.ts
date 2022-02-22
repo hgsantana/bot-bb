@@ -17,7 +17,7 @@ export let RESPOSTA_TI: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date(),
-    listagem: []
+    macroRegioes: []
 }
 
 export let RESPOSTA_COMERCIAL: RespostaJSON = {
@@ -32,7 +32,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date(),
-    listagem: []
+    macroRegioes: []
 }
 
 export const atualizaTudo = async () => {
@@ -94,6 +94,7 @@ const atualizaDados = async (macroRegioes: MacroRegiao[], tipo: "TI" | "COMERCIA
                 }
                 const axiosConfig: AxiosRequestConfig = {
                     headers,
+                    timeout: 10000
                 }
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
                     dados,
@@ -184,6 +185,7 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
                 }
                 const axiosConfig: AxiosRequestConfig = {
                     headers,
+                    timeout: 10000
                 }
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
                     dados,
@@ -255,10 +257,10 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     json.inaptos = 0
     json.naoConvocados = 0
     json.qualificados = 0
-    json.listagem = macroRegioes
+    json.macroRegioes = macroRegioes
     json.ultimaAtualizacao = new Date()
     const candidatosNaoClassificados: Candidato[] = []
-    json.listagem.forEach(macro => {
+    json.macroRegioes.forEach(macro => {
         macro.microRegioes.forEach(micro => {
             micro.candidatos.forEach(candidato => {
                 if (candidato.situacao.includes("autorizada")) json.autorizadas++

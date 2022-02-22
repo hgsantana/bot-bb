@@ -13,5 +13,5 @@ export type RespostaJSON = {
     naoConvocados: number
     convocados: number
     ultimaAtualizacao: Date
-    listagem: MacroRegiao[]
+    macroRegioes: MacroRegiao[]
 }
