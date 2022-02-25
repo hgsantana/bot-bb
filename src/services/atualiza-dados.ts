@@ -189,7 +189,7 @@ const atualizaDados = async (macroRegioes: MacroRegiao[], tipo: "TI" | "COMERCIA
             if (totalIndices == total) {
                 const fim = new Date().getTime()
                 const tempo = (fim - inicio)
-                console.log("Erros:", erros)
+                console.log("Total de Erros:", erros.length)
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
                 if (erros.length) {
                     console.log("Corrigindo erros...");
@@ -205,7 +205,7 @@ const atualizaDados = async (macroRegioes: MacroRegiao[], tipo: "TI" | "COMERCIA
 
 const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
     let total = candidatos.length
-    console.log(`Consultando ${total} registros de ${tipo}...`)
+    console.log(`Corrigindo ${total} erros de ${tipo}...`)
     return new Promise<void>(resolve => {
         let totalIndices = 0
         const inicio = new Date().getTime()
@@ -288,7 +288,7 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
             if (totalIndices == total) {
                 const fim = new Date().getTime()
                 const tempo = (fim - inicio)
-                console.log("Erros:", erros)
+                console.log("Total de Erros:", erros.length)
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
                 if (erros.length) {
                     console.log("Corrigindo erros...");
