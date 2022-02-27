@@ -98,7 +98,7 @@ const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegi
     }, 1000 * 60 * 60);
 }
 
-const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
+const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 500) => {
     let total = candidatos.length
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
     return new Promise<void>(resolve => {
