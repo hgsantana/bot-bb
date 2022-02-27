@@ -1,7 +1,7 @@
 import compression from 'compression'
 import express from 'express'
 import { routes } from './routes'
-import { iniciar } from './services/atualiza-dados'
+import { iniciar } from './services/dados-service'
 
 const app = express()
 

@@ -1,11 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios'
-import fs from 'fs/promises'
 import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
 import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
-import { IDAtualizacao } from '../models/id-atualizacao'
 import { MacroRegiao } from '../models/macro-regiao'
 import { RespostaAlteracoes, RespostaJSON } from '../models/resposta-json'
+import { buscaDados, salvaDados } from './storage-service'
 
 export let RESPOSTA_TI: RespostaJSON = {
     id: 1000,
@@ -103,10 +102,12 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
     let total = candidatos.length
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
     return new Promise<void>(resolve => {
-        let totalIndices = 0
         const inicio = new Date().getTime()
-        let erros: Candidato[] = []
+
+        let totalIndices = 0
         let indiceCandidato = 0
+        let erros: Candidato[] = []
+
         const intervalo: any = setInterval(async () => {
             const candidato = candidatos[indiceCandidato]
             const dados = new URLSearchParams({
@@ -117,26 +118,32 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                 "formulario:j_id16": "Confirmar",
                 "javax.faces.ViewState": "j_id1",
             }).toString()
+
             const ultimoCandidato = indiceCandidato == candidatos.length - 1
             if (ultimoCandidato) clearInterval(intervalo)
             else indiceCandidato++
+
             try {
                 const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
                 const cookies = getCookies.headers['set-cookie']
                 let Cookie = ""
                 if (cookies) Cookie = cookies[0]
+
                 const headers = {
                     Cookie,
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
+
                 const axiosConfig: AxiosRequestConfig = {
                     headers,
                     timeout: 10000
                 }
+
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
                     dados,
                     axiosConfig
                 )
+
                 const situacaoAtual = candidato.situacao.toString()
                 const situacaoCompleta = await capturaSituacaoCompleta(candidato, resposta.data, axiosConfig)
                 if (situacaoCompleta) alteraSituacaoCandidato(candidato, situacaoCompleta)
@@ -149,12 +156,14 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                 erros.push(candidato)
                 console.log(`Erro: ${candidato.nome} - ${error?.code || error?.err || error}`)
             }
+
             totalIndices++
             if (totalIndices == total) {
                 const fim = new Date().getTime()
                 const tempo = (fim - inicio)
                 console.log("Total de Erros:", erros.length)
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
+
                 if (erros.length) {
                     console.log("Corrigindo erros...");
                     resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100))
@@ -173,6 +182,7 @@ const capturaSituacaoCompleta = async (candidato: Candidato, formString: string,
         const campoIndice = match[0].match(/id="formulario:j_id17:(.)*?col02/gi)
         if (campoIndice) {
             candidato.quantidadeCadastros = campoIndice.length
+
             const novosDados = new URLSearchParams({
                 publicadorformvalue: ",802,0,0,2,0,1",
                 formulario: "formulario",
@@ -180,9 +190,12 @@ const capturaSituacaoCompleta = async (candidato: Candidato, formString: string,
                 "javax.faces.ViewState": "j_id2",
                 [campoIndice[campoIndice.length - 1].replace('id="', '')]: campoIndice[campoIndice.length - 1].replace('id="', '')
             }).toString()
+
             const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
                 novosDados,
-                axiosConfig)
+                axiosConfig
+            )
+
             const novoMatch = respostaFinal.data.match(/<form[\s\S]*?<\/form>/i)
             if (novoMatch) match = novoMatch
             else throw { code: "SEM FORM" }
@@ -204,7 +217,9 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     json.naoConvocados = 0
     json.qualificados = 0
     json.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
+
     const candidatosNaoClassificados: Candidato[] = []
+
     json.macroRegioes.forEach(macro => {
         macro.microRegioes.forEach(micro => {
             micro.candidatos.forEach(candidato => {
@@ -230,11 +245,14 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
             })
         })
     })
+
     const { expedidas, autorizadas, cancelados, convocados, desistentes, inaptos, emQualificacao, empossados, naoConvocados, qualificados } = json
     console.log(`Dados ${tipo} atualizados:`, { expedidas, autorizadas, cancelados, desistentes, inaptos, emQualificacao, qualificados, empossados, convocados, naoConvocados, total: convocados + naoConvocados })
+
     if (candidatosNaoClassificados.length) {
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
     }
+
     if (tipo == "TI") {
         ALTERACOES_TI.id++
         RESPOSTA_TI.id++
@@ -244,6 +262,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
         RESPOSTA_COMERCIAL.id++
         atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_COMERCIAL })
     }
+
     salvaDados(json, tipo)
 }
 
@@ -256,78 +275,20 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
             ?.replace("Situa&ccedil;&atilde;o:", "")
             ?.replace("&atilde;", "ã")
             ?.trim()
+
         candidato.agenciaSituacao = situacaoCompleta?.match(/(?<=ag[e|ê]ncia )([\w\/\ ])*/gi)?.[0] || "None"
+
         const arrayDataSituacao = situacaoCompleta?.match(/[0-9\.]+/gi)?.[0]?.split(".")
         if (arrayDataSituacao?.length)
             candidato.dataSituacao = `${arrayDataSituacao?.[2]}-${arrayDataSituacao?.[1]}-${arrayDataSituacao?.[0]}`
         else candidato.dataSituacao = "None"
+
         candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
         if (!candidato.situacao) throw { code: "SEM SITUAÇÃO" }
     } else {
         throw { code: "SEM SITUAÇÃO" }
     }
 }
-
-const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON | null> => {
-    try {
-        await fs.readdir("./backups")
-    } catch (error) {
-        await fs.mkdir("./backups")
-    }
-    try {
-        const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'r')
-        const conteudo = await arquivo.readFile()
-        await arquivo.close()
-        if (conteudo.toString()) {
-            console.log(`Backup de ${tipo} localizado.`)
-            return JSON.parse(conteudo.toString())
-        } else {
-            console.log(`Backup de ${tipo} incompleto.`)
-            return null
-        }
-    } catch (error) {
-        console.log(`Ainda não há arquivo de backup de ${tipo}.`)
-        return null
-    }
-}
-
-const salvaDados = async (dados: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
-    const dadosString = JSON.stringify(dados)
-    const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'w+')
-    await arquivo.writeFile(dadosString)
-    await arquivo.close()
-}
-
-const buscaID = async (tipo: "TI" | "COMERCIAL"): Promise<IDAtualizacao | null> => {
-    try {
-        await fs.readdir("./backups")
-    } catch (error) {
-        await fs.mkdir("./backups")
-    }
-    try {
-        const arquivo = await fs.open(`backups/id_${tipo}.json`, 'r')
-        const conteudo = await arquivo.readFile()
-        await arquivo.close()
-        if (conteudo.toString()) {
-            console.log(`IDs de ${tipo} localizado.`)
-            return JSON.parse(conteudo.toString())
-        } else {
-            console.log(`IDs de ${tipo} incompleto.`)
-            return null
-        }
-    } catch (error) {
-        console.log(`Ainda não há IDs de ${tipo}.`)
-        return null
-    }
-}
-
-const salvaID = async (dados: IDAtualizacao, tipo: "TI" | "COMERCIAL") => {
-    const dadosString = JSON.stringify(dados)
-    const arquivo = await fs.open(`backups/id_${tipo}.json`, 'w+')
-    await arquivo.writeFile(dadosString)
-    await arquivo.close()
-}
-
 
 const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterados }: { json?: RespostaJSON, candidatosAlterados?: Candidato[] }) => {
     if (tipo == "TI") {
