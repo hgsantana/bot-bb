@@ -91,7 +91,7 @@ const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegi
 
 const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
     let total = candidatos.length
-    console.log(`Consultando ${total} registros de ${tipo}...`)
+    console.log(`Consultando ${total} candidatos de ${tipo}...`)
     return new Promise<void>(resolve => {
         let totalIndices = 0
         const inicio = new Date().getTime()
@@ -143,7 +143,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
             if (totalIndices == total) {
                 const fim = new Date().getTime()
                 const tempo = (fim - inicio)
-                console.log("Erros:", erros)
+                console.log("Total de Erros:", erros.length)
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
                 if (erros.length) {
                     console.log("Corrigindo erros...");

@@ -1569,7 +1569,7 @@ export const AGENTES_TI: MacroRegiao[] = [
                     },
                     {
                         dataNascimento: '16/06/1980',
-                        nome: "JOAO MARCELO RODRIGUES SANTANA",
+                        nome: "JOAO MARCELO RODRIGUES SANT ANA",
                         posicao: 202,
                         situacao: "",
                         tipo: "CADASTRO-RESERVA"
