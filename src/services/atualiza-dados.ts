@@ -241,8 +241,8 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
             ?.trim()
         candidato.agenciaSituacao = situacaoCompleta?.match(/(?<=ag[e|ê]ncia )([\w\/\ ])*/gi)?.[0] || "None"
         candidato.dataSituacao = situacaoCompleta?.match(/[0-9\.]+/gi)?.[0] || "None"
-        candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || "None"
-        if (!candidato.situacao) console.log(`Situação não encontrada para o candidato ${candidato.nome}. Situação: ${situacaoCompleta}`)
+        candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
+        if (!candidato.situacao) throw { code: "SEM SITUAÇÃO" }
     } else {
         throw { code: "SEM SITUAÇÃO" }
     }
