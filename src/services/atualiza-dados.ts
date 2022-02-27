@@ -73,8 +73,6 @@ export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
 
 let ID_TI_atual = 1001
 let ID_COMERCIAL_atual = 1001
-const IDs_TI: IDAtualizacao[] = []
-const IDs_COMERCIAL: IDAtualizacao[] = []
 
 let ALTERADOS_TI: Candidato[] = []
 let ALTERADOS_COMERCIAL: Candidato[] = []
@@ -83,17 +81,11 @@ export const iniciar = async () => {
     RESPOSTA_TI = await buscaDados("TI") || RESPOSTA_TI
     RESPOSTA_COMERCIAL = await buscaDados("COMERCIAL") || RESPOSTA_COMERCIAL
 
-    const ids_ti_salvos = await buscaIDs("TI")
-    if (ids_ti_salvos) {
-        IDs_TI.push(...ids_ti_salvos)
-        ID_TI_atual = IDs_TI?.[IDs_TI.length - 1].id || ID_TI_atual
-    }
+    const id_ti_salvo = await buscaID("TI")
+    ID_TI_atual = id_ti_salvo?.id || ID_TI_atual
 
-    const ids_comercial_salvos = await buscaIDs("COMERCIAL")
-    if (ids_comercial_salvos) {
-        IDs_COMERCIAL.push(...ids_comercial_salvos)
-        ID_COMERCIAL_atual = IDs_COMERCIAL?.[IDs_COMERCIAL.length - 1].id || ID_COMERCIAL_atual
-    }
+    const id_comercial_salvo = await buscaID("COMERCIAL")
+    ID_COMERCIAL_atual = id_comercial_salvo?.id || ID_COMERCIAL_atual
 
     atualizaAlteracoes("COMERCIAL", {})
     atualizaAlteracoes("TI", {})
@@ -251,13 +243,11 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     salvaDados(json, tipo)
     if (tipo == "TI") {
         ID_TI_atual++
-        IDs_TI.push({ id: ID_TI_atual, data: new Date() })
-        salvaIDs(IDs_TI, 'TI')
+        salvaID({ id: ID_TI_atual, data: new Date() }, 'TI')
         atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_TI })
     } else {
         ID_COMERCIAL_atual++
-        IDs_COMERCIAL.push({ id: ID_COMERCIAL_atual, data: new Date() })
-        salvaIDs(IDs_COMERCIAL, 'TI')
+        salvaID({ id: ID_COMERCIAL_atual, data: new Date() }, 'TI')
         atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_COMERCIAL })
     }
 }
@@ -313,7 +303,7 @@ const salvaDados = async (dados: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
     await arquivo.close()
 }
 
-const buscaIDs = async (tipo: "TI" | "COMERCIAL"): Promise<IDAtualizacao[] | null> => {
+const buscaID = async (tipo: "TI" | "COMERCIAL"): Promise<IDAtualizacao | null> => {
     try {
         await fs.readdir("./backups")
     } catch (error) {
@@ -336,7 +326,7 @@ const buscaIDs = async (tipo: "TI" | "COMERCIAL"): Promise<IDAtualizacao[] | nul
     }
 }
 
-const salvaIDs = async (dados: IDAtualizacao[], tipo: "TI" | "COMERCIAL") => {
+const salvaID = async (dados: IDAtualizacao, tipo: "TI" | "COMERCIAL") => {
     const dadosString = JSON.stringify(dados)
     const arquivo = await fs.open(`backups/id_${tipo}.json`, 'w+')
     await arquivo.writeFile(dadosString)
