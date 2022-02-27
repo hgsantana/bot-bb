@@ -8,7 +8,7 @@ import { MacroRegiao } from '../models/macro-regiao'
 import { RespostaAlteracoes, RespostaJSON } from '../models/resposta-json'
 
 export let RESPOSTA_TI: RespostaJSON = {
-    id: 0,
+    id: 1000,
     empossados: 0,
     cancelados: 0,
     desistentes: 0,
@@ -24,7 +24,7 @@ export let RESPOSTA_TI: RespostaJSON = {
 }
 
 export let RESPOSTA_COMERCIAL: RespostaJSON = {
-    id: 0,
+    id: 1000,
     empossados: 0,
     cancelados: 0,
     desistentes: 0,
@@ -40,7 +40,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
 }
 
 export const ALTERACOES_TI: RespostaAlteracoes = {
-    id: 0,
+    id: 1000,
     candidatosAlterados: [],
     autorizadas: [],
     cancelados: [],
@@ -56,7 +56,7 @@ export const ALTERACOES_TI: RespostaAlteracoes = {
 }
 
 export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
-    id: 0,
+    id: 1000,
     autorizadas: [],
     cancelados: [],
     convocados: [],
@@ -71,21 +71,12 @@ export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
     candidatosAlterados: [],
 }
 
-let ID_TI_atual = 1000
-let ID_COMERCIAL_atual = 1000
-
 let ALTERADOS_TI: Candidato[] = []
 let ALTERADOS_COMERCIAL: Candidato[] = []
 
 export const iniciar = async () => {
     RESPOSTA_TI = await buscaDados("TI") || RESPOSTA_TI
     RESPOSTA_COMERCIAL = await buscaDados("COMERCIAL") || RESPOSTA_COMERCIAL
-
-    const id_ti_salvo = await buscaID("TI")
-    ID_TI_atual = id_ti_salvo?.id || ID_TI_atual
-
-    const id_comercial_salvo = await buscaID("COMERCIAL")
-    ID_COMERCIAL_atual = id_comercial_salvo?.id || ID_COMERCIAL_atual
 
     atualizaAlteracoes("COMERCIAL", {})
     atualizaAlteracoes("TI", {})
@@ -240,16 +231,16 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     if (candidatosNaoClassificados.length) {
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
     }
-    salvaDados(json, tipo)
     if (tipo == "TI") {
-        ID_TI_atual++
-        salvaID({ id: ID_TI_atual, data: new Date() }, 'TI')
+        ALTERACOES_TI.id++
+        RESPOSTA_TI.id++
         atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_TI })
     } else {
-        ID_COMERCIAL_atual++
-        salvaID({ id: ID_COMERCIAL_atual, data: new Date() }, 'TI')
+        ALTERACOES_COMERCIAL.id++
+        RESPOSTA_COMERCIAL.id++
         atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_COMERCIAL })
     }
+    salvaDados(json, tipo)
 }
 
 const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
@@ -373,8 +364,6 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_TI.qualificados = [RESPOSTA_TI.qualificados, RESPOSTA_TI.qualificados]
             ALTERACOES_TI.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
         }
-        ALTERACOES_TI.id = ID_TI_atual
-        RESPOSTA_TI.id = ID_TI_atual
         ALTERADOS_TI = []
     } else {
         if (json) {
@@ -414,8 +403,6 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_COMERCIAL.qualificados = [RESPOSTA_COMERCIAL.qualificados, RESPOSTA_COMERCIAL.qualificados]
             ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
         }
-        RESPOSTA_COMERCIAL.id = ID_COMERCIAL_atual
-        ALTERACOES_COMERCIAL.id = ID_COMERCIAL_atual
         ALTERADOS_COMERCIAL = []
     }
 }
