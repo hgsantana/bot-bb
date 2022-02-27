@@ -76,10 +76,10 @@ let ALTERADOS_COMERCIAL: Candidato[] = []
 
 export const iniciar = async () => {
     RESPOSTA_TI = await buscaDados("TI") || RESPOSTA_TI
-    ALTERACOES_TI.id == RESPOSTA_TI.id
+    ALTERACOES_TI.id = RESPOSTA_TI.id
 
     RESPOSTA_COMERCIAL = await buscaDados("COMERCIAL") || RESPOSTA_COMERCIAL
-    ALTERACOES_COMERCIAL.id == RESPOSTA_COMERCIAL.id
+    ALTERACOES_COMERCIAL.id = RESPOSTA_COMERCIAL.id
 
     atualizaAlteracoes("COMERCIAL", {})
     atualizaAlteracoes("TI", {})
