@@ -71,8 +71,8 @@ export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
     candidatosAlterados: [],
 }
 
-let ID_TI_atual = 1000
-let ID_COMERCIAL_atual = 1000
+let ID_TI_atual = 1001
+let ID_COMERCIAL_atual = 1001
 const IDs_TI: IDAtualizacao[] = []
 const IDs_COMERCIAL: IDAtualizacao[] = []
 
