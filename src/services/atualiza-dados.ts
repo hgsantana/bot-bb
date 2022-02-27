@@ -78,132 +78,18 @@ export const iniciar = async () => {
 }
 
 const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegiao[], dados_comercial: MacroRegiao[] }) => {
-    await atualizaDados(dados_ti, "TI")
-    await atualizaDados(dados_comercial, "COMERCIAL")
+    let candidatos_TI: Candidato[] = []
+    let candidatos_COMERCIAL: Candidato[] = []
+    dados_ti.forEach(macro => macro.microRegioes.forEach(micro => candidatos_TI = candidatos_TI.concat(micro.candidatos)))
+    dados_comercial.forEach(macro => macro.microRegioes.forEach(micro => candidatos_COMERCIAL = candidatos_COMERCIAL.concat(micro.candidatos)))
+    await atualizaSituacao(candidatos_TI, "TI")
+    await atualizaSituacao(candidatos_COMERCIAL, "COMERCIAL")
     setTimeout(() => {
         atualizaTudo({ dados_comercial, dados_ti })
     }, 1000 * 60 * 60);
 }
 
-const atualizaDados = async (macroRegioes: MacroRegiao[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
-    let total = 0
-    macroRegioes.forEach(macro => {
-        macro.microRegioes.forEach(micro => {
-            total += micro.candidatos.length
-        })
-    })
-    console.log(`Consultando ${total} registros de ${tipo}...`)
-    return new Promise<void>(resolve => {
-        let totalIndices = 0
-        const inicio = new Date().getTime()
-        let erros: Candidato[] = []
-        let indiceMacro = 0
-        let indiceMicro = 0
-        let indiceCandidato = 0
-        const intervalo: any = setInterval(async () => {
-            const candidato = macroRegioes[indiceMacro].microRegioes[indiceMicro].candidatos[indiceCandidato]
-            const dados = new URLSearchParams({
-                "formulario": "formulario",
-                "publicadorformvalue": ",802,0,0,2,0,1",
-                "formulario:nomePesquisa": candidato.nome,
-                "formulario:cpfPesquisa": "",
-                "formulario:j_id16": "Confirmar",
-                "javax.faces.ViewState": "j_id1",
-            }).toString()
-            const ultimaMacro = indiceMacro == macroRegioes.length - 1
-            const ultimaMicro = indiceMicro == macroRegioes[indiceMacro].microRegioes.length - 1
-            const ultimoCandidato = indiceCandidato == macroRegioes[indiceMacro].microRegioes[indiceMicro].candidatos.length - 1
-            if (ultimaMacro && ultimaMicro && ultimoCandidato) {
-                clearInterval(intervalo)
-            } else if (ultimoCandidato && ultimaMicro) {
-                indiceCandidato = 0
-                indiceMicro = 0
-                indiceMacro++
-            } else if (ultimoCandidato) {
-                indiceCandidato = 0
-                indiceMicro++
-            }
-            else indiceCandidato++
-            try {
-                const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
-                const cookies = getCookies.headers['set-cookie']
-                let Cookie = ""
-                if (cookies) Cookie = cookies[0]
-                else throw { code: "SEM COOKIE" }
-                const headers = {
-                    Cookie,
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-                const axiosConfig: AxiosRequestConfig = {
-                    headers,
-                    timeout: 10000
-                }
-                const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
-                    dados,
-                    axiosConfig
-                )
-                const match = resposta.data.match(/<form[\s\S]*?<\/form>/i)
-                if (match) {
-                    const campoIndice = match[0].match(/id="formulario:j_id17:(.)*?col02/gi)
-                    if (campoIndice) {
-                        const novosDados = new URLSearchParams({
-                            publicadorformvalue: ",802,0,0,2,0,1",
-                            formulario: "formulario",
-                            autoScroll: "",
-                            "javax.faces.ViewState": "j_id2",
-                            [campoIndice[campoIndice.length - 1].replace('id="', '')]: campoIndice[campoIndice.length - 1].replace('id="', '')
-                        }).toString()
-                        const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
-                            novosDados,
-                            axiosConfig)
-                        const novoMatch = respostaFinal.data.match(/<form[\s\S]*?<\/form>/i)
-                        if (novoMatch) {
-                            const situacao = retornaSituacao(novoMatch[0])
-                            if (situacao) {
-                                if (candidato.situacao != situacao) {
-                                    if (tipo == "TI") ALTERADOS_TI.push(candidato)
-                                    else ALTERADOS_COMERCIAL.push(candidato)
-                                    candidato.situacao = situacao
-                                }
-                            } else throw { code: "SEM SITUAÇÃO" }
-                        } else throw { code: "SEM FORM" }
-                    } else {
-                        const situacao = retornaSituacao(match[0])
-                        if (situacao) {
-                            if (candidato.situacao != situacao) {
-                                if (tipo == "TI") ALTERADOS_TI.push(candidato)
-                                else ALTERADOS_COMERCIAL.push(candidato)
-                                candidato.situacao = situacao
-                            }
-                        } else throw { code: "SEM SITUAÇÃO" }
-                    }
-                } else throw { code: "SEM FORM" }
-            } catch (error: any) {
-                erros.push(candidato)
-                console.log("Erro:", {
-                    nome: candidato.nome,
-                    codigo: error?.code || error?.err
-                })
-            }
-            totalIndices++
-            if (totalIndices == total) {
-                const fim = new Date().getTime()
-                const tempo = (fim - inicio)
-                console.log("Erros:", erros)
-                console.log(`Batch ${tipo} executada em ${tempo} ms.`)
-                if (erros.length) {
-                    console.log("Corrigindo erros...");
-                    resolve(await corrigeErros(erros, tipo, msIntervalo + 100))
-                } else {
-                    atualizaJSON(tipo)
-                    resolve()
-                }
-            }
-        }, msIntervalo)
-    })
-}
-
-const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
+const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100) => {
     let total = candidatos.length
     console.log(`Consultando ${total} registros de ${tipo}...`)
     return new Promise<void>(resolve => {
@@ -241,48 +127,17 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
                     dados,
                     axiosConfig
                 )
-                const match = resposta.data.match(/<form[\s\S]*?<\/form>/i)
-                if (match) {
-                    const campoIndice = match[0].match(/id="formulario:j_id17:(.)*?col02/gi)
-                    if (campoIndice) {
-                        const novosDados = new URLSearchParams({
-                            publicadorformvalue: ",802,0,0,2,0,1",
-                            formulario: "formulario",
-                            autoScroll: "",
-                            "javax.faces.ViewState": "j_id2",
-                            [campoIndice[campoIndice.length - 1].replace('id="', '')]: campoIndice[campoIndice.length - 1].replace('id="', '')
-                        }).toString()
-                        const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
-                            novosDados,
-                            axiosConfig)
-                        const novoMatch = respostaFinal.data.match(/<form[\s\S]*?<\/form>/i)
-                        if (novoMatch) {
-                            const situacao = retornaSituacao(novoMatch[0])
-                            if (situacao) {
-                                if (candidato.situacao != situacao) {
-                                    if (tipo == "TI") ALTERADOS_TI.push(candidato)
-                                    else ALTERADOS_COMERCIAL.push(candidato)
-                                    candidato.situacao = situacao
-                                }
-                            } else throw { code: "SEM SITUAÇÃO" }
-                        }
-                    } else {
-                        const situacao = retornaSituacao(match[0])
-                        if (situacao) {
-                            if (candidato.situacao != situacao) {
-                                if (tipo == "TI") ALTERADOS_TI.push(candidato)
-                                else ALTERADOS_COMERCIAL.push(candidato)
-                                candidato.situacao = situacao
-                            }
-                        } else throw { code: "SEM SITUAÇÃO" }
-                    }
+                const situacaoAtual = candidato.situacao.toString()
+                const situacaoCompleta = await capturaSituacaoCompleta(candidato, resposta.data, axiosConfig)
+                if (situacaoCompleta) alteraSituacaoCandidato(candidato, situacaoCompleta)
+                else throw { code: "SEM FORM" }
+                if (candidato.situacao !== situacaoAtual) {
+                    if (tipo == "TI") ALTERADOS_TI.push(candidato)
+                    else ALTERADOS_COMERCIAL.push(candidato)
                 }
             } catch (error: any) {
                 erros.push(candidato)
-                console.log("Erro:", {
-                    nome: candidato.nome,
-                    codigo: error?.code || error?.err
-                })
+                console.log(`Erro: ${candidato.nome} - \x1b[31m${error?.code || error?.err || error}\x1b[0m`)
             }
             totalIndices++
             if (totalIndices == total) {
@@ -292,7 +147,7 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
                 if (erros.length) {
                     console.log("Corrigindo erros...");
-                    resolve(await corrigeErros(erros, tipo, msIntervalo + 100))
+                    resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100))
                 } else {
                     atualizaJSON(tipo)
                     resolve()
@@ -300,6 +155,30 @@ const corrigeErros = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", m
             }
         }, msIntervalo)
     })
+}
+
+const capturaSituacaoCompleta = async (candidato: Candidato, formString: string, axiosConfig: AxiosRequestConfig) => {
+    let match = formString.match(/<form[\s\S]*?<\/form>/i)
+    if (match) {
+        const campoIndice = match[0].match(/id="formulario:j_id17:[0-9]*?col02/gi)
+        if (campoIndice) {
+            candidato.quantidadeCadastros = campoIndice.length
+            const novosDados = new URLSearchParams({
+                publicadorformvalue: ",802,0,0,2,0,1",
+                formulario: "formulario",
+                autoScroll: "",
+                "javax.faces.ViewState": "j_id2",
+                [campoIndice[campoIndice.length - 1].replace('id="', '')]: campoIndice[campoIndice.length - 1].replace('id="', '')
+            }).toString()
+            const respostaFinal = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0_lista.bbx',
+                novosDados,
+                axiosConfig)
+            const novoMatch = respostaFinal.data.match(/<form[\s\S]*?<\/form>/i)
+            if (novoMatch) match = novoMatch
+            else throw { code: "SEM FORM" }
+        }
+        return match[0]
+    } else return null
 }
 
 const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
@@ -351,21 +230,23 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     else atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_COMERCIAL })
 }
 
-const retornaSituacao = (matchFormulario: string) => {
-    const bolds = matchFormulario.match(/<b>[\s\S]*?<\/b>/gi)
-    const nascimento = matchFormulario.match(/Data de Nascimento: ([0-9]*\/[0-9]*)\w+/gi)
-    const posicaoMacro = matchFormulario.match(/Data de Nascimento: ([0-9]*\/[0-9]*)\w+/gi)
-    const posicaoMicro = matchFormulario.match(/Data de Nascimento: ([0-9]*\/[0-9]*)\w+/gi)
-    if (bolds && nascimento && posicaoMacro && posicaoMicro) {
-        return bolds[2]
-            .replace("<b>", "")
-            .replace("</b>", "")
-            .replace("Situa&ccedil;&atilde;o:", "")
-            .replace("&atilde;", "ã")
-            .trim()
+const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
+    const bolds = formulario.match(/<b>[\s\S]*?<\/b>/gi)
+    if (bolds) {
+        const situacaoCompleta = bolds[2]
+            ?.replace("<b>", "")
+            ?.replace("</b>", "")
+            ?.replace("Situa&ccedil;&atilde;o:", "")
+            ?.replace("&atilde;", "ã")
+            ?.trim()
+        candidato.agenciaSituacao = situacaoCompleta?.match(/(?<=ag[e|ê]ncia )([\w\/\ ])*/gi)?.[0] || "None"
+        candidato.dataSituacao = situacaoCompleta?.match(/[0-9\.]+/gi)?.[0] || "None"
+        candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || "None"
+        if (!candidato.situacao) console.log(`Situação não encontrada para o candidato ${candidato.nome}. Situação: ${situacaoCompleta}`)
+    } else {
+        throw { code: "SEM SITUAÇÃO" }
     }
 }
-
 
 const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON | null> => {
     try {
