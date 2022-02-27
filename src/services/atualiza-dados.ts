@@ -160,7 +160,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                 }
             } catch (error: any) {
                 erros.push(candidato)
-                console.log(`Erro: ${candidato.nome} - \x1b[31m${error?.code || error?.err || error}\x1b[0m`)
+                console.log(`Erro: ${candidato.nome} - ${error?.code || error?.err || error}`)
             }
             totalIndices++
             if (totalIndices == total) {
