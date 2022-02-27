@@ -17,7 +17,7 @@ export let RESPOSTA_TI: RespostaJSON = {
     expedidas: 0,
     naoConvocados: 0,
     convocados: 0,
-    ultimaAtualizacao: new Date(),
+    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
     macroRegioes: AGENTES_TI
 }
 
@@ -32,7 +32,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     expedidas: 0,
     naoConvocados: 0,
     convocados: 0,
-    ultimaAtualizacao: new Date(),
+    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
     macroRegioes: AGENTES_COMERCIAL
 }
 
@@ -48,7 +48,7 @@ export const ALTERACOES_TI: RespostaAlteracoes = {
     inaptos: [],
     naoConvocados: [],
     qualificados: [],
-    ultimaAtualizacao: new Date()
+    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " ")
 }
 
 export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
@@ -62,7 +62,7 @@ export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
     inaptos: [],
     naoConvocados: [],
     qualificados: [],
-    ultimaAtualizacao: new Date(),
+    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
     candidatosAlterados: [],
 }
 
@@ -193,7 +193,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     json.inaptos = 0
     json.naoConvocados = 0
     json.qualificados = 0
-    json.ultimaAtualizacao = new Date()
+    json.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
     const candidatosNaoClassificados: Candidato[] = []
     json.macroRegioes.forEach(macro => {
         macro.microRegioes.forEach(micro => {
@@ -240,7 +240,10 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
             ?.replace("&atilde;", "ã")
             ?.trim()
         candidato.agenciaSituacao = situacaoCompleta?.match(/(?<=ag[e|ê]ncia )([\w\/\ ])*/gi)?.[0] || "None"
-        candidato.dataSituacao = situacaoCompleta?.match(/[0-9\.]+/gi)?.[0] || "None"
+        const arrayDataSituacao = situacaoCompleta?.match(/[0-9\.]+/gi)?.[0]?.split(".")
+        if (arrayDataSituacao?.length)
+            candidato.dataSituacao = `${arrayDataSituacao?.[2]}-${arrayDataSituacao?.[1]}-${arrayDataSituacao?.[0]}`
+        else candidato.dataSituacao = "None"
         candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
         if (!candidato.situacao) throw { code: "SEM SITUAÇÃO" }
     } else {
@@ -302,7 +305,7 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_TI.inaptos[1] = json.inaptos
             ALTERACOES_TI.naoConvocados[1] = json.naoConvocados
             ALTERACOES_TI.qualificados[1] = json.qualificados
-            ALTERACOES_TI.ultimaAtualizacao = new Date()
+            ALTERACOES_TI.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
             ALTERACOES_TI.candidatosAlterados = candidatosAlterados || ALTERACOES_TI.candidatosAlterados
         } else {
             ALTERACOES_TI.autorizadas = [RESPOSTA_TI.autorizadas, RESPOSTA_TI.autorizadas]
@@ -315,7 +318,7 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_TI.inaptos = [RESPOSTA_TI.inaptos, RESPOSTA_TI.inaptos]
             ALTERACOES_TI.naoConvocados = [RESPOSTA_TI.naoConvocados, RESPOSTA_TI.naoConvocados]
             ALTERACOES_TI.qualificados = [RESPOSTA_TI.qualificados, RESPOSTA_TI.qualificados]
-            ALTERACOES_TI.ultimaAtualizacao = new Date()
+            ALTERACOES_TI.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
         }
         ALTERADOS_TI = []
     } else {
@@ -341,7 +344,7 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_COMERCIAL.inaptos[1] = json.inaptos
             ALTERACOES_COMERCIAL.naoConvocados[1] = json.naoConvocados
             ALTERACOES_COMERCIAL.qualificados[1] = json.qualificados
-            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date()
+            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
             ALTERACOES_COMERCIAL.candidatosAlterados = candidatosAlterados || ALTERACOES_COMERCIAL.candidatosAlterados
         } else {
             ALTERACOES_COMERCIAL.autorizadas = [RESPOSTA_COMERCIAL.autorizadas, RESPOSTA_COMERCIAL.autorizadas]
@@ -354,7 +357,7 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_COMERCIAL.inaptos = [RESPOSTA_COMERCIAL.inaptos, RESPOSTA_COMERCIAL.inaptos]
             ALTERACOES_COMERCIAL.naoConvocados = [RESPOSTA_COMERCIAL.naoConvocados, RESPOSTA_COMERCIAL.naoConvocados]
             ALTERACOES_COMERCIAL.qualificados = [RESPOSTA_COMERCIAL.qualificados, RESPOSTA_COMERCIAL.qualificados]
-            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date()
+            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
         }
         ALTERADOS_COMERCIAL = []
     }

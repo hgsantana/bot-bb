@@ -12,7 +12,7 @@ export type RespostaJSON = {
     expedidas: number
     naoConvocados: number
     convocados: number
-    ultimaAtualizacao: Date
+    ultimaAtualizacao: string
     macroRegioes: MacroRegiao[]
 }
 
@@ -27,6 +27,6 @@ export type RespostaAlteracoes = {
     expedidas: number[]
     naoConvocados: number[]
     convocados: number[]
-    ultimaAtualizacao: Date
+    ultimaAtualizacao: string
     candidatosAlterados: Candidato[]
 }
