@@ -7,10 +7,12 @@ export const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON
     } catch (error) {
         await fs.mkdir("./backups")
     }
+    
     try {
         const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'r')
         const conteudo = await arquivo.readFile()
         await arquivo.close()
+        
         if (conteudo.toString()) {
             console.log(`Backup de ${tipo} localizado.`)
             return JSON.parse(conteudo.toString())
