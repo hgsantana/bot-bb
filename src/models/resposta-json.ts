@@ -2,6 +2,7 @@ import { Candidato } from "./candidato";
 import { MacroRegiao } from "./macro-regiao";
 
 export type RespostaJSON = {
+    id: number
     empossados: number
     cancelados: number
     desistentes: number
@@ -17,6 +18,7 @@ export type RespostaJSON = {
 }
 
 export type RespostaAlteracoes = {
+    id: number
     empossados: number[]
     cancelados: number[]
     desistentes: number[]

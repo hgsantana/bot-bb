@@ -8,6 +8,7 @@ import { MacroRegiao } from '../models/macro-regiao'
 import { RespostaAlteracoes, RespostaJSON } from '../models/resposta-json'
 
 export let RESPOSTA_TI: RespostaJSON = {
+    id: 0,
     empossados: 0,
     cancelados: 0,
     desistentes: 0,
@@ -23,6 +24,7 @@ export let RESPOSTA_TI: RespostaJSON = {
 }
 
 export let RESPOSTA_COMERCIAL: RespostaJSON = {
+    id: 0,
     empossados: 0,
     cancelados: 0,
     desistentes: 0,
@@ -38,6 +40,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
 }
 
 export const ALTERACOES_TI: RespostaAlteracoes = {
+    id: 0,
     candidatosAlterados: [],
     autorizadas: [],
     cancelados: [],
@@ -53,6 +56,7 @@ export const ALTERACOES_TI: RespostaAlteracoes = {
 }
 
 export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
+    id: 0,
     autorizadas: [],
     cancelados: [],
     convocados: [],
@@ -320,14 +324,14 @@ const buscaIDs = async (tipo: "TI" | "COMERCIAL"): Promise<IDAtualizacao[] | nul
         const conteudo = await arquivo.readFile()
         await arquivo.close()
         if (conteudo.toString()) {
-            console.log(`Backup de ${tipo} localizado.`)
+            console.log(`IDs de ${tipo} localizado.`)
             return JSON.parse(conteudo.toString())
         } else {
-            console.log(`Backup de ${tipo} incompleto.`)
+            console.log(`IDs de ${tipo} incompleto.`)
             return null
         }
     } catch (error) {
-        console.log(`Ainda não há arquivo de backup de ${tipo}.`)
+        console.log(`Ainda não há IDs de ${tipo}.`)
         return null
     }
 }
@@ -379,6 +383,8 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_TI.qualificados = [RESPOSTA_TI.qualificados, RESPOSTA_TI.qualificados]
             ALTERACOES_TI.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
         }
+        ALTERACOES_TI.id = ID_TI_atual
+        RESPOSTA_TI.id = ID_TI_atual
         ALTERADOS_TI = []
     } else {
         if (json) {
@@ -418,6 +424,8 @@ const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterado
             ALTERACOES_COMERCIAL.qualificados = [RESPOSTA_COMERCIAL.qualificados, RESPOSTA_COMERCIAL.qualificados]
             ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
         }
+        RESPOSTA_COMERCIAL.id = ID_COMERCIAL_atual
+        ALTERACOES_COMERCIAL.id = ID_COMERCIAL_atual
         ALTERADOS_COMERCIAL = []
     }
 }
