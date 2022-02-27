@@ -99,6 +99,7 @@ const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegi
 }
 
 const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 500) => {
+    candidatos = candidatos.filter(c => c.situacao != "Empossado")
     let total = candidatos.length
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
     return new Promise<void>(resolve => {
