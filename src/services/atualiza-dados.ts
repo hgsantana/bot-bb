@@ -160,7 +160,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
 const capturaSituacaoCompleta = async (candidato: Candidato, formString: string, axiosConfig: AxiosRequestConfig) => {
     let match = formString.match(/<form[\s\S]*?<\/form>/i)
     if (match) {
-        const campoIndice = match[0].match(/id="formulario:j_id17:[0-9]*?col02/gi)
+        const campoIndice = match[0].match(/id="formulario:j_id17:(.)*?col02/gi)
         if (campoIndice) {
             candidato.quantidadeCadastros = campoIndice.length
             const novosDados = new URLSearchParams({
