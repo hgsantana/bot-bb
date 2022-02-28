@@ -94,10 +94,10 @@ const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegi
     await atualizaSituacao(candidatos_COMERCIAL, "COMERCIAL")
     setTimeout(() => {
         atualizaTudo({ dados_comercial, dados_ti })
-    }, 1000 * 60 * 60);
+    }, 1000 * 60 * 30); // 30min
 }
 
-const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 500) => {
+const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 388) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
     let total = candidatos.length
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
