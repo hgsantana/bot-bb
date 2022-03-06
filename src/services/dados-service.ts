@@ -92,9 +92,10 @@ const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegi
     dados_comercial.forEach(macro => macro.microRegioes.forEach(micro => candidatos_COMERCIAL = candidatos_COMERCIAL.concat(micro.candidatos)))
     await atualizaSituacao(candidatos_TI, "TI")
     await atualizaSituacao(candidatos_COMERCIAL, "COMERCIAL")
+    // reinicia atualizações após 60 segundos
     setTimeout(() => {
         atualizaTudo({ dados_comercial, dados_ti })
-    }, 1000 * 60 * 30); // 30min
+    }, 60 * 1000);
 }
 
 const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 388) => {
