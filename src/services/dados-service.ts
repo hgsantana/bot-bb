@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
 import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
-import { MacroRegiao } from '../models/macro-regiao'
 import { RespostaAlteracoes, RespostaJSON } from '../models/resposta-json'
 import { buscaDados, salvaDados } from './storage-service'
 
@@ -19,7 +18,7 @@ export let RESPOSTA_TI: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
-    macroRegioes: AGENTES_TI
+    candidatos: AGENTES_TI
 }
 
 export let RESPOSTA_COMERCIAL: RespostaJSON = {
@@ -35,7 +34,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
-    macroRegioes: AGENTES_COMERCIAL
+    candidatos: AGENTES_COMERCIAL
 }
 
 export const ALTERACOES_TI: RespostaAlteracoes = {
@@ -82,19 +81,15 @@ export const iniciar = async () => {
 
     atualizaAlteracoes("COMERCIAL", {})
     atualizaAlteracoes("TI", {})
-    atualizaTudo({ dados_comercial: RESPOSTA_COMERCIAL.macroRegioes, dados_ti: RESPOSTA_TI.macroRegioes })
+    atualizaTudo()
 }
 
-const atualizaTudo = async ({ dados_ti, dados_comercial }: { dados_ti: MacroRegiao[], dados_comercial: MacroRegiao[] }) => {
-    let candidatos_TI: Candidato[] = []
-    let candidatos_COMERCIAL: Candidato[] = []
-    dados_ti.forEach(macro => macro.microRegioes.forEach(micro => candidatos_TI = candidatos_TI.concat(micro.candidatos)))
-    dados_comercial.forEach(macro => macro.microRegioes.forEach(micro => candidatos_COMERCIAL = candidatos_COMERCIAL.concat(micro.candidatos)))
-    await atualizaSituacao(candidatos_TI, "TI")
-    await atualizaSituacao(candidatos_COMERCIAL, "COMERCIAL")
+const atualizaTudo = async () => {
+    await atualizaSituacao(RESPOSTA_TI.candidatos, "TI")
+    await atualizaSituacao(RESPOSTA_COMERCIAL.candidatos, "COMERCIAL")
     // reinicia atualizações após 60 segundos
     setTimeout(() => {
-        atualizaTudo({ dados_comercial, dados_ti })
+        atualizaTudo()
     }, 60 * 1000);
 }
 
@@ -221,30 +216,26 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
 
     const candidatosNaoClassificados: Candidato[] = []
 
-    json.macroRegioes.forEach(macro => {
-        macro.microRegioes.forEach(micro => {
-            micro.candidatos.forEach(candidato => {
-                if (candidato.situacao.includes("autorizada")) json.autorizadas++
-                else if (candidato.situacao.includes("Cancelado")) json.cancelados++
-                else if (candidato.situacao.includes("qualificacao")) json.emQualificacao++
-                else if (candidato.situacao.includes("Empossado")) json.empossados++
-                else if (candidato.situacao.includes("Qualificado")) json.qualificados++
-                else if (candidato.situacao.includes("expedida")) json.expedidas++
-                else if (candidato.situacao.includes("Desistente")) json.desistentes++
-                else if (candidato.situacao.includes("Inapto")) json.inaptos++
-                else if (candidato.situacao.includes("Não Convocado")) json.naoConvocados++
-                else candidatosNaoClassificados.push(candidato)
-                json.convocados =
-                    + json.autorizadas
-                    + json.cancelados
-                    + json.emQualificacao
-                    + json.empossados
-                    + json.qualificados
-                    + json.expedidas
-                    + json.desistentes
-                    + json.inaptos
-            })
-        })
+    json.candidatos.forEach(candidato => {
+        if (candidato.situacao.includes("autorizada")) json.autorizadas++
+        else if (candidato.situacao.includes("Cancelado")) json.cancelados++
+        else if (candidato.situacao.includes("qualificacao")) json.emQualificacao++
+        else if (candidato.situacao.includes("Empossado")) json.empossados++
+        else if (candidato.situacao.includes("Qualificado")) json.qualificados++
+        else if (candidato.situacao.includes("expedida")) json.expedidas++
+        else if (candidato.situacao.includes("Desistente")) json.desistentes++
+        else if (candidato.situacao.includes("Inapto")) json.inaptos++
+        else if (candidato.situacao.includes("Não Convocado")) json.naoConvocados++
+        else candidatosNaoClassificados.push(candidato)
+        json.convocados =
+            + json.autorizadas
+            + json.cancelados
+            + json.emQualificacao
+            + json.empossados
+            + json.qualificados
+            + json.expedidas
+            + json.desistentes
+            + json.inaptos
     })
 
     const { expedidas, autorizadas, cancelados, convocados, desistentes, inaptos, emQualificacao, empossados, naoConvocados, qualificados } = json
