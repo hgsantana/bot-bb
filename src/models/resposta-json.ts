@@ -12,6 +12,7 @@ export type RespostaJSON = {
     expedidas: number
     naoConvocados: number
     convocados: number
+    inconsistentes: number
     ultimaAtualizacao: string
     candidatos?: Candidato[]
 }

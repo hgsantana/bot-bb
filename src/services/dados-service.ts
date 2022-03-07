@@ -17,6 +17,7 @@ export let RESPOSTA_TI: RespostaJSON = {
     expedidas: 0,
     naoConvocados: 0,
     convocados: 0,
+    inconsistentes: 0,
     ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
 }
 
@@ -32,6 +33,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     expedidas: 0,
     naoConvocados: 0,
     convocados: 0,
+    inconsistentes: 0,
     ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
 }
 
@@ -44,6 +46,7 @@ const checaBackups = async () => {
     const dadosSalvosTI = await buscaDados("TI")
     const dadosSalvosComercial = await buscaDados("COMERCIAL")
     if (dadosSalvosTI) {
+        if (!dadosSalvosTI.inconsistentes) dadosSalvosTI.inconsistentes = 0
         const { autorizadas,
             cancelados,
             convocados,
@@ -55,6 +58,7 @@ const checaBackups = async () => {
             inaptos,
             naoConvocados,
             qualificados,
+            inconsistentes,
             ultimaAtualizacao,
             candidatos } = dadosSalvosTI
         RESPOSTA_TI = {
@@ -69,11 +73,13 @@ const checaBackups = async () => {
             inaptos,
             naoConvocados,
             qualificados,
+            inconsistentes,
             ultimaAtualizacao,
         }
         if (candidatos) AGENTES_TI.splice(0, AGENTES_TI.length, ...candidatos)
     }
     if (dadosSalvosComercial) {
+        if (!dadosSalvosComercial.inconsistentes) dadosSalvosComercial.inconsistentes = 0
         const { autorizadas,
             cancelados,
             convocados,
@@ -85,6 +91,7 @@ const checaBackups = async () => {
             inaptos,
             naoConvocados,
             qualificados,
+            inconsistentes,
             ultimaAtualizacao,
             candidatos } = dadosSalvosComercial
         RESPOSTA_COMERCIAL = {
@@ -99,6 +106,7 @@ const checaBackups = async () => {
             inaptos,
             naoConvocados,
             qualificados,
+            inconsistentes,
             ultimaAtualizacao,
         }
         if (candidatos) AGENTES_COMERCIAL.splice(0, AGENTES_COMERCIAL.length, ...candidatos)
@@ -250,6 +258,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     console.log(`Dados ${tipo} atualizados:`, resposta)
 
     if (candidatosNaoClassificados.length) {
+        resposta.inconsistentes = candidatosNaoClassificados.length
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
     }
 
