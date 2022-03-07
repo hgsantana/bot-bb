@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { dadosAtualizados } from "./rotas/dados-atualizados";
+import { dadosResumidos } from "./rotas/dados-resumidos";
 import { dadosCompletos } from "./rotas/dados-completos";
 import { migracao } from "./rotas/migracao";
 
 export const routes = Router()
 
-routes.get("/dadosAtualizados/:tipo", dadosAtualizados)
+routes.get("/dadosResumidos/:tipo", dadosResumidos)
 routes.get("/dadosCompletos/:tipo", dadosCompletos)
 routes.get("/migracao", migracao)

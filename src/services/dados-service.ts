@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
 import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
-import { RespostaAlteracoes, RespostaJSON } from '../models/resposta-json'
+import { RespostaJSON } from '../models/resposta-json'
 import { buscaDados, salvaDados } from './storage-service'
 
 export let RESPOSTA_TI: RespostaJSON = {
@@ -18,7 +18,6 @@ export let RESPOSTA_TI: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
-    candidatos: AGENTES_TI
 }
 
 export let RESPOSTA_COMERCIAL: RespostaJSON = {
@@ -34,59 +33,81 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
-    candidatos: AGENTES_COMERCIAL
 }
-
-export const ALTERACOES_TI: RespostaAlteracoes = {
-    id: 1000,
-    candidatosAlterados: [],
-    autorizadas: [],
-    cancelados: [],
-    convocados: [],
-    desistentes: [],
-    emQualificacao: [],
-    empossados: [],
-    expedidas: [],
-    inaptos: [],
-    naoConvocados: [],
-    qualificados: [],
-    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " ")
-}
-
-export const ALTERACOES_COMERCIAL: RespostaAlteracoes = {
-    id: 1000,
-    autorizadas: [],
-    cancelados: [],
-    convocados: [],
-    desistentes: [],
-    emQualificacao: [],
-    empossados: [],
-    expedidas: [],
-    inaptos: [],
-    naoConvocados: [],
-    qualificados: [],
-    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
-    candidatosAlterados: [],
-}
-
-let ALTERADOS_TI: Candidato[] = []
-let ALTERADOS_COMERCIAL: Candidato[] = []
 
 export const iniciar = async () => {
-    RESPOSTA_TI = await buscaDados("TI") || RESPOSTA_TI
-    ALTERACOES_TI.id = RESPOSTA_TI.id
+    await checaBackups()
+    await atualizaTudo()
+}
 
-    RESPOSTA_COMERCIAL = await buscaDados("COMERCIAL") || RESPOSTA_COMERCIAL
-    ALTERACOES_COMERCIAL.id = RESPOSTA_COMERCIAL.id
-
-    atualizaAlteracoes("COMERCIAL", {})
-    atualizaAlteracoes("TI", {})
-    atualizaTudo()
+const checaBackups = async () => {
+    const dadosSalvosTI = await buscaDados("TI")
+    const dadosSalvosComercial = await buscaDados("COMERCIAL")
+    if (dadosSalvosTI) {
+        const { autorizadas,
+            cancelados,
+            convocados,
+            desistentes,
+            emQualificacao,
+            empossados,
+            expedidas,
+            id,
+            inaptos,
+            naoConvocados,
+            qualificados,
+            ultimaAtualizacao,
+            candidatos } = dadosSalvosTI
+        RESPOSTA_TI = {
+            autorizadas,
+            cancelados,
+            convocados,
+            desistentes,
+            emQualificacao,
+            empossados,
+            expedidas,
+            id,
+            inaptos,
+            naoConvocados,
+            qualificados,
+            ultimaAtualizacao,
+        }
+        if (candidatos) AGENTES_TI.splice(0, AGENTES_TI.length, ...candidatos)
+    }
+    if (dadosSalvosComercial) {
+        const { autorizadas,
+            cancelados,
+            convocados,
+            desistentes,
+            emQualificacao,
+            empossados,
+            expedidas,
+            id,
+            inaptos,
+            naoConvocados,
+            qualificados,
+            ultimaAtualizacao,
+            candidatos } = dadosSalvosComercial
+        RESPOSTA_COMERCIAL = {
+            autorizadas,
+            cancelados,
+            convocados,
+            desistentes,
+            emQualificacao,
+            empossados,
+            expedidas,
+            id,
+            inaptos,
+            naoConvocados,
+            qualificados,
+            ultimaAtualizacao,
+        }
+        if (candidatos) AGENTES_COMERCIAL.splice(0, AGENTES_COMERCIAL.length, ...candidatos)
+    }
 }
 
 const atualizaTudo = async () => {
-    await atualizaSituacao(RESPOSTA_TI.candidatos, "TI")
-    await atualizaSituacao(RESPOSTA_COMERCIAL.candidatos, "COMERCIAL")
+    await atualizaSituacao(AGENTES_TI, "TI")
+    await atualizaSituacao(AGENTES_COMERCIAL, "COMERCIAL")
     // reinicia atualizações após 60 segundos
     setTimeout(() => {
         atualizaTudo()
@@ -140,14 +161,9 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                     axiosConfig
                 )
 
-                const situacaoAtual = candidato.situacao.toString()
                 const situacaoCompleta = await capturaSituacaoCompleta(candidato, resposta.data, axiosConfig)
                 if (situacaoCompleta) alteraSituacaoCandidato(candidato, situacaoCompleta)
                 else throw { code: "SEM FORM" }
-                if (candidato.situacao !== situacaoAtual) {
-                    if (tipo == "TI") ALTERADOS_TI.push(candidato)
-                    else ALTERADOS_COMERCIAL.push(candidato)
-                }
             } catch (error: any) {
                 erros.push(candidato)
                 console.log(`Erro: ${candidato.nome} - ${error?.code || error?.err || error}`)
@@ -201,61 +217,57 @@ const capturaSituacaoCompleta = async (candidato: Candidato, formString: string,
 }
 
 const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
-    let json: RespostaJSON = tipo == "COMERCIAL" ? RESPOSTA_COMERCIAL : RESPOSTA_TI
-    json.autorizadas = 0
-    json.cancelados = 0
-    json.convocados = 0
-    json.desistentes = 0
-    json.emQualificacao = 0
-    json.empossados = 0
-    json.expedidas = 0
-    json.inaptos = 0
-    json.naoConvocados = 0
-    json.qualificados = 0
-    json.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
+    let resposta: RespostaJSON = tipo == "COMERCIAL" ? RESPOSTA_COMERCIAL : RESPOSTA_TI
+    let candidatos: Candidato[] = tipo == "COMERCIAL" ? AGENTES_COMERCIAL : AGENTES_TI
+    resposta.autorizadas = 0
+    resposta.cancelados = 0
+    resposta.convocados = 0
+    resposta.desistentes = 0
+    resposta.emQualificacao = 0
+    resposta.empossados = 0
+    resposta.expedidas = 0
+    resposta.inaptos = 0
+    resposta.naoConvocados = 0
+    resposta.qualificados = 0
+    resposta.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
 
     const candidatosNaoClassificados: Candidato[] = []
 
-    json.candidatos.forEach(candidato => {
-        if (candidato.situacao.includes("autorizada")) json.autorizadas++
-        else if (candidato.situacao.includes("Cancelado")) json.cancelados++
-        else if (candidato.situacao.includes("qualificacao")) json.emQualificacao++
-        else if (candidato.situacao.includes("Empossado")) json.empossados++
-        else if (candidato.situacao.includes("Qualificado")) json.qualificados++
-        else if (candidato.situacao.includes("expedida")) json.expedidas++
-        else if (candidato.situacao.includes("Desistente")) json.desistentes++
-        else if (candidato.situacao.includes("Inapto")) json.inaptos++
-        else if (candidato.situacao.includes("Não Convocado")) json.naoConvocados++
+    candidatos.forEach(candidato => {
+        if (candidato.situacao.includes("autorizada")) resposta.autorizadas++
+        else if (candidato.situacao.includes("Cancelado")) resposta.cancelados++
+        else if (candidato.situacao.includes("qualificacao")) resposta.emQualificacao++
+        else if (candidato.situacao.includes("Empossado")) resposta.empossados++
+        else if (candidato.situacao.includes("Qualificado")) resposta.qualificados++
+        else if (candidato.situacao.includes("expedida")) resposta.expedidas++
+        else if (candidato.situacao.includes("Desistente")) resposta.desistentes++
+        else if (candidato.situacao.includes("Inapto")) resposta.inaptos++
+        else if (candidato.situacao.includes("Não Convocado")) resposta.naoConvocados++
         else candidatosNaoClassificados.push(candidato)
-        json.convocados =
-            + json.autorizadas
-            + json.cancelados
-            + json.emQualificacao
-            + json.empossados
-            + json.qualificados
-            + json.expedidas
-            + json.desistentes
-            + json.inaptos
+        resposta.convocados =
+            + resposta.autorizadas
+            + resposta.cancelados
+            + resposta.emQualificacao
+            + resposta.empossados
+            + resposta.qualificados
+            + resposta.expedidas
+            + resposta.desistentes
+            + resposta.inaptos
     })
 
-    const { expedidas, autorizadas, cancelados, convocados, desistentes, inaptos, emQualificacao, empossados, naoConvocados, qualificados } = json
-    console.log(`Dados ${tipo} atualizados:`, { expedidas, autorizadas, cancelados, desistentes, inaptos, emQualificacao, qualificados, empossados, convocados, naoConvocados, total: convocados + naoConvocados })
+    console.log(`Dados ${tipo} atualizados:`, resposta)
 
     if (candidatosNaoClassificados.length) {
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
     }
 
     if (tipo == "TI") {
-        ALTERACOES_TI.id++
         RESPOSTA_TI.id++
-        atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_TI })
     } else {
-        ALTERACOES_COMERCIAL.id++
         RESPOSTA_COMERCIAL.id++
-        atualizaAlteracoes(tipo, { json, candidatosAlterados: ALTERADOS_COMERCIAL })
     }
 
-    salvaDados(json, tipo)
+    salvaDados(resposta, tipo)
 }
 
 const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
@@ -279,87 +291,5 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
         if (!candidato.situacao) throw { code: "SEM SITUAÇÃO" }
     } else {
         throw { code: "SEM SITUAÇÃO" }
-    }
-}
-
-const atualizaAlteracoes = (tipo: "TI" | "COMERCIAL", { json, candidatosAlterados }: { json?: RespostaJSON, candidatosAlterados?: Candidato[] }) => {
-    if (tipo == "TI") {
-        if (json) {
-            ALTERACOES_TI.autorizadas[0] = ALTERACOES_TI.autorizadas[1]
-            ALTERACOES_TI.cancelados[0] = ALTERACOES_TI.cancelados[1]
-            ALTERACOES_TI.convocados[0] = ALTERACOES_TI.convocados[1]
-            ALTERACOES_TI.desistentes[0] = ALTERACOES_TI.desistentes[1]
-            ALTERACOES_TI.emQualificacao[0] = ALTERACOES_TI.emQualificacao[1]
-            ALTERACOES_TI.empossados[0] = ALTERACOES_TI.empossados[1]
-            ALTERACOES_TI.expedidas[0] = ALTERACOES_TI.expedidas[1]
-            ALTERACOES_TI.inaptos[0] = ALTERACOES_TI.inaptos[1]
-            ALTERACOES_TI.naoConvocados[0] = ALTERACOES_TI.naoConvocados[1]
-            ALTERACOES_TI.qualificados[0] = ALTERACOES_TI.qualificados[1]
-
-            ALTERACOES_TI.autorizadas[1] = json.autorizadas
-            ALTERACOES_TI.cancelados[1] = json.cancelados
-            ALTERACOES_TI.convocados[1] = json.convocados
-            ALTERACOES_TI.desistentes[1] = json.desistentes
-            ALTERACOES_TI.emQualificacao[1] = json.emQualificacao
-            ALTERACOES_TI.empossados[1] = json.empossados
-            ALTERACOES_TI.expedidas[1] = json.expedidas
-            ALTERACOES_TI.inaptos[1] = json.inaptos
-            ALTERACOES_TI.naoConvocados[1] = json.naoConvocados
-            ALTERACOES_TI.qualificados[1] = json.qualificados
-            ALTERACOES_TI.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
-            ALTERACOES_TI.candidatosAlterados = candidatosAlterados || ALTERACOES_TI.candidatosAlterados
-        } else {
-            ALTERACOES_TI.autorizadas = [RESPOSTA_TI.autorizadas, RESPOSTA_TI.autorizadas]
-            ALTERACOES_TI.cancelados = [RESPOSTA_TI.cancelados, RESPOSTA_TI.cancelados]
-            ALTERACOES_TI.convocados = [RESPOSTA_TI.convocados, RESPOSTA_TI.convocados]
-            ALTERACOES_TI.desistentes = [RESPOSTA_TI.desistentes, RESPOSTA_TI.desistentes]
-            ALTERACOES_TI.emQualificacao = [RESPOSTA_TI.emQualificacao, RESPOSTA_TI.emQualificacao]
-            ALTERACOES_TI.empossados = [RESPOSTA_TI.empossados, RESPOSTA_TI.empossados]
-            ALTERACOES_TI.expedidas = [RESPOSTA_TI.expedidas, RESPOSTA_TI.expedidas]
-            ALTERACOES_TI.inaptos = [RESPOSTA_TI.inaptos, RESPOSTA_TI.inaptos]
-            ALTERACOES_TI.naoConvocados = [RESPOSTA_TI.naoConvocados, RESPOSTA_TI.naoConvocados]
-            ALTERACOES_TI.qualificados = [RESPOSTA_TI.qualificados, RESPOSTA_TI.qualificados]
-            ALTERACOES_TI.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
-        }
-        ALTERADOS_TI = []
-    } else {
-        if (json) {
-            ALTERACOES_COMERCIAL.autorizadas[0] = ALTERACOES_COMERCIAL.autorizadas[1]
-            ALTERACOES_COMERCIAL.cancelados[0] = ALTERACOES_COMERCIAL.cancelados[1]
-            ALTERACOES_COMERCIAL.convocados[0] = ALTERACOES_COMERCIAL.convocados[1]
-            ALTERACOES_COMERCIAL.desistentes[0] = ALTERACOES_COMERCIAL.desistentes[1]
-            ALTERACOES_COMERCIAL.emQualificacao[0] = ALTERACOES_COMERCIAL.emQualificacao[1]
-            ALTERACOES_COMERCIAL.empossados[0] = ALTERACOES_COMERCIAL.empossados[1]
-            ALTERACOES_COMERCIAL.expedidas[0] = ALTERACOES_COMERCIAL.expedidas[1]
-            ALTERACOES_COMERCIAL.inaptos[0] = ALTERACOES_COMERCIAL.inaptos[1]
-            ALTERACOES_COMERCIAL.naoConvocados[0] = ALTERACOES_COMERCIAL.naoConvocados[1]
-            ALTERACOES_COMERCIAL.qualificados[0] = ALTERACOES_COMERCIAL.qualificados[1]
-
-            ALTERACOES_COMERCIAL.autorizadas[1] = json.autorizadas
-            ALTERACOES_COMERCIAL.cancelados[1] = json.cancelados
-            ALTERACOES_COMERCIAL.convocados[1] = json.convocados
-            ALTERACOES_COMERCIAL.desistentes[1] = json.desistentes
-            ALTERACOES_COMERCIAL.emQualificacao[1] = json.emQualificacao
-            ALTERACOES_COMERCIAL.empossados[1] = json.empossados
-            ALTERACOES_COMERCIAL.expedidas[1] = json.expedidas
-            ALTERACOES_COMERCIAL.inaptos[1] = json.inaptos
-            ALTERACOES_COMERCIAL.naoConvocados[1] = json.naoConvocados
-            ALTERACOES_COMERCIAL.qualificados[1] = json.qualificados
-            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
-            ALTERACOES_COMERCIAL.candidatosAlterados = candidatosAlterados || ALTERACOES_COMERCIAL.candidatosAlterados
-        } else {
-            ALTERACOES_COMERCIAL.autorizadas = [RESPOSTA_COMERCIAL.autorizadas, RESPOSTA_COMERCIAL.autorizadas]
-            ALTERACOES_COMERCIAL.cancelados = [RESPOSTA_COMERCIAL.cancelados, RESPOSTA_COMERCIAL.cancelados]
-            ALTERACOES_COMERCIAL.convocados = [RESPOSTA_COMERCIAL.convocados, RESPOSTA_COMERCIAL.convocados]
-            ALTERACOES_COMERCIAL.desistentes = [RESPOSTA_COMERCIAL.desistentes, RESPOSTA_COMERCIAL.desistentes]
-            ALTERACOES_COMERCIAL.emQualificacao = [RESPOSTA_COMERCIAL.emQualificacao, RESPOSTA_COMERCIAL.emQualificacao]
-            ALTERACOES_COMERCIAL.empossados = [RESPOSTA_COMERCIAL.empossados, RESPOSTA_COMERCIAL.empossados]
-            ALTERACOES_COMERCIAL.expedidas = [RESPOSTA_COMERCIAL.expedidas, RESPOSTA_COMERCIAL.expedidas]
-            ALTERACOES_COMERCIAL.inaptos = [RESPOSTA_COMERCIAL.inaptos, RESPOSTA_COMERCIAL.inaptos]
-            ALTERACOES_COMERCIAL.naoConvocados = [RESPOSTA_COMERCIAL.naoConvocados, RESPOSTA_COMERCIAL.naoConvocados]
-            ALTERACOES_COMERCIAL.qualificados = [RESPOSTA_COMERCIAL.qualificados, RESPOSTA_COMERCIAL.qualificados]
-            ALTERACOES_COMERCIAL.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
-        }
-        ALTERADOS_COMERCIAL = []
     }
 }

@@ -1,4 +1,6 @@
 import fs from 'fs/promises'
+import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
+import { AGENTES_TI } from '../data/nomes-ti'
 import { RespostaJSON } from "../models/resposta-json"
 
 export const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON | null> => {
@@ -27,7 +29,9 @@ export const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON
 }
 
 export const salvaDados = async (dados: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
-    const dadosString = JSON.stringify(dados)
+    const dadosBackup = {...dados}
+    dadosBackup.candidatos = tipo == "TI" ? AGENTES_TI : AGENTES_COMERCIAL
+    const dadosString = JSON.stringify(dadosBackup)
     const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'w+')
     await arquivo.writeFile(dadosString)
     await arquivo.close()
