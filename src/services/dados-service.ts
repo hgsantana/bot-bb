@@ -244,15 +244,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
         else if (candidato.situacao.includes("Inapto")) resposta.inaptos++
         else if (candidato.situacao.includes("Não Convocado")) resposta.naoConvocados++
         else candidatosNaoClassificados.push(candidato)
-        resposta.convocados =
-            + resposta.autorizadas
-            + resposta.cancelados
-            + resposta.emQualificacao
-            + resposta.empossados
-            + resposta.qualificados
-            + resposta.expedidas
-            + resposta.desistentes
-            + resposta.inaptos
+        resposta.convocados = candidatos.length - resposta.naoConvocados
     })
 
     console.log(`Dados ${tipo} atualizados:`, resposta)

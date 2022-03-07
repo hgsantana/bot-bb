@@ -5,7 +5,7 @@
   "main": "src/main.ts",
   "scripts": {
     "start": "npx ts-node src/main.ts",
-    "dev": "npx nodemon src/main.ts --ignore ./backups/ ",
+    "dev": "npx nodemon src/main.ts --watch ./src/ ",
     "build": "npx webpack"
   },
   "keywords": [],

@@ -7,11 +7,9 @@ import { RESPOSTA_COMERCIAL, RESPOSTA_TI } from '../services/dados-service'
 export const dadosCompletos = async (req: Request, res: Response) => {
     let resposta: RespostaJSON
     if (req.params.tipo == "comercial") {
-        resposta = RESPOSTA_COMERCIAL
-        resposta.candidatos = AGENTES_COMERCIAL
+        resposta = { ...RESPOSTA_COMERCIAL, candidatos: AGENTES_COMERCIAL }
     } else {
-        resposta = RESPOSTA_TI
-        resposta.candidatos = AGENTES_TI
+        resposta = { ...RESPOSTA_TI, candidatos: AGENTES_TI }
     }
     res.json(resposta)
 }
