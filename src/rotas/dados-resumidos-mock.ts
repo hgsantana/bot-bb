@@ -14,8 +14,9 @@ setInterval(() => {
 
 const geraAlteracaoMock = async () => {
     console.log("Mockando alterações...")
-    const totalAlteracoes = 10
-    for (let index = 1; index < totalAlteracoes; index++) {
+    const totalAlteracoes = 2
+    let alteracoes = 0
+    while (alteracoes < totalAlteracoes) {
         const indiceRandom = Math.round((candidatosMock.length - 1) * Math.random())
         const indiceSituacao = Math.round((situacoesMock.length - 1) * Math.random())
         const candidatoMockado = candidatosMock[indiceRandom]
@@ -28,6 +29,7 @@ const geraAlteracaoMock = async () => {
 
         console.log(`Alterando situação de ${candidatoMockado.nome}: ${candidatoMockado.situacao} => ${situacaoMockada}`)
         candidatoMockado.situacao = situacaoMockada
+        alteracoes++
     }
     atualizaJSONMock()
 }
