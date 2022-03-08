@@ -22,11 +22,6 @@ const geraAlteracaoMock = async () => {
         const candidatoMockado = candidatosMock[indiceRandom]
         const situacaoMockada = situacoesMock[indiceSituacao]
 
-        if (candidatoMockado.situacao.includes("Empossado")
-            || candidatoMockado.situacao.includes("Desistente")
-            || candidatoMockado.situacao.includes("Inapto")
-        ) continue
-
         console.log(`Alterando situação de ${candidatoMockado.nome}: ${candidatoMockado.situacao} => ${situacaoMockada}`)
         candidatoMockado.situacao = situacaoMockada
         alteracoes++
