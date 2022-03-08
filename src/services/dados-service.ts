@@ -18,7 +18,7 @@ export let RESPOSTA_TI: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     inconsistentes: 0,
-    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
+    ultimaAtualizacao: new Date(),
 }
 
 export let RESPOSTA_COMERCIAL: RespostaJSON = {
@@ -34,7 +34,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     naoConvocados: 0,
     convocados: 0,
     inconsistentes: 0,
-    ultimaAtualizacao: new Date().toISOString().substring(0, 19).replace("T", " "),
+    ultimaAtualizacao: new Date(),
 }
 
 export const iniciar = async () => {
@@ -237,7 +237,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     resposta.inaptos = 0
     resposta.naoConvocados = 0
     resposta.qualificados = 0
-    resposta.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
+    resposta.ultimaAtualizacao = new Date()
 
     const candidatosNaoClassificados: Candidato[] = []
 

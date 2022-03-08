@@ -25,7 +25,7 @@ export const respostaMOCK: RespostaJSON = {
     "naoConvocados": 480,
     "qualificados": 0,
     "inconsistentes": 0,
-    "ultimaAtualizacao": "2022-03-07 23:48:03"
+    "ultimaAtualizacao": new Date()
 }
 export const candidatosMock: Candidato[] = [
     {

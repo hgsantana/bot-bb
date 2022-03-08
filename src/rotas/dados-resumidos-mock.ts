@@ -45,7 +45,7 @@ const atualizaJSONMock = () => {
     respostaMOCK.inaptos = 0
     respostaMOCK.naoConvocados = 0
     respostaMOCK.qualificados = 0
-    respostaMOCK.ultimaAtualizacao = new Date().toISOString().substring(0, 19).replace("T", " ")
+    respostaMOCK.ultimaAtualizacao = new Date()
 
     const candidatosNaoClassificados: Candidato[] = []
 
