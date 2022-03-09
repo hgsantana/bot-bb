@@ -3,7 +3,7 @@ import qs from 'qs';
 import ws, { WebSocket, WebSocketServer } from 'ws';
 import { WebSocketsAbertos } from '../models/websockets-abertos';
 
-const websocketsAbertos: WebSocketsAbertos = { ti: [], comercial: [] }
+export const websocketsAbertos: WebSocketsAbertos = { ti: [], comercial: [] }
 
 export const iniciarWebsocket = (server: Server) => {
     const websocketServer: WebSocketServer = new ws.Server({
@@ -26,7 +26,7 @@ export const iniciarWebsocket = (server: Server) => {
             const [_path, paramsString] = request.url?.split("?") || []
             const params = qs.parse(paramsString)
             console.log("Params recebidos:", params)
-            
+
             let arrayWebsocketsAbertos: WebSocket[] = []
             if (params.tipo == "ti") {
                 tipoConexao = "TI"
