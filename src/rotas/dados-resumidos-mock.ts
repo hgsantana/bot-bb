@@ -60,8 +60,6 @@ const atualizaJSONMock = () => {
         respostaMOCK.convocados = candidatosMock.length - respostaMOCK.naoConvocados
     })
 
-    console.log(`Dados MOCK atualizados:`, respostaMOCK)
-
     if (candidatosNaoClassificados.length) {
         respostaMOCK.inconsistentes = candidatosNaoClassificados.length
         console.log(`Candidatos MOCK não classificados:`, candidatosNaoClassificados)
