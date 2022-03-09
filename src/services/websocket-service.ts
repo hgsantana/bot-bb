@@ -1,7 +1,9 @@
 import { Server } from 'http';
+import qs from 'qs';
 import ws, { WebSocket, WebSocketServer } from 'ws';
+import { WebSocketsAbertos } from '../models/websockets-abertos';
 
-export const websocketsAbertos: WebSocket[] = []
+const websocketsAbertos: WebSocketsAbertos = { ti: [], comercial: [] }
 
 export const iniciarWebsocket = (server: Server) => {
     const websocketServer: WebSocketServer = new ws.Server({
@@ -13,8 +15,24 @@ export const iniciarWebsocket = (server: Server) => {
 
     server.on("upgrade", (request, socket, head) => {
         websocketServer.handleUpgrade(request, socket, head, (websocket) => {
-            console.log("Nova conexão via websocket de", request.socket.remoteAddress)
-            websocketsAbertos.push(websocket)
+
+            const [_path, paramsString] = request.url?.split("?") || []
+            const params = qs.parse(paramsString)
+            console.log("Params recebidos:", params)
+            let arrayWebsocketsAbertos: WebSocket[] = []
+            let tipoConexao = "SEM TIPO"
+            if (params.tipo == "ti") {
+                tipoConexao = "TI"
+                arrayWebsocketsAbertos = websocketsAbertos.ti
+            } else if (params.tipo == "comercial") {
+                tipoConexao = "COMERCIAL"
+                arrayWebsocketsAbertos = websocketsAbertos.comercial
+            } else {
+                websocket.send("Tipo não informado. Informe o tipo nos parâmetos da conexão, ex.: /ws?tipo=ti ou /ws?tipo=comercial. Encerrando conexão...")
+                websocket.terminate()
+            }
+            console.log(`Nova conexão ${tipoConexao} via websocket de ${request.socket.remoteAddress}`)
+            arrayWebsocketsAbertos.push(websocket)
 
             websocket.send('Iniciando contador...');
             let contador = 1
@@ -24,9 +42,9 @@ export const iniciarWebsocket = (server: Server) => {
             }, 1000)
 
             websocket.on("close", () => {
-                console.log("Conexão de " + request.socket.remoteAddress + " encerrada.")
-                const indiceWebsocket = websocketsAbertos.indexOf(websocket)
-                websocketsAbertos.splice(indiceWebsocket, 1)
+                console.log(`Conexão ${tipoConexao} de ${request.socket.remoteAddress} encerrada.`)
+                const indiceWebsocket = arrayWebsocketsAbertos.indexOf(websocket)
+                arrayWebsocketsAbertos.splice(indiceWebsocket, 1)
             })
         });
     });
