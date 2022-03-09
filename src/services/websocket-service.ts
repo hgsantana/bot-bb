@@ -39,7 +39,7 @@ export const iniciarWebsocket = (server: Server) => {
                 return websocket.terminate()
             }
 
-            console.log(`Nova conexão ${tipoConexao} via websocket de ${request.socket.remoteAddress}`)
+            console.log(`Nova conexão ${tipoConexao} via websocket de ${request.headers.host}`)
             arrayWebsocketsAbertos.push(websocket)
 
             websocket.send('Iniciando contador...');
