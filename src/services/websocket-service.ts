@@ -15,12 +15,19 @@ export const iniciarWebsocket = (server: Server) => {
 
     server.on("upgrade", (request, socket, head) => {
         websocketServer.handleUpgrade(request, socket, head, (websocket) => {
+            let tipoConexao = ""
+            websocket.on("close", () => {
+                if (!tipoConexao) console.log("Conexão sem tipo rejeitada.")
+                else console.log(`Conexão ${tipoConexao} de ${request.socket.remoteAddress} encerrada.`)
+                const indiceWebsocket = arrayWebsocketsAbertos.indexOf(websocket)
+                arrayWebsocketsAbertos.splice(indiceWebsocket, 1)
+            })
 
             const [_path, paramsString] = request.url?.split("?") || []
             const params = qs.parse(paramsString)
             console.log("Params recebidos:", params)
+            
             let arrayWebsocketsAbertos: WebSocket[] = []
-            let tipoConexao = "SEM TIPO"
             if (params.tipo == "ti") {
                 tipoConexao = "TI"
                 arrayWebsocketsAbertos = websocketsAbertos.ti
@@ -29,8 +36,9 @@ export const iniciarWebsocket = (server: Server) => {
                 arrayWebsocketsAbertos = websocketsAbertos.comercial
             } else {
                 websocket.send("Tipo não informado. Informe o tipo nos parâmetos da conexão, ex.: /ws?tipo=ti ou /ws?tipo=comercial. Encerrando conexão...")
-                websocket.terminate()
+                return websocket.terminate()
             }
+
             console.log(`Nova conexão ${tipoConexao} via websocket de ${request.socket.remoteAddress}`)
             arrayWebsocketsAbertos.push(websocket)
 
@@ -40,12 +48,6 @@ export const iniciarWebsocket = (server: Server) => {
                 websocket.send('Mensagem ' + contador + ".");
                 contador++
             }, 1000)
-
-            websocket.on("close", () => {
-                console.log(`Conexão ${tipoConexao} de ${request.socket.remoteAddress} encerrada.`)
-                const indiceWebsocket = arrayWebsocketsAbertos.indexOf(websocket)
-                arrayWebsocketsAbertos.splice(indiceWebsocket, 1)
-            })
         });
     });
 
