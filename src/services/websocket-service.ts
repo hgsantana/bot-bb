@@ -38,8 +38,8 @@ export const iniciarWebsocket = (server: Server) => {
                 websocket.send("Tipo não informado. Informe o tipo nos parâmetos da conexão, ex.: /ws?tipo=ti ou /ws?tipo=comercial. Encerrando conexão...")
                 return websocket.terminate()
             }
-
-            console.log(`Nova conexão ${tipoConexao} via websocket de ${request.headers.host}`)
+            const ip = request.headers['x-forwarded-for']?.toString()?.split(',')?.[0]?.trim() || request.socket.remoteAddress;
+            console.log(`Nova conexão ${tipoConexao} via websocket de ${ip}`)
             arrayWebsocketsAbertos.push(websocket)
 
             websocket.send('Iniciando contador...');
