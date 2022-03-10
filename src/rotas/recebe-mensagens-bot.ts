@@ -13,12 +13,17 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
 
     console.log("Mensagem recebida no bot:", mensagem)
 
-    const resposta: BotUpdateResponse = {
-        chat_id: mensagem.message.chat.id,
-        method: "sendMessage",
-        parse_mode: "HTML",
-        text: `Olá, @${mensagem.message.from.username}. Segue atualização de status das convocações: <pre><code class="language-json">${respostaMOCK}</code></pre>`
+    let resposta: BotUpdateResponse | undefined
+
+    if (mensagem.message.text.startsWith("/status")) {
+        resposta = {
+            chat_id: mensagem.message.chat.id,
+            method: "sendMessage",
+            parse_mode: "HTML",
+            text: `Olá, @${mensagem.message.from.username}. Segue atualização de status das convocações: <pre><code class="language-json">${respostaMOCK}</code></pre>`
+        }
     }
 
-    res.setHeader("method", "POST").send()
+    if (resposta) res.send(resposta)
+    else res.send()
 }
