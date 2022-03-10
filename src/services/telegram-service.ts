@@ -11,10 +11,12 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
 
     // mensagem de /status
     if (mensagemRecebida.message.text.startsWith("/status")) {
+        const reply_to_message_id = mensagemRecebida.message.message_id
         return {
             chat_id: mensagemRecebida.message.chat.id,
             method: "sendMessage",
             parse_mode: "HTML",
+            reply_to_message_id,
             text: `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. Segue atualização de status das convocações: 
 <pre>
   Não Convocados: ${respostaMOCK.naoConvocados}
@@ -39,13 +41,14 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim().toUpperCase()
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
+        const reply_to_message_id = mensagemRecebida.message.message_id
 
         let text = ``
         const candidatos = [...AGENTES_COMERCIAL, ...AGENTES_TI]
         const candidato = candidatos.find(c => c.nome == nome)
 
-        if (!nome) text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. Você precisa usar a sintaxe correta: <pre>/cadastrar NOME COMPLETO</pre>.`
-        else if (!candidato) text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. Este nome não existe no resultado final oficial.`
+        if (!nome) text = `Você precisa usar a sintaxe correta: <pre>/cadastrar NOME COMPLETO</pre>.`
+        else if (!candidato) text = `Este nome não existe no resultado final oficial.`
         else {
             text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você receberá os avisos de "${nome}" no privado. Para cancelar os avisos, use o comando /descadastrar.`
             if (usuario) usuario.nomeChecagem = nome
@@ -57,7 +60,8 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
             chat_id: mensagemRecebida.message.chat.id,
             method: "sendMessage",
             parse_mode: "HTML",
-            text
+            reply_to_message_id,
+            text,
         }
     }
 
@@ -66,15 +70,18 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
 
-        let text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você não receberá mais avisos.`
+        const reply_to_message_id = mensagemRecebida.message.message_id
+
+        let text = `A partir de agora, você não receberá mais avisos.`
         if (usuario) usuariosRegistrados.splice(usuariosRegistrados.indexOf(usuario), 1)
-        else text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. Você ainda não está cadastrado para receber avisos.`
+        else text = `Você ainda não está cadastrado para receber avisos.`
 
         return {
             chat_id: mensagemRecebida.message.chat.id,
             method: "sendMessage",
             parse_mode: "HTML",
-            text
+            reply_to_message_id,
+            text,
         }
     }
 
