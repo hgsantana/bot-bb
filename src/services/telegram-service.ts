@@ -9,6 +9,8 @@ const usuariosRegistrados: UsuarioRegistrado[] = []
 
 export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 
+    if (!mensagemRecebida?.message?.text) return null
+
     // mensagem de /status
     if (mensagemRecebida.message.text.startsWith("/status")) {
         const reply_to_message_id = mensagemRecebida.message.message_id
