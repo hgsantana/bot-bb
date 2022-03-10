@@ -11,8 +11,11 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
         || req.query.token != AMBIENTE.TELEGRAM_TOKEN
     ) return res.status(401).send()
 
-    const resposta: BotUpdateResponse | null = checaMensagem(mensagemRecebida)
-
-    if (resposta) res.send(resposta)
-    else res.send()
+    try {
+        const resposta: BotUpdateResponse | null = checaMensagem(mensagemRecebida)
+        if (resposta) res.send(resposta)
+        else res.send()
+    } catch (error) {
+        res.status(400).send()
+    }
 }
