@@ -8,7 +8,7 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
         || req.query.token != AMBIENTE.TELEGRAM_TOKEN
     ) return res.status(401).send()
 
-    console.log(req.body)
+    console.log("Mensagem recebida no bot:", req)
     res.send()
 
 }
