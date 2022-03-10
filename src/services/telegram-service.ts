@@ -34,9 +34,9 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim()
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
-        
+
         let text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você receberá os avisos de ${nome} no privado.`
-        if (usuario) text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. Você já está registrado para receber atualizações. Se deseja alterar o nome registrado, use o comando /descadastrar.`
+        if (usuario) usuario.nomeChecagem = nome
         else {
             usuariosRegistrados.push({ id: idDestinatario, nomeChecagem: nome })
         }
