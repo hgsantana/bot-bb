@@ -14,7 +14,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
     if (!mensagemRecebida?.message?.text) return null
 
     /********************* /status *********************/
-    if (mensagemRecebida.message.text.startsWith("/status")) {
+    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/status")) {
         const reply_to_message_id = mensagemRecebida.message.message_id
         return {
             chat_id: mensagemRecebida.message.chat.id,
@@ -41,7 +41,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
     }
 
     /********************* /cadastrar *********************/
-    if (mensagemRecebida.message.text.startsWith("/cadastrar")) {
+    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/cadastrar")) {
         const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim().toUpperCase()
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
@@ -72,7 +72,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
     }
 
     /********************* /descadastrar *********************/
-    if (mensagemRecebida.message.text.startsWith("/descadastrar")) {
+    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/descadastrar")) {
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
 
