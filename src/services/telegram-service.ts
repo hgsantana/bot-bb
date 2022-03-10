@@ -48,7 +48,6 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
     }
 
     if (mensagemRecebida.message.text.startsWith("/descadastrar")) {
-        const nome = mensagemRecebida.message.text.split("/descadastrar")[1].replace(/\ \ /gi, " ").trim()
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
 
