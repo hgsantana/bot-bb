@@ -24,20 +24,20 @@ const checaMensagem = (mensagem: BotUpdate): BotUpdateResponse | null => {
             method: "sendMessage",
             parse_mode: "HTML",
             text: `Olá, @${mensagem.message.from.username}. Segue atualização de status das convocações: 
-            <pre><code>
-            Convocados: ${respostaMOCK.convocados}
-            Não Convocados: ${respostaMOCK.naoConvocados}
-            Autorizadas: ${respostaMOCK.autorizadas}
-            Expedidas: ${respostaMOCK.expedidas}
-            Qualificação: ${respostaMOCK.emQualificacao}
-            Qualificados: ${respostaMOCK.qualificados}
-            Empossados: ${respostaMOCK.empossados}
-            Cancelados por prazo: ${respostaMOCK.cancelados}
-            Desistentes: ${respostaMOCK.desistentes}
-            Inaptos: ${respostaMOCK.inaptos}
-            
-            Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeZone: "America/Sao_Paulo" })}
-            </code></pre>`
+<pre>
+    Convocados: ${respostaMOCK.convocados}
+    Não Convocados: ${respostaMOCK.naoConvocados}
+    Autorizadas: ${respostaMOCK.autorizadas}
+    Expedidas: ${respostaMOCK.expedidas}
+    Qualificação: ${respostaMOCK.emQualificacao}
+    Qualificados: ${respostaMOCK.qualificados}
+    Empossados: ${respostaMOCK.empossados}
+    Cancelados por prazo: ${respostaMOCK.cancelados}
+    Desistentes: ${respostaMOCK.desistentes}
+    Inaptos: ${respostaMOCK.inaptos}
+    
+    Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeZone: "America/Sao_Paulo" })}
+</pre>`
         }
     }
 
