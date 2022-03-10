@@ -33,7 +33,7 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
             Desistentes: ${respostaMOCK.desistentes}
             Inaptos: ${respostaMOCK.inaptos}
             
-            Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString()}
+            Atualização: ${respostaMOCK.ultimaAtualizacao.setUTCHours(respostaMOCK.ultimaAtualizacao.getHours() - 3).toLocaleString("pt-br")}
             </code></pre>`
         }
     }
