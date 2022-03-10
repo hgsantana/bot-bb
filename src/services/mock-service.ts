@@ -1,5 +1,6 @@
 import { candidatosMock, respostaMOCK, situacoesMock } from "../data/dados-mock";
 import { Candidato } from "../models/candidato";
+import { enviaMensagemCandidatoAlterado, usuariosRegistrados } from "./telegram-service";
 import { websocketsAbertos } from "./websocket-service";
 
 export const iniciaMockService = () => {
@@ -17,10 +18,15 @@ const geraAlteracaoMock = async () => {
         const indiceSituacao = Math.round((situacoesMock.length - 1) * Math.random())
         const candidatoMockado = candidatosMock[indiceRandom]
         const situacaoMockada = situacoesMock[indiceSituacao]
+        const situacaoAnterior = candidatoMockado.situacao
 
-        console.log(`Alterando situação de ${candidatoMockado.nome}: ${candidatoMockado.situacao} => ${situacaoMockada}`)
+        console.log(`Alterando situação de ${candidatoMockado.nome}: ${situacaoAnterior} => ${situacaoMockada}`)
         candidatoMockado.situacao = situacaoMockada
         websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidatoMockado)))
+        const usuariosFiltrados = usuariosRegistrados.filter(u => u.nomeChecagem == candidatoMockado.nome)
+        usuariosFiltrados.forEach(u => {
+            enviaMensagemCandidatoAlterado(u, situacaoAnterior, candidatoMockado)
+        })
         alteracoes++
     }
     atualizaJSONMock()

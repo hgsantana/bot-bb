@@ -1,10 +1,13 @@
+import axios from "axios"
 import { candidatosMock, respostaMOCK } from "../data/dados-mock"
+import { AMBIENTE } from "../main"
 import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
+import { Candidato } from "../models/candidato"
 import { UsuarioRegistrado } from "../models/usuario-registrado"
 
 const candidatosChecagem = [...candidatosMock]
-const usuariosRegistrados: UsuarioRegistrado[] = []
+export const usuariosRegistrados: UsuarioRegistrado[] = []
 
 export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 
@@ -87,3 +90,26 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
 
     return null
 }
+
+export const enviaMensagemCandidatoAlterado = async (UsuarioRegistrado: UsuarioRegistrado, situacaoAnterior: string, candidato: Candidato) => {
+    try {
+        axios.post(AMBIENTE.TELEGRAM_API + '/sendMessage', {
+            chat_id: UsuarioRegistrado.id,
+            text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
+<pre>
+Situação anterior: ${situacaoAnterior}
+Nova Situação: ${candidato.situacao}
+
+Agência situação: ${candidato.agenciaSituacao ? "Agência situação: " + candidato.agenciaSituacao : ""}
+Data da situação: ${candidato.dataSituacao ? "Data da situação: " + candidato.dataSituacao : ""}
+Macro Região: ${candidato.macroRegiao ? "Macro Região: " + candidato.macroRegiao : ""}
+Micro Região: ${candidato.microRegiao ? "Micro Região: " + candidato.microRegiao : ""}
+
+Tipo do candidato: ${candidato.tipo ? "Tipo do candidato: " + candidato.tipo : ""}
+</pre>`
+        } as BotUpdateResponse)
+    } catch (error) {
+        console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
+        console.log("Erro=> ", error)
+    }
+}   

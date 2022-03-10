@@ -1,8 +1,8 @@
 export type BotUpdateResponse = {
-    method: string
     chat_id: number | string
     text: string
 
+    method?: string
     parse_mode?: string
     entities?: any[]
     disable_web_page_preview?: boolean
