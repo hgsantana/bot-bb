@@ -120,7 +120,7 @@ Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
         console.log("Enviando mensagem para:", api)
         console.log("Mensagem:", mensagem)
 
-        axios.post(api, mensagem).catch(e => {
+        await axios.post(api, mensagem).catch(e => {
             console.log("Erro=>", e);
         })
     } catch (error) {
