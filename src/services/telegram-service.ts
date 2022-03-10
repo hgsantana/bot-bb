@@ -13,7 +13,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
 
     if (!mensagemRecebida?.message?.text) return null
 
-    // mensagem de /status
+    /********************* /status *********************/
     if (mensagemRecebida.message.text.startsWith("/status")) {
         const reply_to_message_id = mensagemRecebida.message.message_id
         return {
@@ -40,7 +40,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         }
     }
 
-    // mensagem de /cadastrar
+    /********************* /cadastrar *********************/
     if (mensagemRecebida.message.text.startsWith("/cadastrar")) {
         const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim().toUpperCase()
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
@@ -55,7 +55,10 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         else {
             text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você receberá os avisos de alterações para "${nome}" no privado. Para cancelar os avisos, use o comando /descadastrar.`
             if (usuario) usuario.nomeChecagem = nome
-            else usuariosRegistrados.push({ id: idDestinatario, nomeChecagem: nome })
+            else {
+                console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
+                usuariosRegistrados.push({ id: idDestinatario, nomeChecagem: nome })
+            }
         }
 
 
@@ -68,7 +71,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         }
     }
 
-    // mensagem de descadastrar
+    /********************* /descadastrar *********************/
     if (mensagemRecebida.message.text.startsWith("/descadastrar")) {
         const idDestinatario = `@${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
@@ -76,8 +79,11 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         const reply_to_message_id = mensagemRecebida.message.message_id
 
         let text = `A partir de agora, você não receberá mais avisos.`
-        if (usuario) usuariosRegistrados.splice(usuariosRegistrados.indexOf(usuario), 1)
-        else text = `Você ainda não está cadastrado para receber avisos.`
+        if (usuario) {
+            console.log("Descadastrando usuário para envio de mensagens:", usuario)
+            usuariosRegistrados.splice(usuariosRegistrados.indexOf(usuario), 1)
+
+        } else text = `Você ainda não está cadastrado para receber avisos.`
 
         return {
             chat_id: mensagemRecebida.message.chat.id,
