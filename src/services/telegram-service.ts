@@ -49,7 +49,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         const candidatos = [...AGENTES_COMERCIAL, ...AGENTES_TI]
         const candidato = candidatos.find(c => c.nome == nome)
 
-        if (!nome) text = `Você precisa usar a sintaxe correta: <pre>/cadastrar NOME COMPLETO</pre>.`
+        if (!nome) text = `Você precisa usar a sintaxe correta: <pre>/cadastrar NOME COMPLETO</pre>`
         else if (!candidato) text = `Este nome não existe no resultado final oficial.`
         else {
             text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você receberá os avisos de "${nome}" no privado. Para cancelar os avisos, use o comando /descadastrar.`
