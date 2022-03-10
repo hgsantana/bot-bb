@@ -16,6 +16,7 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
         if (resposta) res.send(resposta)
         else res.send()
     } catch (error) {
+        console.log(error)
         res.status(400).send()
     }
 }
