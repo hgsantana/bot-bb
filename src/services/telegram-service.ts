@@ -43,7 +43,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
     /********************* /cadastrar *********************/
     if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/cadastrar")) {
         const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim().toUpperCase()
-        const idDestinatario = `@${mensagemRecebida.message.from.id}`
+        const idDestinatario = `${mensagemRecebida.message.from.id}`
         const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
         const reply_to_message_id = mensagemRecebida.message.message_id
 
@@ -101,17 +101,18 @@ export const enviaMensagemCandidatoAlterado = async (UsuarioRegistrado: UsuarioR
     try {
         const mensagem: BotUpdateResponse = {
             chat_id: UsuarioRegistrado.id,
+            parse_mode: "HTML",
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
 <pre>
 Situação anterior: ${situacaoAnterior}
 Nova Situação: ${candidato.situacao}
 
-Agência situação: ${candidato.agenciaSituacao ? "Agência situação: " + candidato.agenciaSituacao : "SEM AGÊNCIA"}
-Data da situação: ${candidato.dataSituacao ? "Data da situação: " + candidato.dataSituacao : "SEM DATA"}
-Macro Região: ${candidato.macroRegiao ? "Macro Região: " + candidato.macroRegiao : "SEM MACRO REGIÃO"}
-Micro Região: ${candidato.microRegiao ? "Micro Região: " + candidato.microRegiao : "SEM MICRO REGIÃO"}
+Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
+Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
+Macro Região: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
+Micro Região: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
 
-Tipo do candidato: ${candidato.tipo ? "Tipo do candidato: " + candidato.tipo : "SEM TIPO"}
+Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
 </pre>`
         }
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
