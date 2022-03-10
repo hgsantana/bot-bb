@@ -20,7 +20,21 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
             chat_id: mensagem.message.chat.id,
             method: "sendMessage",
             parse_mode: "HTML",
-            text: `Olá, @${mensagem.message.from.username}. Segue atualização de status das convocações: <pre><code class="language-json">${JSON.stringify(respostaMOCK)}</code></pre>`
+            text: `Olá, @${mensagem.message.from.username}. Segue atualização de status das convocações: 
+            <pre><code>
+            Convocados: ${respostaMOCK.convocados}
+            Não Convocados: ${respostaMOCK.naoConvocados}
+            Autorizadas: ${respostaMOCK.autorizadas}
+            Expedidas: ${respostaMOCK.expedidas}
+            Qualificação: ${respostaMOCK.emQualificacao}
+            Qualificados: ${respostaMOCK.qualificados}
+            Empossados: ${respostaMOCK.empossados}
+            Cancelados por prazo: ${respostaMOCK.cancelados}
+            Desistentes: ${respostaMOCK.desistentes}
+            Inaptos: ${respostaMOCK.inaptos}
+            
+            Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString()}
+            </code></pre>`
         }
     }
 
