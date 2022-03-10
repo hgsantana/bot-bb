@@ -25,8 +25,9 @@ const checaMensagem = (mensagem: BotUpdate): BotUpdateResponse | null => {
             parse_mode: "HTML",
             text: `Olá, <a href:"tg://user?id=${mensagem.message.from.id}">@${mensagem.message.from.first_name}</a>. Segue atualização de status das convocações: 
 <pre>
-  Convocados: ${respostaMOCK.convocados}
   Não Convocados: ${respostaMOCK.naoConvocados}
+  Convocados: ${respostaMOCK.convocados}
+  
   Autorizadas: ${respostaMOCK.autorizadas}
   Expedidas: ${respostaMOCK.expedidas}
   Qualificação: ${respostaMOCK.emQualificacao}
