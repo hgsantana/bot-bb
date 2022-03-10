@@ -23,7 +23,7 @@ const checaMensagem = (mensagem: BotUpdate): BotUpdateResponse | null => {
             chat_id: mensagem.message.chat.id,
             method: "sendMessage",
             parse_mode: "HTML",
-            text: `Olá, @${mensagem.message.from.username}. Segue atualização de status das convocações: 
+            text: `Olá, <a href:"tg://user?id=${mensagem.message.from.id}">@${mensagem.message.from.first_name}</a>. Segue atualização de status das convocações: 
 <pre>
   Convocados: ${respostaMOCK.convocados}
   Não Convocados: ${respostaMOCK.naoConvocados}
