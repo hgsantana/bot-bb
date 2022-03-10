@@ -11,13 +11,13 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
         || req.query.token != AMBIENTE.TELEGRAM_TOKEN
     ) return res.status(401).send()
 
-    const resposta: BotUpdateResponse | null = testaResposta(mensagem)
+    const resposta: BotUpdateResponse | null = checaMensagem(mensagem)
 
     if (resposta) res.send(resposta)
     else res.send()
 }
 
-const testaResposta = (mensagem: BotUpdate) => {
+const checaMensagem = (mensagem: BotUpdate): BotUpdateResponse | null => {
     if (mensagem.message.text.startsWith("/status")) {
         return {
             chat_id: mensagem.message.chat.id,
