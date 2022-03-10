@@ -1,6 +1,6 @@
 export type BotUpdateResponse = {
     method: string
-    chat_id: number
+    chat_id: number | string
     text: string
 
     parse_mode?: string
