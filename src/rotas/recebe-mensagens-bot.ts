@@ -11,12 +11,15 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
         || req.query.token != AMBIENTE.TELEGRAM_TOKEN
     ) return res.status(401).send()
 
-    console.log("Mensagem recebida no bot:", mensagem)
+    const resposta: BotUpdateResponse | null = testaResposta(mensagem)
 
-    let resposta: BotUpdateResponse | undefined
+    if (resposta) res.send(resposta)
+    else res.send()
+}
 
+const testaResposta = (mensagem: BotUpdate) => {
     if (mensagem.message.text.startsWith("/status")) {
-        resposta = {
+        return {
             chat_id: mensagem.message.chat.id,
             method: "sendMessage",
             parse_mode: "HTML",
@@ -38,6 +41,5 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
         }
     }
 
-    if (resposta) res.send(resposta)
-    else res.send()
+    return null
 }
