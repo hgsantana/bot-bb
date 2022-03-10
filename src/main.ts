@@ -1,5 +1,5 @@
 import compression from 'compression'
-import express from 'express'
+import express, { json } from 'express'
 import { configurarAmbiente } from './config/ambiente'
 import { routes } from './routes'
 import { iniciar } from './services/dados-service'
@@ -10,6 +10,7 @@ export const AMBIENTE = configurarAmbiente()
 const app = express()
 
 app.use(compression())
+app.use(json())
 
 app.all("*", routes)
 
