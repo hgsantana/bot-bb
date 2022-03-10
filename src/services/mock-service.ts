@@ -1,6 +1,6 @@
 import { candidatosMock, respostaMOCK, situacoesMock } from "../data/dados-mock";
 import { Candidato } from "../models/candidato";
-import { enviaMensagemCandidatoAlterado, usuariosRegistrados } from "./telegram-service";
+import { enviaMensagemCandidatoAlterado, usuariosCadastrados } from "./telegram-service";
 import { websocketsAbertos } from "./websocket-service";
 
 export const iniciaMockService = () => {
@@ -23,7 +23,7 @@ const geraAlteracaoMock = async () => {
 
         candidatoMockado.situacao = situacaoMockada
         websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidatoMockado)))
-        const usuariosFiltrados = usuariosRegistrados.filter(u => u.nomeChecagem == candidatoMockado.nome)
+        const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidatoMockado.nome)
         usuariosFiltrados.forEach(u => {
             enviaMensagemCandidatoAlterado(u, situacaoAnterior, candidatoMockado)
         })

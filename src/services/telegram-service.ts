@@ -7,7 +7,7 @@ import { Candidato } from "../models/candidato"
 import { UsuarioRegistrado } from "../models/usuario-registrado"
 
 const candidatosChecagem = [...candidatosMock]
-export const usuariosRegistrados: UsuarioRegistrado[] = []
+export const usuariosCadastrados: UsuarioRegistrado[] = []
 
 export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 
@@ -44,7 +44,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
     if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/cadastrar")) {
         const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim().toUpperCase()
         const idDestinatario = `${mensagemRecebida.message.from.id}`
-        const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
+        const usuario = usuariosCadastrados.find(u => u.id == idDestinatario)
         const reply_to_message_id = mensagemRecebida.message.message_id
 
         let text = ``
@@ -57,7 +57,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
             if (usuario) usuario.nomeChecagem = nome
             else {
                 console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
-                usuariosRegistrados.push({ id: idDestinatario, nomeChecagem: nome })
+                usuariosCadastrados.push({ id: idDestinatario, nomeChecagem: nome })
             }
         }
 
@@ -73,15 +73,15 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
 
     /********************* /descadastrar *********************/
     if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/descadastrar")) {
-        const idDestinatario = `@${mensagemRecebida.message.from.id}`
-        const usuario = usuariosRegistrados.find(u => u.id == idDestinatario)
+        const idDestinatario = `${mensagemRecebida.message.from.id}`
+        const usuario = usuariosCadastrados.find(u => u.id == idDestinatario)
 
         const reply_to_message_id = mensagemRecebida.message.message_id
 
         let text = `A partir de agora, você não receberá mais avisos.`
         if (usuario) {
             console.log("Descadastrando usuário para envio de mensagens:", usuario)
-            usuariosRegistrados.splice(usuariosRegistrados.indexOf(usuario), 1)
+            usuariosCadastrados.splice(usuariosCadastrados.indexOf(usuario), 1)
 
         } else text = `Você ainda não está cadastrado para receber avisos.`
 
