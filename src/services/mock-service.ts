@@ -13,6 +13,7 @@ const geraAlteracaoMock = async () => {
     console.log("Mockando alterações...")
     const totalAlteracoes = 100
     let alteracoes = 0
+
     while (alteracoes < totalAlteracoes) {
         const indiceRandom = Math.round((candidatosMock.length - 1) * Math.random())
         const indiceSituacao = Math.round((situacoesMock.length - 1) * Math.random())
@@ -20,7 +21,6 @@ const geraAlteracaoMock = async () => {
         const situacaoMockada = situacoesMock[indiceSituacao]
         const situacaoAnterior = candidatoMockado.situacao
 
-        console.log(`Alterando situação de ${candidatoMockado.nome}: ${situacaoAnterior} => ${situacaoMockada}`)
         candidatoMockado.situacao = situacaoMockada
         websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidatoMockado)))
         const usuariosFiltrados = usuariosRegistrados.filter(u => u.nomeChecagem == candidatoMockado.nome)
