@@ -104,8 +104,8 @@ export const enviaMensagemCandidatoAlterado = async (UsuarioRegistrado: UsuarioR
             parse_mode: "HTML",
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
 <pre>
-Situação anterior: ${situacaoAnterior}
 Nova Situação: ${candidato.situacao}
+Situação anterior: ${situacaoAnterior}
 
 Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
 Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
