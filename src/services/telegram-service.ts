@@ -99,21 +99,27 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
 
 export const enviaMensagemCandidatoAlterado = async (UsuarioRegistrado: UsuarioRegistrado, situacaoAnterior: string, candidato: Candidato) => {
     try {
-        axios.post(AMBIENTE.TELEGRAM_API + '/sendMessage', {
+        const mensagem: BotUpdateResponse = {
             chat_id: UsuarioRegistrado.id,
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
 <pre>
 Situação anterior: ${situacaoAnterior}
 Nova Situação: ${candidato.situacao}
 
-Agência situação: ${candidato.agenciaSituacao ? "Agência situação: " + candidato.agenciaSituacao : ""}
-Data da situação: ${candidato.dataSituacao ? "Data da situação: " + candidato.dataSituacao : ""}
-Macro Região: ${candidato.macroRegiao ? "Macro Região: " + candidato.macroRegiao : ""}
-Micro Região: ${candidato.microRegiao ? "Micro Região: " + candidato.microRegiao : ""}
+Agência situação: ${candidato.agenciaSituacao ? "Agência situação: " + candidato.agenciaSituacao : "SEM AGÊNCIA"}
+Data da situação: ${candidato.dataSituacao ? "Data da situação: " + candidato.dataSituacao : "SEM DATA"}
+Macro Região: ${candidato.macroRegiao ? "Macro Região: " + candidato.macroRegiao : "SEM MACRO REGIÃO"}
+Micro Região: ${candidato.microRegiao ? "Micro Região: " + candidato.microRegiao : "SEM MICRO REGIÃO"}
 
-Tipo do candidato: ${candidato.tipo ? "Tipo do candidato: " + candidato.tipo : ""}
+Tipo do candidato: ${candidato.tipo ? "Tipo do candidato: " + candidato.tipo : "SEM TIPO"}
 </pre>`
-        } as BotUpdateResponse)
+        }
+        const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
+
+        console.log("Enviando mensagem para:", api)
+        console.log("Mensagem:", mensagem)
+
+        axios.post(api, mensagem)
     } catch (error) {
         console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
         console.log("Erro=> ", error)
