@@ -1,10 +1,9 @@
-import { respostaMOCK } from "../data/dados-mock"
-import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
-import { AGENTES_TI } from "../data/nomes-ti"
+import { candidatosMock, respostaMOCK } from "../data/dados-mock"
 import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
 import { UsuarioRegistrado } from "../models/usuario-registrado"
 
+const candidatosChecagem = [...candidatosMock]
 const usuariosRegistrados: UsuarioRegistrado[] = []
 
 export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
@@ -46,13 +45,12 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         const reply_to_message_id = mensagemRecebida.message.message_id
 
         let text = ``
-        const candidatos = [...AGENTES_COMERCIAL, ...AGENTES_TI]
-        const candidato = candidatos.find(c => c.nome == nome)
+        const candidato = candidatosChecagem.find(c => c.nome == nome)
 
         if (!nome) text = `Você precisa usar a sintaxe correta: <pre>/cadastrar NOME COMPLETO</pre>`
         else if (!candidato) text = `Este nome não existe no resultado final oficial.`
         else {
-            text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você receberá os avisos de "${nome}" no privado. Para cancelar os avisos, use o comando /descadastrar.`
+            text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você receberá os avisos de alterações para "${nome}" no privado. Para cancelar os avisos, use o comando /descadastrar.`
             if (usuario) usuario.nomeChecagem = nome
             else usuariosRegistrados.push({ id: idDestinatario, nomeChecagem: nome })
         }
