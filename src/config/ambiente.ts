@@ -8,12 +8,17 @@ export const configurarAmbiente = () => {
     const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
     const TELEGRAM_API = `https://api.telegram.org/${TELEGRAM_TOKEN}`
 
-    if (!TELEGRAM_TOKEN) throw "Variáveis de ambiente não configuradas, finalizando..."
+    if (!TELEGRAM_TOKEN) {
+        console.error("Variáveis de ambiente não configuradas")
+        return process.abort()
+    }
 
     const variaveis: VariaveisAmbiente = {
         TELEGRAM_TOKEN,
         TELEGRAM_API
     }
+
+    console.log("Ambiente configurado.")
 
     return variaveis
 }
