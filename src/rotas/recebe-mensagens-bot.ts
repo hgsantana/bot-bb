@@ -36,7 +36,7 @@ const checaMensagem = (mensagem: BotUpdate): BotUpdateResponse | null => {
             Desistentes: ${respostaMOCK.desistentes}
             Inaptos: ${respostaMOCK.inaptos}
             
-            Atualização: ${respostaMOCK.ultimaAtualizacao.setUTCHours(respostaMOCK.ultimaAtualizacao.getHours() - 3).toLocaleString("pt-br")}
+            Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeZone: "America/Sao_Paulo" })}
             </code></pre>`
         }
     }
