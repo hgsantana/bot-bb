@@ -146,8 +146,8 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
             parse_mode: "HTML",
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
 <pre>
-  Nova Situação: ${candidato.situacao}
-  Situação anterior: ${situacaoAnterior}
+  Nova Situação: ${candidato.situacao.toUpperCase()}
+  Situação anterior: ${situacaoAnterior.toUpperCase()}
   
   Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
   Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
@@ -178,8 +178,8 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
 <pre>
   Nome: ${candidato.nome}
 
-  Nova Situação: ${candidato.situacao}
-  Situação anterior: ${situacaoAnterior}
+  Nova Situação: ${candidato.situacao.toUpperCase()}
+  Situação anterior: ${situacaoAnterior.toUpperCase()}
   
   Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
   Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
