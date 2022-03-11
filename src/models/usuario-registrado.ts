@@ -1,4 +1,4 @@
-export type UsuarioRegistrado = {
+export type UsuarioCadastrado = {
     id: string
     nomeChecagem: string
 }

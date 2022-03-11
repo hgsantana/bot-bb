@@ -4,14 +4,56 @@ import { AMBIENTE } from "../main"
 import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
 import { Candidato } from "../models/candidato"
-import { UsuarioRegistrado } from "../models/usuario-registrado"
+import { ChatCadastrado } from "../models/chat-cadastrado"
+import { UsuarioCadastrado } from "../models/usuario-registrado"
 
 const candidatosChecagem = [...candidatosMock]
-export const usuariosCadastrados: UsuarioRegistrado[] = []
+export const usuariosCadastrados: UsuarioCadastrado[] = []
+export const chatsCadastrados: ChatCadastrado[] = []
 
 export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 
     if (!mensagemRecebida?.message?.text) return null
+
+    /********************* /iniciar *********************/
+    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/iniciar")) {
+        const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
+        let text = ""
+        if (chat) text = `As atualizações já estão ativas para este grupo.`
+        else {
+            text = `As atualizações já estão ativas para este grupo.`
+            chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
+        }
+        const reply_to_message_id = mensagemRecebida.message.message_id
+        return {
+            chat_id: mensagemRecebida.message.chat.id,
+            method: "sendMessage",
+            parse_mode: "HTML",
+            reply_to_message_id,
+            text
+        }
+    }
+
+    /********************* /parar *********************/
+    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/parar")) {
+        const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
+        let text = ""
+        if (chat) {
+            const indiceChat = chatsCadastrados.indexOf(chat)
+            chatsCadastrados.splice(indiceChat, 1)
+            text = `As atualizações foram interrompidas para este grupo.`
+        } else {
+            text = `Não há atualizações ativas para este grupo. Caso deseje ativalas, use o comando /iniciar.`
+        }
+        const reply_to_message_id = mensagemRecebida.message.message_id
+        return {
+            chat_id: mensagemRecebida.message.chat.id,
+            method: "sendMessage",
+            parse_mode: "HTML",
+            reply_to_message_id,
+            text
+        }
+    }
 
     /********************* /status *********************/
     if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/status")) {
@@ -97,7 +139,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
     return null
 }
 
-export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioRegistrado, situacaoAnterior: string, candidato: Candidato) => {
+export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado, situacaoAnterior: string, candidato: Candidato) => {
     try {
         const mensagem: BotUpdateResponse = {
             chat_id: UsuarioRegistrado.id,
