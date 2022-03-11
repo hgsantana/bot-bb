@@ -4,7 +4,7 @@ import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
 import { RespostaJSON } from '../models/resposta-json'
 import { buscaDados, salvaDados } from './storage-service'
-import { enviaMensagemPrivada, enviaMensagemPublica, usuariosCadastrados } from './telegram-service'
+import { enviaMensagemPrivada, enviaMensagemPublica, enviaStatus, usuariosCadastrados } from './telegram-service'
 
 export let RESPOSTA_TI: RespostaJSON = {
     id: 1000,
@@ -126,6 +126,7 @@ const atualizaTudo = async () => {
 const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 400) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
     let total = candidatos.length
+    let houveAlteracao = false
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
     return new Promise<void>(resolve => {
         const inicio = new Date().getTime()
@@ -171,7 +172,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                 )
 
                 const situacaoCompleta = await capturaSituacaoCompleta(candidato, resposta.data, axiosConfig)
-                if (situacaoCompleta) alteraSituacaoCandidato(candidato, situacaoCompleta)
+                if (situacaoCompleta) houveAlteracao = alteraSituacaoCandidato(candidato, situacaoCompleta)
                 else throw { code: "SEM FORM" }
             } catch (error: any) {
                 erros.push(candidato)
@@ -189,7 +190,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                     console.log("Corrigindo erros...");
                     resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100))
                 } else {
-                    atualizaJSON(tipo)
+                    atualizaJSON(tipo, houveAlteracao)
                     resolve()
                 }
             }
@@ -225,7 +226,7 @@ const capturaSituacaoCompleta = async (candidato: Candidato, formString: string,
     } else return null
 }
 
-const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
+const atualizaJSON = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
     let resposta: RespostaJSON = tipo == "COMERCIAL" ? RESPOSTA_COMERCIAL : RESPOSTA_TI
     let candidatos: Candidato[] = tipo == "COMERCIAL" ? AGENTES_COMERCIAL : AGENTES_TI
     resposta.autorizadas = 0
@@ -270,10 +271,12 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL") => {
     }
 
     salvaDados(resposta, tipo)
+    if (houveAlteracao) enviaStatus(resposta)
 }
 
 const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
     const bolds = formulario.match(/<b>[\s\S]*?<\/b>/gi)
+    let houveAlteracao = false
     if (bolds) {
         const situacaoCompleta = bolds[2]
             ?.replace("<b>", "")
@@ -293,7 +296,10 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
         const situacaoAnterior = candidato.situacao
         candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
 
-        if (situacaoAnterior != candidato.situacao) enviaMensagemPublica(situacaoAnterior, candidato)
+        if (situacaoAnterior != candidato.situacao) {
+            houveAlteracao = true
+            enviaMensagemPublica(situacaoAnterior, candidato)
+        }
         const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
         usuariosFiltrados.forEach(u => {
             enviaMensagemPrivada(u, situacaoAnterior, candidato)
@@ -305,4 +311,24 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
     } else {
         throw { code: "SEM SITUAÇÃO" }
     }
+    return houveAlteracao
+}
+
+export const geraStatusCompleto = () => {
+    const resposta: RespostaJSON = {
+        id: 1,
+        autorizadas: RESPOSTA_COMERCIAL.autorizadas + RESPOSTA_TI.autorizadas,
+        cancelados: RESPOSTA_COMERCIAL.cancelados + RESPOSTA_TI.cancelados,
+        convocados: RESPOSTA_COMERCIAL.convocados + RESPOSTA_TI.convocados,
+        desistentes: RESPOSTA_COMERCIAL.desistentes + RESPOSTA_TI.desistentes,
+        emQualificacao: RESPOSTA_COMERCIAL.emQualificacao + RESPOSTA_TI.emQualificacao,
+        empossados: RESPOSTA_COMERCIAL.empossados + RESPOSTA_TI.empossados,
+        expedidas: RESPOSTA_COMERCIAL.expedidas + RESPOSTA_TI.expedidas,
+        inaptos: RESPOSTA_COMERCIAL.inaptos + RESPOSTA_TI.inaptos,
+        inconsistentes: RESPOSTA_COMERCIAL.inconsistentes + RESPOSTA_TI.inconsistentes,
+        qualificados: RESPOSTA_COMERCIAL.qualificados + RESPOSTA_TI.qualificados,
+        naoConvocados: RESPOSTA_COMERCIAL.naoConvocados + RESPOSTA_TI.naoConvocados,
+        ultimaAtualizacao: new Date(),
+    }
+    return resposta
 }

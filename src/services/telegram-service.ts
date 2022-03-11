@@ -1,5 +1,4 @@
 import axios from "axios"
-import { respostaMOCK } from "../data/dados-mock"
 import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
 import { AGENTES_TI } from "../data/nomes-ti"
 import { AMBIENTE } from "../main"
@@ -7,7 +6,9 @@ import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
 import { Candidato } from "../models/candidato"
 import { ChatCadastrado } from "../models/chat-cadastrado"
+import { RespostaJSON } from "../models/resposta-json"
 import { UsuarioCadastrado } from "../models/usuario-registrado"
+import { geraStatusCompleto } from "./dados-service"
 import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
 
 const nomesCandidatos = [...AGENTES_COMERCIAL.map(a => a.nome), ...AGENTES_TI.map(a => a.nome)]
@@ -72,6 +73,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
 
     /********************* /status *********************/
     if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/status")) {
+        const statusCompleto = geraStatusCompleto()
         const reply_to_message_id = mensagemRecebida.message.message_id
         return {
             chat_id: mensagemRecebida.message.chat.id,
@@ -80,19 +82,19 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
             reply_to_message_id,
             text: `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. Segue atualização de status das convocações: 
 <pre>
-  Não Convocados: ${respostaMOCK.naoConvocados}
-  Convocados: ${respostaMOCK.convocados}
+  Não Convocados: ${statusCompleto.naoConvocados}
+  Convocados: ${statusCompleto.convocados}
   
-  Autorizadas: ${respostaMOCK.autorizadas}
-  Expedidas: ${respostaMOCK.expedidas}
-  Qualificação: ${respostaMOCK.emQualificacao}
-  Qualificados: ${respostaMOCK.qualificados}
-  Empossados: ${respostaMOCK.empossados}
-  Cancelados por prazo: ${respostaMOCK.cancelados}
-  Desistentes: ${respostaMOCK.desistentes}
-  Inaptos: ${respostaMOCK.inaptos}
+  Autorizadas: ${statusCompleto.autorizadas}
+  Expedidas: ${statusCompleto.expedidas}
+  Qualificação: ${statusCompleto.emQualificacao}
+  Qualificados: ${statusCompleto.qualificados}
+  Empossados: ${statusCompleto.empossados}
+  Cancelados por prazo: ${statusCompleto.cancelados}
+  Desistentes: ${statusCompleto.desistentes}
+  Inaptos: ${statusCompleto.inaptos}
     
-Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
+Atualização: ${statusCompleto.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
 </pre>`
         }
     }
@@ -203,6 +205,41 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
   Micro Região: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
   
   Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
+</pre>`
+            }
+            const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
+
+            await axios.post(api, mensagem).catch(e => {
+                console.log("Erro=>", e);
+            })
+        } catch (error) {
+            console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
+            console.log("Erro=> ", error)
+        }
+    })
+}
+
+export const enviaStatus = (resposta: RespostaJSON) => {
+    chatsCadastrados.forEach(async chat => {
+        try {
+            const mensagem: BotUpdateResponse = {
+                chat_id: chat.id,
+                parse_mode: "HTML",
+                text: `Atualização de Status!
+  <pre>
+  Não Convocados: ${resposta.naoConvocados}
+  Convocados: ${resposta.convocados}
+  
+  Autorizadas: ${resposta.autorizadas}
+  Expedidas: ${resposta.expedidas}
+  Qualificação: ${resposta.emQualificacao}
+  Qualificados: ${resposta.qualificados}
+  Empossados: ${resposta.empossados}
+  Cancelados por prazo: ${resposta.cancelados}
+  Desistentes: ${resposta.desistentes}
+  Inaptos: ${resposta.inaptos}
+  
+Atualização: ${resposta.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
 </pre>`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
