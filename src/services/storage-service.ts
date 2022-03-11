@@ -51,14 +51,14 @@ export const buscaDadosTelegram = async (): Promise<BackupTelegram | null> => {
         await arquivo.close()
         
         if (conteudo.toString()) {
-            console.log(`Backup do telegram localizado.`)
+            console.log(`Backup do Telegram localizado.`)
             return JSON.parse(conteudo.toString())
         } else {
-            console.log(`Backup do telegram incompleto.`)
+            console.log(`Backup do Telegram incompleto.`)
             return null
         }
     } catch (error) {
-        console.log(`Ainda não há arquivo de backup do telegram.`)
+        console.log(`Ainda não há arquivo de backup do Telegram.`)
         return null
     }
 }
