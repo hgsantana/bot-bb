@@ -20,15 +20,15 @@ const geraAlteracaoMock = async () => {
         const candidatoMockado = candidatosMock[indiceRandom]
         const situacaoMockada = situacoesMock[indiceSituacao]
         const situacaoAnterior = candidatoMockado.situacao
-
         candidatoMockado.situacao = situacaoMockada
 
-        if (situacaoAnterior == "Não Convocado") enviaMensagemPublica(situacaoAnterior, candidatoMockado)
+        // if (situacaoAnterior == "Não Convocado") enviaMensagemPublica(situacaoAnterior, candidatoMockado)
+        // const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidatoMockado.nome)
+        // usuariosFiltrados.forEach(u => {
+        //     enviaMensagemPrivada(u, situacaoAnterior, candidatoMockado)
+        // })
+
         // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidatoMockado)))
-        const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidatoMockado.nome)
-        usuariosFiltrados.forEach(u => {
-            enviaMensagemPrivada(u, situacaoAnterior, candidatoMockado)
-        })
         alteracoes++
     }
     atualizaJSONMock()
