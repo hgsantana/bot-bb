@@ -24,7 +24,7 @@ const geraAlteracaoMock = async () => {
         candidatoMockado.situacao = situacaoMockada
 
         if (situacaoAnterior == "Não Convocado") enviaMensagemPublica(situacaoAnterior, candidatoMockado)
-        websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidatoMockado)))
+        // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidatoMockado)))
         const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidatoMockado.nome)
         usuariosFiltrados.forEach(u => {
             enviaMensagemPrivada(u, situacaoAnterior, candidatoMockado)

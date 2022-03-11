@@ -20,6 +20,6 @@ const porta = process.env.PORT || 4000
 const server = app.listen(porta, () => {
     console.log("Servindo na porta", porta)
     iniciar()
-    iniciarWebsocket(server)
+    // iniciarWebsocket(server)
     iniciaMockService()
 })
