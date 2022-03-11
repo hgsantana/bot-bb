@@ -159,9 +159,6 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
         }
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
-        console.log("Enviando mensagem para:", api)
-        console.log("Mensagem:", mensagem)
-
         await axios.post(api, mensagem).catch(e => {
             console.log("Erro=>", e);
         })
@@ -171,14 +168,16 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
     }
 }
 
-export const enviaMensagemPublica = async (chat_id: number, situacaoAnterior: string, candidato: Candidato) => {
-    try {
-        const mensagem: BotUpdateResponse = {
-            chat_id,
-            parse_mode: "HTML",
-            text: `Novo candidato convocado!
+export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candidato) => {
+    chatsCadastrados.forEach(async chat => {
+        try {
+            const mensagem: BotUpdateResponse = {
+                chat_id: chat.id,
+                parse_mode: "HTML",
+                text: `Novo candidato convocado!
 <pre>
   Nome: ${candidato.nome}
+  
   Nova Situação: ${candidato.situacao}
   Situação anterior: ${situacaoAnterior}
   
@@ -189,17 +188,15 @@ export const enviaMensagemPublica = async (chat_id: number, situacaoAnterior: st
   
   Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
 </pre>`
+            }
+            const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
+
+            await axios.post(api, mensagem).catch(e => {
+                console.log("Erro=>", e);
+            })
+        } catch (error) {
+            console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
+            console.log("Erro=> ", error)
         }
-        const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
-
-        console.log("Enviando mensagem para:", api)
-        console.log("Mensagem:", mensagem)
-
-        await axios.post(api, mensagem).catch(e => {
-            console.log("Erro=>", e);
-        })
-    } catch (error) {
-        console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
-        console.log("Erro=> ", error)
-    }
+    })
 }
