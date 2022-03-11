@@ -19,9 +19,9 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
     if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/iniciar")) {
         const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
         let text = ""
-        if (chat) text = `As atualizações já estão ativas para este grupo.`
+        if (chat) text = `As atualizações já estão ativas para este chat.`
         else {
-            text = `As atualizações já estão ativas para este grupo.`
+            text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
             chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
         }
         const reply_to_message_id = mensagemRecebida.message.message_id
@@ -41,9 +41,9 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
         if (chat) {
             const indiceChat = chatsCadastrados.indexOf(chat)
             chatsCadastrados.splice(indiceChat, 1)
-            text = `As atualizações foram interrompidas para este grupo.`
+            text = `As atualizações foram interrompidas para este chat.`
         } else {
-            text = `Não há atualizações ativas para este grupo. Caso deseje ativalas, use o comando /iniciar.`
+            text = `Não há atualizações ativas para este chat. Caso deseje ativa-las, use o comando /iniciar.`
         }
         const reply_to_message_id = mensagemRecebida.message.message_id
         return {
@@ -177,7 +177,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                 text: `Novo candidato convocado!
 <pre>
   Nome: ${candidato.nome}
-  
+
   Nova Situação: ${candidato.situacao}
   Situação anterior: ${situacaoAnterior}
   
