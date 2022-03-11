@@ -172,7 +172,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                 )
 
                 const situacaoCompleta = await capturaSituacaoCompleta(candidato, resposta.data, axiosConfig)
-                if (situacaoCompleta) houveAlteracao = alteraSituacaoCandidato(candidato, situacaoCompleta)
+                if (situacaoCompleta) houveAlteracao = houveAlteracao || alteraSituacaoCandidato(candidato, situacaoCompleta)
                 else throw { code: "SEM FORM" }
             } catch (error: any) {
                 erros.push(candidato)
