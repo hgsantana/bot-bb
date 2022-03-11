@@ -253,3 +253,33 @@ Atualização: ${resposta.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle:
         }
     })
 }
+
+export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) => {
+    try {
+        let textoInconsistentes = ""
+        candidatosInconsistentes.forEach(c => {
+            textoInconsistentes += `
+
+  Nome: ${c.nome}
+  Situação: ${c.situacao}
+  Micro-Região: ${c.microRegiao}`
+        })
+        const mensagem: BotUpdateResponse = {
+            chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
+            parse_mode: "HTML",
+            text: `Candidatos com inconsistência detectados:
+<pre>
+  Inconsistências: ${candidatosInconsistentes.length}
+${textoInconsistentes}
+</pre>`
+        }
+        const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
+
+        await axios.post(api, mensagem).catch(e => {
+            console.log("Erro=>", e);
+        })
+    } catch (error) {
+        console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
+        console.log("Erro=> ", error)
+    }
+}

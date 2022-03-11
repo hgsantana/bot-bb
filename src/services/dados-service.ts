@@ -4,7 +4,7 @@ import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
 import { RespostaJSON } from '../models/resposta-json'
 import { buscaDados, salvaDados } from './storage-service'
-import { enviaMensagemPrivada, enviaMensagemPublica, enviaStatus, usuariosCadastrados } from './telegram-service'
+import { enviaMensagemAdmin, enviaMensagemPrivada, enviaMensagemPublica, enviaStatus, usuariosCadastrados } from './telegram-service'
 
 export let RESPOSTA_TI: RespostaJSON = {
     id: 1000,
@@ -262,6 +262,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
     if (candidatosNaoClassificados.length) {
         resposta.inconsistentes = candidatosNaoClassificados.length
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
+        enviaMensagemAdmin(candidatosNaoClassificados)
     }
 
     if (tipo == "TI") {
