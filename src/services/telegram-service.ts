@@ -1,15 +1,26 @@
 import axios from "axios"
-import { candidatosMock, respostaMOCK } from "../data/dados-mock"
+import { respostaMOCK } from "../data/dados-mock"
+import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
+import { AGENTES_TI } from "../data/nomes-ti"
 import { AMBIENTE } from "../main"
 import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
 import { Candidato } from "../models/candidato"
 import { ChatCadastrado } from "../models/chat-cadastrado"
 import { UsuarioCadastrado } from "../models/usuario-registrado"
+import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
 
-const candidatosChecagem = [...candidatosMock]
-export const usuariosCadastrados: UsuarioCadastrado[] = []
-export const chatsCadastrados: ChatCadastrado[] = []
+const nomesCandidatos = [...AGENTES_COMERCIAL.map(a => a.nome), ...AGENTES_TI.map(a => a.nome)]
+export let usuariosCadastrados: UsuarioCadastrado[] = []
+export let chatsCadastrados: ChatCadastrado[] = []
+
+// restaura backup do telegram
+buscaDadosTelegram().then(dados => {
+    if (dados) {
+        usuariosCadastrados = dados.usuariosCadastrados
+        chatsCadastrados = dados.chatsCadastrados
+    }
+})
 
 export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 
@@ -24,6 +35,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
             console.log("Ativando atualizações para o chat:", mensagemRecebida.message.chat.id)
             text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
             chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
+            salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
         }
         const reply_to_message_id = mensagemRecebida.message.message_id
         return {
@@ -42,6 +54,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
         if (chat) {
             const indiceChat = chatsCadastrados.indexOf(chat)
             chatsCadastrados.splice(indiceChat, 1)
+            salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
             console.log("Desativando atualizações para o chat:", mensagemRecebida.message.chat.id)
             text = `As atualizações foram interrompidas para este chat.`
         } else {
@@ -92,7 +105,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         const reply_to_message_id = mensagemRecebida.message.message_id
 
         let text = ``
-        const candidato = candidatosChecagem.find(c => c.nome == nome)
+        const candidato = nomesCandidatos.find(n => n == nome)
 
         if (!nome) text = `Você precisa usar a sintaxe correta: <pre>/cadastrar NOME COMPLETO</pre>`
         else if (!candidato) text = `Este nome não existe no resultado final oficial.`
@@ -102,6 +115,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
             else {
                 console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
                 usuariosCadastrados.push({ id: idDestinatario, nomeChecagem: nome })
+                salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
             }
         }
 
@@ -126,7 +140,7 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
         if (usuario) {
             console.log("Descadastrando usuário para envio de mensagens:", usuario)
             usuariosCadastrados.splice(usuariosCadastrados.indexOf(usuario), 1)
-
+            salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
         } else text = `Você ainda não está cadastrado para receber avisos.`
 
         return {
