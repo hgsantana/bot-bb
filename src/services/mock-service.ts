@@ -29,8 +29,6 @@ const geraAlteracaoMock = async () => {
         usuariosFiltrados.forEach(u => {
             enviaMensagemPrivada(u, situacaoAnterior, candidatoMockado)
         })
-        // teste
-        enviaMensagemPrivada({ id: `1574661558`, nomeChecagem: candidatoMockado.nome }, situacaoAnterior, candidatoMockado)
         alteracoes++
     }
     atualizaJSONMock()
