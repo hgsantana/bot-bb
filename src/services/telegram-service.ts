@@ -97,22 +97,22 @@ Atualização: ${respostaMOCK.ultimaAtualizacao.toLocaleString("pt-br", { timeSt
     return null
 }
 
-export const enviaMensagemCandidatoAlterado = async (UsuarioRegistrado: UsuarioRegistrado, situacaoAnterior: string, candidato: Candidato) => {
+export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioRegistrado, situacaoAnterior: string, candidato: Candidato) => {
     try {
         const mensagem: BotUpdateResponse = {
             chat_id: UsuarioRegistrado.id,
             parse_mode: "HTML",
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
 <pre>
-Nova Situação: ${candidato.situacao}
-Situação anterior: ${situacaoAnterior}
-
-Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
-Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
-Macro Região: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
-Micro Região: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
-
-Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
+  Nova Situação: ${candidato.situacao}
+  Situação anterior: ${situacaoAnterior}
+  
+  Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
+  Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
+  Macro Região: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
+  Micro Região: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
+  
+  Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
 </pre>`
         }
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
@@ -127,4 +127,37 @@ Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
         console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
         console.log("Erro=> ", error)
     }
-}   
+}
+
+export const enviaMensagemPublica = async (chat_id: number, situacaoAnterior: string, candidato: Candidato) => {
+    try {
+        const mensagem: BotUpdateResponse = {
+            chat_id,
+            parse_mode: "HTML",
+            text: `Novo candidato convocado!
+<pre>
+  Nome: ${candidato.nome}
+  Nova Situação: ${candidato.situacao}
+  Situação anterior: ${situacaoAnterior}
+  
+  Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
+  Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
+  Macro Região: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
+  Micro Região: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
+  
+  Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
+</pre>`
+        }
+        const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
+
+        console.log("Enviando mensagem para:", api)
+        console.log("Mensagem:", mensagem)
+
+        await axios.post(api, mensagem).catch(e => {
+            console.log("Erro=>", e);
+        })
+    } catch (error) {
+        console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
+        console.log("Erro=> ", error)
+    }
+}
