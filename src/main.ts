@@ -21,5 +21,5 @@ const server = app.listen(porta, () => {
     console.log("Servindo na porta", porta)
     iniciar()
     // iniciarWebsocket(server)
-    iniciaMockService()
+    // iniciaMockService()
 })
