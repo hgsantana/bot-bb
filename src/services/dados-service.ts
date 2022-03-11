@@ -4,6 +4,7 @@ import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
 import { RespostaJSON } from '../models/resposta-json'
 import { buscaDados, salvaDados } from './storage-service'
+import { enviaMensagemPrivada, enviaMensagemPublica, usuariosCadastrados } from './telegram-service'
 
 export let RESPOSTA_TI: RespostaJSON = {
     id: 1000,
@@ -283,12 +284,23 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
 
         candidato.agenciaSituacao = situacaoCompleta?.match(/(?<=ag[e|ê]ncia )([\w\/\ \.])*/gi)?.[0] || "None"
 
+        // formata data para YYYY-MM-DD
         const arrayDataSituacao = situacaoCompleta?.match(/[0-9\.]+/gi)?.[0]?.split(".")
         if (arrayDataSituacao?.length)
             candidato.dataSituacao = `${arrayDataSituacao?.[2]}-${arrayDataSituacao?.[1]}-${arrayDataSituacao?.[0]}`
         else candidato.dataSituacao = "None"
 
+        const situacaoAnterior = candidato.situacao
         candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
+
+        if (situacaoAnterior != candidato.situacao) enviaMensagemPublica(situacaoAnterior, candidato)
+        const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
+        usuariosFiltrados.forEach(u => {
+            enviaMensagemPrivada(u, situacaoAnterior, candidato)
+        })
+
+        // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
+
         if (!candidato.situacao) throw { code: "SEM SITUAÇÃO" }
     } else {
         throw { code: "SEM SITUAÇÃO" }
