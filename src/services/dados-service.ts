@@ -300,11 +300,11 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
         if (situacaoAnterior != candidato.situacao) {
             houveAlteracao = true
             enviaMensagemPublica(situacaoAnterior, candidato)
+            const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
+            usuariosFiltrados.forEach(u => {
+                enviaMensagemPrivada(u, situacaoAnterior, candidato)
+            })
         }
-        const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
-        usuariosFiltrados.forEach(u => {
-            enviaMensagemPrivada(u, situacaoAnterior, candidato)
-        })
 
         // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
 
