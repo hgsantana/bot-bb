@@ -21,6 +21,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
         let text = ""
         if (chat) text = `As atualizações já estão ativas para este chat.`
         else {
+            console.log("Ativando atualizações para o chat:", mensagemRecebida.message.chat.id)
             text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
             chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
         }
@@ -41,6 +42,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
         if (chat) {
             const indiceChat = chatsCadastrados.indexOf(chat)
             chatsCadastrados.splice(indiceChat, 1)
+            console.log("Desativando atualizações para o chat:", mensagemRecebida.message.chat.id)
             text = `As atualizações foram interrompidas para este chat.`
         } else {
             text = `Não há atualizações ativas para este chat. Caso deseje ativa-las, use o comando /iniciar.`
