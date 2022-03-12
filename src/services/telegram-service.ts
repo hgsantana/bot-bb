@@ -80,22 +80,22 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
             method: "sendMessage",
             parse_mode: "HTML",
             reply_to_message_id,
-            text: `Status atual das convocações: 
-<pre>
-Não Convocados: ${statusCompleto.naoConvocados}
-Convocados: ${statusCompleto.convocados}
-
-Autorizadas: ${statusCompleto.autorizadas}
-Expedidas: ${statusCompleto.expedidas}
-Qualificação: ${statusCompleto.emQualificacao}
-Qualificados: ${statusCompleto.qualificados}
-Empossados: ${statusCompleto.empossados}
-Cancelados: ${statusCompleto.cancelados}
-Desistentes: ${statusCompleto.desistentes}
-Inaptos: ${statusCompleto.inaptos}
-
-${statusCompleto.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
-</pre>`
+            text: `Status atual das convocações:\n` +
+                `<pre>\n` +
+                `Não Convocados: ${statusCompleto.naoConvocados}\n` +
+                `Convocados: ${statusCompleto.convocados}\n` +
+                `\n` +
+                `Autorizadas: ${statusCompleto.autorizadas}\n` +
+                `Expedidas: ${statusCompleto.expedidas}\n` +
+                `Qualificação: ${statusCompleto.emQualificacao}\n` +
+                `Qualificados: ${statusCompleto.qualificados}\n` +
+                `Empossados: ${statusCompleto.empossados}\n` +
+                `Cancelados: ${statusCompleto.cancelados}\n` +
+                `Desistentes: ${statusCompleto.desistentes}\n` +
+                `Inaptos: ${statusCompleto.inaptos}\n` +
+                `\n` +
+                `${statusCompleto.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                `</pre>`
         }
     }
 
@@ -112,7 +112,9 @@ ${statusCompleto.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short',
         if (!nome) text = `Você precisa usar a sintaxe correta: <pre>/cadastrar NOME COMPLETO</pre>`
         else if (!candidato) text = `Este nome não existe no resultado final oficial.`
         else {
-            text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. A partir de agora, você receberá os avisos de alterações para "${nome}" no privado. Para cancelar os avisos, use o comando /descadastrar.`
+            text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. ` +
+                `A partir de agora, você receberá os avisos de alterações para "${nome}" no privado. ` +
+                `Para cancelar os avisos, use o comando /descadastrar.`
             if (usuario) usuario.nomeChecagem = nome
             else {
                 console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
@@ -162,18 +164,18 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
         const mensagem: BotUpdateResponse = {
             chat_id: UsuarioRegistrado.id,
             parse_mode: "HTML",
-            text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
-<pre>
-Situação: ${candidato.situacao.toUpperCase()}
-Anterior: ${situacaoAnterior.toUpperCase()}
-
-Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
-Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
-Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
-Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
-
-Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
-</pre>`
+            text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":\n` +
+                `<pre>\n` +
+                `Situação: ${candidato.situacao.toUpperCase()}\n` +
+                `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
+                `\n` +
+                `Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}\n` +
+                `Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}\n` +
+                `Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}\n` +
+                `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}\n` +
+                `\n` +
+                `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
+                `</pre>`
         }
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
@@ -192,19 +194,19 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração em candidato detectada:
-<pre>
-Nome: ${candidato.nome}
-Situação: ${candidato.situacao.toUpperCase()}
-Anterior: ${situacaoAnterior.toUpperCase()}
-
-Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
-Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
-Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
-Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
-
-Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
-</pre>`
+                text: `Alteração em candidato detectada:\n` +
+                    `<pre>\n` +
+                    `Nome: ${candidato.nome}\n` +
+                    `Situação: ${candidato.situacao.toUpperCase()}\n` +
+                    `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
+                    `\n` +
+                    `Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}\n` +
+                    `Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}\n` +
+                    `Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}\n` +
+                    `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}\n` +
+                    `\n` +
+                    `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
+                    `</pre>`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
@@ -224,22 +226,23 @@ export const enviaStatus = (resposta: RespostaJSON) => {
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração no quadro geral:
-<pre>
-Não Convocados: ${resposta.naoConvocados}
-Convocados: ${resposta.convocados}
-
-Autorizadas: ${resposta.autorizadas}
-Expedidas: ${resposta.expedidas}
-Qualificação: ${resposta.emQualificacao}
-Qualificados: ${resposta.qualificados}
-Empossados: ${resposta.empossados}
-Cancelados: ${resposta.cancelados}
-Desistentes: ${resposta.desistentes}
-Inaptos: ${resposta.inaptos}
-
-${resposta.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
-</pre>`
+                text: `Alteração no quadro geral:\n` +
+                    `<pre>\n` +
+                    `Não Convocados: ${resposta.naoConvocados}\n` +
+                    `Convocados: ${resposta.convocados}\n` +
+                    `\n` +
+                    `Autorizadas: ${resposta.autorizadas}\n` +
+                    `Expedidas: ${resposta.expedidas}\n` +
+                    `Qualificação: ${resposta.emQualificacao}\n` +
+                    `Qualificados: ${resposta.qualificados}\n` +
+                    `Empossados: ${resposta.empossados}\n` +
+                    `Cancelados: ${resposta.cancelados}\n` +
+                    `Desistentes: ${resposta.desistentes}\n` +
+                    `Inaptos: ${resposta.inaptos}\n` +
+                    `\n` +
+                    `${resposta.ultimaAtualizacao
+                        .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                    `</pre>`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
@@ -257,20 +260,19 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
     try {
         let textoInconsistentes = ""
         candidatosInconsistentes.forEach(c => {
-            textoInconsistentes += `
-
-Nome: ${c.nome}
-Situação: ${c.situacao}
-Micro-Região: ${c.microRegiao}`
+            textoInconsistentes += `\n\n` +
+                `Nome: ${c.nome}\n` +
+                `Situação: ${c.situacao}\n` +
+                `Micro-Região: ${c.microRegiao}`
         })
         const mensagem: BotUpdateResponse = {
             chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
             parse_mode: "HTML",
-            text: `Candidatos com inconsistência detectados:
-<pre>
-Inconsistências: ${candidatosInconsistentes.length}
-${textoInconsistentes}
-</pre>`
+            text: `Candidatos com inconsistência detectados:\n` +
+                `<pre>\n` +
+                `Inconsistências: ${candidatosInconsistentes.length}\n` +
+                `${textoInconsistentes}\n` +
+                `</pre>`
         }
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
