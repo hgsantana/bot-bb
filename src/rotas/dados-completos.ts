@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
 import { AGENTES_TI } from '../data/nomes-ti'
 import { RespostaJSON } from '../models/resposta-json'
-import { RESPOSTA_COMERCIAL, RESPOSTA_TI } from '../services/dados-service'
+import { RESPOSTA_COMERCIAL, RESPOSTA_TI } from '../services/html-service'
 
 export const dadosCompletos = async (req: Request, res: Response) => {
     let resposta: RespostaJSON

@@ -8,7 +8,7 @@ import { Candidato } from "../models/candidato"
 import { ChatCadastrado } from "../models/chat-cadastrado"
 import { RespostaJSON } from "../models/resposta-json"
 import { UsuarioCadastrado } from "../models/usuario-registrado"
-import { geraStatusCompleto } from "./dados-service"
+import { geraStatusCompleto } from "./html-service"
 import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
 
 const nomesCandidatos = [...AGENTES_COMERCIAL.map(a => a.nome), ...AGENTES_TI.map(a => a.nome)]

@@ -38,7 +38,7 @@ export let RESPOSTA_COMERCIAL: RespostaJSON = {
     ultimaAtualizacao: new Date(),
 }
 
-export const iniciar = async () => {
+export const iniciarHTMLService = async () => {
     await checaBackups()
     await atualizaTudo()
 }

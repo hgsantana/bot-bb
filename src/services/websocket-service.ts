@@ -5,7 +5,7 @@ import { WebSocketsAbertos } from '../models/websockets-abertos';
 
 export const websocketsAbertos: WebSocketsAbertos = { ti: [], comercial: [] }
 
-export const iniciarWebsocket = (server: Server) => {
+export const iniciarWebsocketService = (server: Server) => {
     const websocketServer: WebSocketServer = new ws.Server({
         noServer: true,
         path: "/ws"

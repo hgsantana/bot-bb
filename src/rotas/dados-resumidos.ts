@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { RESPOSTA_COMERCIAL, RESPOSTA_TI } from '../services/dados-service'
+import { RESPOSTA_COMERCIAL, RESPOSTA_TI } from '../services/html-service'
 
 export const dadosResumidos = async (req: Request, res: Response) => {
     if (req.params.tipo == "comercial") {
