@@ -80,21 +80,21 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
             method: "sendMessage",
             parse_mode: "HTML",
             reply_to_message_id,
-            text: `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. Segue atualização de status das convocações: 
+            text: `Status atual das convocações: 
 <pre>
-  Não Convocados: ${statusCompleto.naoConvocados}
-  Convocados: ${statusCompleto.convocados}
-  
-  Autorizadas: ${statusCompleto.autorizadas}
-  Expedidas: ${statusCompleto.expedidas}
-  Qualificação: ${statusCompleto.emQualificacao}
-  Qualificados: ${statusCompleto.qualificados}
-  Empossados: ${statusCompleto.empossados}
-  Cancelados por prazo: ${statusCompleto.cancelados}
-  Desistentes: ${statusCompleto.desistentes}
-  Inaptos: ${statusCompleto.inaptos}
-    
-Atualização: ${statusCompleto.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
+Não Convocados: ${statusCompleto.naoConvocados}
+Convocados: ${statusCompleto.convocados}
+
+Autorizadas: ${statusCompleto.autorizadas}
+Expedidas: ${statusCompleto.expedidas}
+Qualificação: ${statusCompleto.emQualificacao}
+Qualificados: ${statusCompleto.qualificados}
+Empossados: ${statusCompleto.empossados}
+Cancelados: ${statusCompleto.cancelados}
+Desistentes: ${statusCompleto.desistentes}
+Inaptos: ${statusCompleto.inaptos}
+
+${statusCompleto.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
 </pre>`
         }
     }
@@ -164,15 +164,15 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
             parse_mode: "HTML",
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":
 <pre>
-  Nova Situação: ${candidato.situacao.toUpperCase()}
-  Situação anterior: ${situacaoAnterior.toUpperCase()}
-  
-  Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
-  Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
-  Macro Região: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
-  Micro Região: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
-  
-  Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
+Situação: ${candidato.situacao.toUpperCase()}
+Anterior: ${situacaoAnterior.toUpperCase()}
+
+Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
+Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
+Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
+Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
+
+Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
 </pre>`
         }
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
@@ -192,19 +192,18 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Novo candidato convocado!
+                text: `Alteração em candidato detectada:
 <pre>
-  Nome: ${candidato.nome}
+Nome: ${candidato.nome}
+Situação: ${candidato.situacao.toUpperCase()}
+Anterior: ${situacaoAnterior.toUpperCase()}
 
-  Nova Situação: ${candidato.situacao.toUpperCase()}
-  Situação anterior: ${situacaoAnterior.toUpperCase()}
-  
-  Agência situação: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
-  Data da situação: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
-  Macro Região: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
-  Micro Região: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
-  
-  Tipo do candidato: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
+Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}
+Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}
+Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}
+Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}
+
+Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}
 </pre>`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
@@ -225,21 +224,21 @@ export const enviaStatus = (resposta: RespostaJSON) => {
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Atualização de Status!
-  <pre>
-  Não Convocados: ${resposta.naoConvocados}
-  Convocados: ${resposta.convocados}
-  
-  Autorizadas: ${resposta.autorizadas}
-  Expedidas: ${resposta.expedidas}
-  Qualificação: ${resposta.emQualificacao}
-  Qualificados: ${resposta.qualificados}
-  Empossados: ${resposta.empossados}
-  Cancelados por prazo: ${resposta.cancelados}
-  Desistentes: ${resposta.desistentes}
-  Inaptos: ${resposta.inaptos}
-  
-Atualização: ${resposta.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
+                text: `Alteração no quadro geral:
+<pre>
+Não Convocados: ${resposta.naoConvocados}
+Convocados: ${resposta.convocados}
+
+Autorizadas: ${resposta.autorizadas}
+Expedidas: ${resposta.expedidas}
+Qualificação: ${resposta.emQualificacao}
+Qualificados: ${resposta.qualificados}
+Empossados: ${resposta.empossados}
+Cancelados: ${resposta.cancelados}
+Desistentes: ${resposta.desistentes}
+Inaptos: ${resposta.inaptos}
+
+${resposta.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}
 </pre>`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
@@ -260,16 +259,16 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
         candidatosInconsistentes.forEach(c => {
             textoInconsistentes += `
 
-  Nome: ${c.nome}
-  Situação: ${c.situacao}
-  Micro-Região: ${c.microRegiao}`
+Nome: ${c.nome}
+Situação: ${c.situacao}
+Micro-Região: ${c.microRegiao}`
         })
         const mensagem: BotUpdateResponse = {
             chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
             parse_mode: "HTML",
             text: `Candidatos com inconsistência detectados:
 <pre>
-  Inconsistências: ${candidatosInconsistentes.length}
+Inconsistências: ${candidatosInconsistentes.length}
 ${textoInconsistentes}
 </pre>`
         }
