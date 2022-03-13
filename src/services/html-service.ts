@@ -307,7 +307,10 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
                 })
                 // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
             }
-        } else throw { code: "SEM SITUAÇÃO" }
+        } else {
+            console.log("Erro=> Regex não capturou situação:", situacaoCompleta)
+            throw { code: "SEM SITUAÇÃO" }
+        }
 
 
     } else {
