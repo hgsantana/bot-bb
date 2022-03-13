@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
 import { AGENTES_TI } from "../data/nomes-ti"
 import { AMBIENTE } from "../main"
@@ -187,8 +187,8 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
         }
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
-        await axios.post(api, mensagem).catch(e => {
-            console.log("Erro=>", e);
+        await axios.post(api, mensagem).catch((e: AxiosError) => {
+            console.log("Erro=>", e.response?.data || e)
         })
     } catch (error) {
         console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
@@ -219,7 +219,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
             await axios.post(api, mensagem).catch(e => {
-                console.log("Erro=>", e);
+                console.log("Erro=>", e.response?.data || e)
             })
         } catch (error) {
             console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
@@ -255,7 +255,7 @@ export const enviaStatus = (resposta: RespostaJSON) => {
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
             await axios.post(api, mensagem).catch(e => {
-                console.log("Erro=>", e);
+                console.log("Erro=>", e.response?.data || e)
             })
         } catch (error) {
             console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
@@ -285,7 +285,7 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
         await axios.post(api, mensagem).catch(e => {
-            console.log("Erro=>", e);
+            console.log("Erro=>", e.response?.data || e)
         })
     } catch (error) {
         console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
