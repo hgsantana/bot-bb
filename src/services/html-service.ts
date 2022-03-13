@@ -295,20 +295,21 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
         else candidato.dataSituacao = "None"
 
         const situacaoAnterior = candidato.situacao
-        candidato.situacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
+        const novaSituacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
+        if (novaSituacao) {
+            candidato.situacao = novaSituacao
+            if (situacaoAnterior != novaSituacao) {
+                houveAlteracao = true
+                enviaMensagemPublica(situacaoAnterior, candidato)
+                const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
+                usuariosFiltrados.forEach(u => {
+                    enviaMensagemPrivada(u, situacaoAnterior, candidato)
+                })
+                // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
+            }
+        } else throw { code: "SEM SITUAÇÃO" }
 
-        if (situacaoAnterior != candidato.situacao) {
-            houveAlteracao = true
-            enviaMensagemPublica(situacaoAnterior, candidato)
-            const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
-            usuariosFiltrados.forEach(u => {
-                enviaMensagemPrivada(u, situacaoAnterior, candidato)
-            })
-        }
 
-        // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
-
-        if (!candidato.situacao) throw { code: "SEM SITUAÇÃO" }
     } else {
         throw { code: "SEM SITUAÇÃO" }
     }
