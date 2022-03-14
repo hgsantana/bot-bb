@@ -123,10 +123,9 @@ const atualizaTudo = async () => {
     }, 60 * 1000);
 }
 
-const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 400) => {
+const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 400, houveAlteracao = false) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
     let total = candidatos.length
-    let houveAlteracao = false
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
     return new Promise<void>(resolve => {
         const inicio = new Date().getTime()
@@ -171,8 +170,8 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                     axiosConfig
                 )
 
-                const situacaoCompleta = await capturaSituacaoCompleta(candidato, resposta.data, axiosConfig)
-                if (situacaoCompleta) houveAlteracao = houveAlteracao || alteraSituacaoCandidato(candidato, situacaoCompleta)
+                const formulario = await capturaFormulario(candidato, resposta.data, axiosConfig)
+                if (formulario) houveAlteracao = houveAlteracao || alteraSituacaoCandidato(candidato, formulario)
                 else throw { code: "SEM FORM" }
             } catch (error: any) {
                 erros.push(candidato)
@@ -188,7 +187,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
 
                 if (erros.length) {
                     console.log("Corrigindo erros...");
-                    resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100))
+                    resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100, houveAlteracao))
                 } else {
                     atualizaJSON(tipo, houveAlteracao)
                     resolve()
@@ -198,7 +197,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
     })
 }
 
-const capturaSituacaoCompleta = async (candidato: Candidato, formString: string, axiosConfig: AxiosRequestConfig) => {
+const capturaFormulario = async (candidato: Candidato, formString: string, axiosConfig: AxiosRequestConfig) => {
     let match = formString.match(/<form[\s\S]*?<\/form>/i)
     if (match) {
         const campoIndice = match[0].match(/id="formulario:j_id17:(.)*?col02/gi)
@@ -295,7 +294,9 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
         else candidato.dataSituacao = "None"
 
         const situacaoAnterior = candidato.situacao
-        const novaSituacao = situacaoCompleta?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)?.[0] || ""
+        const novaSituacao = situacaoCompleta
+            ?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)
+            ?.[0] || ""
         if (novaSituacao) {
             candidato.situacao = novaSituacao
             if (situacaoAnterior != novaSituacao) {
@@ -311,8 +312,6 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
             console.log("Erro=> Regex não capturou situação:", situacaoCompleta)
             throw { code: "SEM SITUAÇÃO" }
         }
-
-
     } else {
         throw { code: "SEM SITUAÇÃO" }
     }
