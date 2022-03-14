@@ -332,7 +332,7 @@ export const geraStatusCompleto = () => {
         inconsistentes: RESPOSTA_COMERCIAL.inconsistentes + RESPOSTA_TI.inconsistentes,
         qualificados: RESPOSTA_COMERCIAL.qualificados + RESPOSTA_TI.qualificados,
         naoConvocados: RESPOSTA_COMERCIAL.naoConvocados + RESPOSTA_TI.naoConvocados,
-        ultimaAtualizacao: new Date(),
+        ultimaAtualizacao: RESPOSTA_COMERCIAL.ultimaAtualizacao,
     }
     return resposta
 }
