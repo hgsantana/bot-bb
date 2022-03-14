@@ -202,7 +202,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração em candidato detectada:\n` +
+                text: `Alteração detectada:\n` +
                     `<pre>\n` +
                     `Nome: ${candidato.nome}\n` +
                     `Situação: ${candidato.situacao.toUpperCase()}\n` +
@@ -234,7 +234,7 @@ export const enviaStatus = (resposta: RespostaJSON) => {
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração no quadro geral:\n` +
+                text: `Alteração no status geral:\n` +
                     `<pre>\n` +
                     `Não Convocados: ${resposta.naoConvocados}\n` +
                     `Convocados: ${resposta.convocados}\n` +
