@@ -352,6 +352,5 @@ export const geraStatusCompleto = () => {
             ultimaAtualizacao: RESPOSTA_COMERCIAL.ultimaAtualizacao
         }
     }
-    console.log("Resultado completo gerado para /status:", resposta)
     return resposta
 }

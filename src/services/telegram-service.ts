@@ -56,7 +56,7 @@ const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     }
     const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
-        chat_id: mensagemRecebida.message.chat.id,
+        chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
         reply_to_message_id,
@@ -78,7 +78,7 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     }
     const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
-        chat_id: mensagemRecebida.message.chat.id,
+        chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
         reply_to_message_id,
@@ -89,14 +89,14 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     const statusCompleto = geraStatusCompleto()
     const reply_to_message_id = mensagemRecebida?.message?.message_id
-    const mensagem: BotUpdateResponse = {
-        chat_id: mensagemRecebida.message.chat.id,
+    return {
+        chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
         reply_to_message_id,
         text: `Status atual das convocações:\n` +
             `<pre>\n` +
-            `--- TI ---:\n` +
+            `--- TI ---\n` +
             `${statusCompleto.ti.ultimaAtualizacao
                 .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
             `\n` +
@@ -114,7 +114,7 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             `Inaptos: ${statusCompleto.ti.inaptos}\n` +
             `\n` +
             `\n` +
-            `--- COMERCIAL ---:\n` +
+            `--- COMERCIAL ---\n` +
             `${statusCompleto.comercial.ultimaAtualizacao
                 .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
             `\n` +
@@ -130,11 +130,8 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
             `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
             `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
-            `\n` +
-            `< /pre>`
+            `</pre>`
     }
-    console.log("Resposta enviada ao /status:", mensagem)
-    return mensagem
 }
 
 const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
@@ -161,7 +158,7 @@ const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     }
 
     return {
-        chat_id: mensagemRecebida.message.chat.id,
+        chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
         reply_to_message_id,
@@ -183,7 +180,7 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
     } else text = `Você ainda não está cadastrado para receber avisos.`
 
     return {
-        chat_id: mensagemRecebida.message.chat.id,
+        chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
         reply_to_message_id,
