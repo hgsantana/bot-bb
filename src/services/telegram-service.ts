@@ -258,7 +258,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
                     message_id: resposta.result.message_id,
                     disable_notification: false
                 }
-                axios.post(AMBIENTE.TELEGRAM_API + '/pinMessage', mensagemFixada)
+                axios.post(AMBIENTE.TELEGRAM_API + '/pinChatMessage', mensagemFixada)
                     .then(({ data: respostaFixada }) => {
                         console.log("Resposta da mensagem fixada:", respostaFixada)
                     }).catch(erro => {
