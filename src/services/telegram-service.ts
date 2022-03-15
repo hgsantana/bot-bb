@@ -54,7 +54,7 @@ const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
         chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
         salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
     }
-    const reply_to_message_id = mensagemRecebida.message.message_id
+    const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
         chat_id: mensagemRecebida.message.chat.id,
         method: "sendMessage",
@@ -76,7 +76,7 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     } else {
         text = `Não há atualizações ativas para este chat. Caso deseje ativa-las, use o comando /iniciar.`
     }
-    const reply_to_message_id = mensagemRecebida.message.message_id
+    const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
         chat_id: mensagemRecebida.message.chat.id,
         method: "sendMessage",
@@ -88,7 +88,7 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 
 const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     const statusCompleto = geraStatusCompleto()
-    const reply_to_message_id = mensagemRecebida.message.message_id
+    const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
         chat_id: mensagemRecebida.message.chat.id,
         method: "sendMessage",
@@ -139,7 +139,7 @@ const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim().toUpperCase()
     const idDestinatario = `${mensagemRecebida.message.from.id}`
     const usuario = usuariosCadastrados.find(u => u.id == idDestinatario)
-    const reply_to_message_id = mensagemRecebida.message.message_id
+    const reply_to_message_id = mensagemRecebida?.message?.message_id
 
     let text = ``
     const candidato = nomesCandidatos.find(n => n == nome)
@@ -171,7 +171,7 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
     const idDestinatario = `${mensagemRecebida.message.from.id}`
     const usuario = usuariosCadastrados.find(u => u.id == idDestinatario)
 
-    const reply_to_message_id = mensagemRecebida.message.message_id
+    const reply_to_message_id = mensagemRecebida?.message?.message_id
 
     let text = `A partir de agora, você não receberá mais avisos.`
     if (usuario) {
