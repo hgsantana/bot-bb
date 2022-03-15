@@ -97,6 +97,10 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
         text: `Status atual das convocações:\n` +
             `<pre>\n` +
             `--- TI ---:\n` +
+            `${statusCompleto.ti.ultimaAtualizacao
+                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `\n` +
+            `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
             `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
             `Convocados: ${statusCompleto.ti.convocados}\n` +
             `\n` +
@@ -109,9 +113,12 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             `Desistentes: ${statusCompleto.ti.desistentes}\n` +
             `Inaptos: ${statusCompleto.ti.inaptos}\n` +
             `\n` +
-            `${statusCompleto.ti.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `\n\n` +
+            `\n` +
             `--- COMERCIAL ---:\n` +
+            `${statusCompleto.comercial.ultimaAtualizacao
+                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `\n` +
+            `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
             `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
             `Convocados: ${statusCompleto.comercial.convocados}\n` +
             `\n` +
@@ -124,7 +131,6 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
             `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
             `\n` +
-            `${statusCompleto.comercial.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
             `< /pre>`
     }
 }
