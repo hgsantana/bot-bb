@@ -5,7 +5,7 @@ import { Candidato } from '../models/candidato'
 import { RespostaCompleta } from '../models/resposta-completa'
 import { RespostaJSON } from '../models/resposta-json'
 import { buscaDados, salvaDados } from './storage-service'
-import { enviaMensagemAdmin, enviaMensagemPrivada, enviaMensagemPublica, enviaStatus, usuariosCadastrados } from './telegram-service'
+import { editaMensagensFixadas, enviaMensagemAdmin, enviaMensagemPrivada, enviaMensagemPublica, enviaStatus, usuariosCadastrados } from './telegram-service'
 
 export let RESPOSTA_TI: RespostaJSON = {
     id: 1000,
@@ -272,7 +272,10 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
     }
 
     salvaDados(resposta, tipo)
-    if (houveAlteracao) enviaStatus(resposta, tipo)
+    if (houveAlteracao) {
+        enviaStatus(resposta, tipo)
+        editaMensagensFixadas()
+    }
 }
 
 const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo: "TI" | "COMERCIAL") => {

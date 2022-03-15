@@ -6,6 +6,6 @@ export type BackupTelegram = {
 
     usuariosCadastrados: UsuarioCadastrado[]
     chatsCadastrados: ChatCadastrado[]
-    mensagensPinadas: BotPinnedMessage[]
+    mensagensFixadas: BotPinnedMessage[]
 
 }

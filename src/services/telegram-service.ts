@@ -2,7 +2,9 @@ import axios, { AxiosError } from "axios"
 import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
 import { AGENTES_TI } from "../data/nomes-ti"
 import { AMBIENTE } from "../main"
+import { BotEditMessageCommand } from "../models/bot-edit-message-command"
 import { BotMessageResponse } from "../models/bot-message-response"
+import { BotPinCommand } from "../models/bot-pin-command"
 import { BotPinnedMessage } from "../models/bot-pinned-message"
 import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
@@ -16,14 +18,14 @@ import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
 const nomesCandidatos = [...AGENTES_COMERCIAL.map(a => a.nome), ...AGENTES_TI.map(a => a.nome)]
 export let usuariosCadastrados: UsuarioCadastrado[] = []
 export let chatsCadastrados: ChatCadastrado[] = []
-export let mensagensPinadas: BotPinnedMessage[] = []
+export let mensagensFixadas: BotPinnedMessage[] = []
 
 // restaura backup do telegram
 buscaDadosTelegram().then(dados => {
     if (dados) {
         usuariosCadastrados = dados.usuariosCadastrados || []
         chatsCadastrados = dados.chatsCadastrados || []
-        mensagensPinadas = dados.mensagensPinadas || []
+        mensagensFixadas = dados.mensagensFixadas || []
     }
 })
 
@@ -61,7 +63,7 @@ const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
         console.log("Ativando atualizações para o chat:", mensagemRecebida.message.chat.id)
         text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
         chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
     }
     const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
@@ -79,7 +81,7 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     if (chat) {
         const indiceChat = chatsCadastrados.indexOf(chat)
         chatsCadastrados.splice(indiceChat, 1)
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
         console.log("Desativando atualizações para o chat:", mensagemRecebida.message.chat.id)
         text = `As atualizações foram interrompidas para este chat.`
     } else {
@@ -162,7 +164,7 @@ const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
         else {
             console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
             usuariosCadastrados.push({ id: idDestinatario, nomeChecagem: nome })
-            salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
+            salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
         }
     }
 
@@ -185,7 +187,7 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
     if (usuario) {
         console.log("Descadastrando usuário para envio de mensagens:", usuario)
         usuariosCadastrados.splice(usuariosCadastrados.indexOf(usuario), 1)
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
     } else text = `Você ainda não está cadastrado para receber avisos.`
 
     return {
@@ -195,6 +197,78 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
         reply_to_message_id,
         text,
     }
+}
+
+const fixar = async (mensagemRecebida: BotUpdate) => {
+    const statusCompleto = geraStatusCompleto()
+    const mensagem: BotUpdateResponse = {
+        chat_id: mensagemRecebida?.message?.chat?.id,
+        method: "sendMessage",
+        parse_mode: "HTML",
+        text: `Status atual das convocações:\n` +
+            `<pre>\n` +
+            `--- TI ---\n` +
+            `${statusCompleto.ti.ultimaAtualizacao
+                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `\n` +
+            `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+            `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+            `Convocados: ${statusCompleto.ti.convocados}\n` +
+            `\n` +
+            `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+            `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+            `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+            `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+            `Empossados: ${statusCompleto.ti.empossados}\n` +
+            `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+            `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+            `Inaptos: ${statusCompleto.ti.inaptos}\n` +
+            `\n` +
+            `\n` +
+            `--- COMERCIAL ---\n` +
+            `${statusCompleto.comercial.ultimaAtualizacao
+                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `\n` +
+            `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+            `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+            `Convocados: ${statusCompleto.comercial.convocados}\n` +
+            `\n` +
+            `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+            `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+            `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+            `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+            `Empossados: ${statusCompleto.comercial.empossados}\n` +
+            `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+            `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+            `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
+            `</pre>`
+    }
+
+    axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/sendMessage', mensagem)
+        .then(({ data: resposta }) => {
+            if (resposta.ok) {
+                console.log("Pinando mensagem:", resposta.result.message_id)
+                mensagensFixadas.push({
+                    chat_id: resposta.result.chat.id,
+                    message_id: resposta.result.message_id
+                })
+
+                const mensagemFixada: BotPinCommand = {
+                    chat_id: resposta.result.chat.id,
+                    message_id: resposta.result.message_id,
+                    disable_notification: false
+                }
+                axios.post(AMBIENTE.TELEGRAM_API + '/pinMessage', mensagemFixada)
+                    .then(({ data: respostaFixada }) => {
+                        console.log("Resposta da mensagem fixada:", respostaFixada)
+                    }).catch(erro => {
+                        console.log("Erro=>", erro)
+                    })
+            }
+        })
+        .catch((e: AxiosError) => {
+            console.log("Erro=>", e.response?.data || e)
+        })
 }
 
 export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado, situacaoAnterior: string, candidato: Candidato) => {
@@ -324,65 +398,59 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
     }
 }
 
-const fixar = async (mensagemRecebida: BotUpdate) => {
+export const editaMensagensFixadas = async () => {
     const statusCompleto = geraStatusCompleto()
-    const mensagem: BotUpdateResponse = {
-        chat_id: mensagemRecebida?.message?.chat?.id,
-        method: "sendMessage",
-        parse_mode: "HTML",
-        text: `Status atual das convocações:\n` +
-            `<pre>\n` +
-            `--- TI ---\n` +
-            `${statusCompleto.ti.ultimaAtualizacao
-                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `\n` +
-            `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
-            `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
-            `Convocados: ${statusCompleto.ti.convocados}\n` +
-            `\n` +
-            `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
-            `Expedidas: ${statusCompleto.ti.expedidas}\n` +
-            `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
-            `Qualificados: ${statusCompleto.ti.qualificados}\n` +
-            `Empossados: ${statusCompleto.ti.empossados}\n` +
-            `Cancelados: ${statusCompleto.ti.cancelados}\n` +
-            `Desistentes: ${statusCompleto.ti.desistentes}\n` +
-            `Inaptos: ${statusCompleto.ti.inaptos}\n` +
-            `\n` +
-            `\n` +
-            `--- COMERCIAL ---\n` +
-            `${statusCompleto.comercial.ultimaAtualizacao
-                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `\n` +
-            `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
-            `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
-            `Convocados: ${statusCompleto.comercial.convocados}\n` +
-            `\n` +
-            `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
-            `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
-            `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
-            `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
-            `Empossados: ${statusCompleto.comercial.empossados}\n` +
-            `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
-            `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
-            `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
-            `</pre>`
-    }
-
-    axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/sendMessage', mensagem)
-        .then(({ data: resposta }) => {
-            if (resposta.ok) {
-                console.log("Pinando mensagem:", resposta.result.message_id)
-                console.log("Chat:", resposta.result.chat)
-                console.log("From:", resposta.result.from)
-                // axios.post(AMBIENTE.TELEGRAM_API + '/pinMessage').then(({ data: respostaPinada }) => {
-                //     console.log("Resposta da mensagem pinada:", respostaPinada)
-                // }).catch(erro => {
-                //     console.log("Erro=>", erro)
-                // })
-            }
-        })
-        .catch((e: AxiosError) => {
-            console.log("Erro=>", e.response?.data || e)
-        })
+    mensagensFixadas.forEach(mensagem => {
+        const { chat_id, message_id } = mensagem
+        const novaMensagemFixada: BotEditMessageCommand = {
+            chat_id,
+            message_id,
+            parse_mode: "HTML",
+            text: `Status atual das convocações:\n` +
+                `<pre>\n` +
+                `--- TI ---\n` +
+                `${statusCompleto.ti.ultimaAtualizacao
+                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                `\n` +
+                `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+                `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+                `Convocados: ${statusCompleto.ti.convocados}\n` +
+                `\n` +
+                `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+                `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+                `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+                `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+                `Empossados: ${statusCompleto.ti.empossados}\n` +
+                `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+                `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+                `Inaptos: ${statusCompleto.ti.inaptos}\n` +
+                `\n` +
+                `\n` +
+                `--- COMERCIAL ---\n` +
+                `${statusCompleto.comercial.ultimaAtualizacao
+                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                `\n` +
+                `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+                `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+                `Convocados: ${statusCompleto.comercial.convocados}\n` +
+                `\n` +
+                `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+                `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+                `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+                `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+                `Empossados: ${statusCompleto.comercial.empossados}\n` +
+                `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+                `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+                `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
+                `</pre>`
+        }
+        axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/editMessageText', novaMensagemFixada)
+            .then(({ data: resposta }) => {
+                console.log("Editando mensagem:", resposta.result)
+            })
+            .catch((e: AxiosError) => {
+                console.log("Erro=>", e.response?.data || e)
+            })
+    })
 }
+

@@ -1,4 +1,4 @@
-export type BotEditedMessage = {
+export type BotEditMessageCommand = {
     chat_id?: number | string
     message_id?: number
     inline_message_id?: string
