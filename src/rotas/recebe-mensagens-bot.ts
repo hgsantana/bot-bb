@@ -9,14 +9,17 @@ export const recebeMensagensBot = async (req: Request, res: Response) => {
     if (!req.query
         || !req.query.token
         || req.query.token != AMBIENTE.TELEGRAM_TOKEN
-    ) return res.status(401).send()
+    ) {
+        console.log("Mensagem ignorada pois não veio token.")
+        return res.status(401).send()
+    }
 
     try {
         const resposta: BotUpdateResponse | null = checaMensagem(mensagemRecebida)
         if (resposta) res.send(resposta)
         else res.send()
     } catch (error) {
-        console.log(error)
+        console.log("Erro=>", error)
         res.status(400).send()
     }
 }

@@ -89,7 +89,7 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     const statusCompleto = geraStatusCompleto()
     const reply_to_message_id = mensagemRecebida?.message?.message_id
-    return {
+    const mensagem: BotUpdateResponse = {
         chat_id: mensagemRecebida.message.chat.id,
         method: "sendMessage",
         parse_mode: "HTML",
@@ -133,6 +133,8 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             `\n` +
             `< /pre>`
     }
+    console.log("Resposta enviada ao /status:", mensagem)
+    return mensagem
 }
 
 const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
