@@ -76,7 +76,7 @@ const checaBackups = async () => {
             naoConvocados,
             qualificados,
             inconsistentes,
-            ultimaAtualizacao,
+            ultimaAtualizacao: new Date(ultimaAtualizacao),
         }
         if (candidatos) AGENTES_TI.splice(0, AGENTES_TI.length, ...candidatos)
     }
@@ -109,7 +109,7 @@ const checaBackups = async () => {
             naoConvocados,
             qualificados,
             inconsistentes,
-            ultimaAtualizacao,
+            ultimaAtualizacao: new Date(ultimaAtualizacao),
         }
         if (candidatos) AGENTES_COMERCIAL.splice(0, AGENTES_COMERCIAL.length, ...candidatos)
     }
@@ -334,7 +334,7 @@ export const geraStatusCompleto = () => {
             inconsistentes: RESPOSTA_TI.inconsistentes,
             qualificados: RESPOSTA_TI.qualificados,
             naoConvocados: RESPOSTA_TI.naoConvocados,
-            ultimaAtualizacao: new Date(RESPOSTA_TI.ultimaAtualizacao)
+            ultimaAtualizacao: RESPOSTA_TI.ultimaAtualizacao
         },
         comercial: {
             id: 1,
@@ -349,7 +349,7 @@ export const geraStatusCompleto = () => {
             inconsistentes: RESPOSTA_COMERCIAL.inconsistentes,
             qualificados: RESPOSTA_COMERCIAL.qualificados,
             naoConvocados: RESPOSTA_COMERCIAL.naoConvocados,
-            ultimaAtualizacao: new Date(RESPOSTA_COMERCIAL.ultimaAtualizacao)
+            ultimaAtualizacao: RESPOSTA_COMERCIAL.ultimaAtualizacao
         }
     }
     return resposta
