@@ -400,49 +400,51 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
 
 export const editaMensagensFixadas = async () => {
     const statusCompleto = geraStatusCompleto()
+    const text = `Status atual das convocações:\n` +
+        `<pre>\n` +
+        `--- TI ---\n` +
+        `${statusCompleto.ti.ultimaAtualizacao
+            .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+        `\n` +
+        `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+        `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+        `Convocados: ${statusCompleto.ti.convocados}\n` +
+        `\n` +
+        `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+        `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+        `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+        `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+        `Empossados: ${statusCompleto.ti.empossados}\n` +
+        `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+        `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+        `Inaptos: ${statusCompleto.ti.inaptos}\n` +
+        `\n` +
+        `\n` +
+        `--- COMERCIAL ---\n` +
+        `${statusCompleto.comercial.ultimaAtualizacao
+            .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+        `\n` +
+        `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+        `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+        `Convocados: ${statusCompleto.comercial.convocados}\n` +
+        `\n` +
+        `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+        `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+        `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+        `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+        `Empossados: ${statusCompleto.comercial.empossados}\n` +
+        `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+        `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+        `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
+        `</pre>`
+
     mensagensFixadas.forEach(mensagem => {
         const { chat_id, message_id } = mensagem
         const novaMensagemFixada: BotEditMessageCommand = {
             chat_id,
             message_id,
             parse_mode: "HTML",
-            text: `Status atual das convocações:\n` +
-                `<pre>\n` +
-                `--- TI ---\n` +
-                `${statusCompleto.ti.ultimaAtualizacao
-                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-                `\n` +
-                `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
-                `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
-                `Convocados: ${statusCompleto.ti.convocados}\n` +
-                `\n` +
-                `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
-                `Expedidas: ${statusCompleto.ti.expedidas}\n` +
-                `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
-                `Qualificados: ${statusCompleto.ti.qualificados}\n` +
-                `Empossados: ${statusCompleto.ti.empossados}\n` +
-                `Cancelados: ${statusCompleto.ti.cancelados}\n` +
-                `Desistentes: ${statusCompleto.ti.desistentes}\n` +
-                `Inaptos: ${statusCompleto.ti.inaptos}\n` +
-                `\n` +
-                `\n` +
-                `--- COMERCIAL ---\n` +
-                `${statusCompleto.comercial.ultimaAtualizacao
-                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-                `\n` +
-                `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
-                `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
-                `Convocados: ${statusCompleto.comercial.convocados}\n` +
-                `\n` +
-                `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
-                `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
-                `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
-                `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
-                `Empossados: ${statusCompleto.comercial.empossados}\n` +
-                `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
-                `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
-                `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
-                `</pre>`
+            text
         }
         axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/editMessageText', novaMensagemFixada)
             .then(({ data: resposta }) => {
