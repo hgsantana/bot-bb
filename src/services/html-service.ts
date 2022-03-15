@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
 import { AGENTES_TI } from '../data/nomes-ti'
 import { Candidato } from '../models/candidato'
+import { RespostaCompleta } from '../models/resposta-completa'
 import { RespostaJSON } from '../models/resposta-json'
 import { buscaDados, salvaDados } from './storage-service'
 import { enviaMensagemAdmin, enviaMensagemPrivada, enviaMensagemPublica, enviaStatus, usuariosCadastrados } from './telegram-service'
@@ -271,7 +272,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
     }
 
     salvaDados(resposta, tipo)
-    if (houveAlteracao) enviaStatus(resposta)
+    if (houveAlteracao) enviaStatus(resposta, tipo)
 }
 
 const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
@@ -319,20 +320,37 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
 }
 
 export const geraStatusCompleto = () => {
-    const resposta: RespostaJSON = {
-        id: 1,
-        autorizadas: RESPOSTA_COMERCIAL.autorizadas + RESPOSTA_TI.autorizadas,
-        cancelados: RESPOSTA_COMERCIAL.cancelados + RESPOSTA_TI.cancelados,
-        convocados: RESPOSTA_COMERCIAL.convocados + RESPOSTA_TI.convocados,
-        desistentes: RESPOSTA_COMERCIAL.desistentes + RESPOSTA_TI.desistentes,
-        emQualificacao: RESPOSTA_COMERCIAL.emQualificacao + RESPOSTA_TI.emQualificacao,
-        empossados: RESPOSTA_COMERCIAL.empossados + RESPOSTA_TI.empossados,
-        expedidas: RESPOSTA_COMERCIAL.expedidas + RESPOSTA_TI.expedidas,
-        inaptos: RESPOSTA_COMERCIAL.inaptos + RESPOSTA_TI.inaptos,
-        inconsistentes: RESPOSTA_COMERCIAL.inconsistentes + RESPOSTA_TI.inconsistentes,
-        qualificados: RESPOSTA_COMERCIAL.qualificados + RESPOSTA_TI.qualificados,
-        naoConvocados: RESPOSTA_COMERCIAL.naoConvocados + RESPOSTA_TI.naoConvocados,
-        ultimaAtualizacao: RESPOSTA_COMERCIAL.ultimaAtualizacao,
+    const resposta: RespostaCompleta = {
+        ti: {
+            id: 1,
+            autorizadas: RESPOSTA_TI.autorizadas,
+            cancelados: RESPOSTA_TI.cancelados,
+            convocados: RESPOSTA_TI.convocados,
+            desistentes: RESPOSTA_TI.desistentes,
+            emQualificacao: RESPOSTA_TI.emQualificacao,
+            empossados: RESPOSTA_TI.empossados,
+            expedidas: RESPOSTA_TI.expedidas,
+            inaptos: RESPOSTA_TI.inaptos,
+            inconsistentes: RESPOSTA_TI.inconsistentes,
+            qualificados: RESPOSTA_TI.qualificados,
+            naoConvocados: RESPOSTA_TI.naoConvocados,
+            ultimaAtualizacao: RESPOSTA_TI.ultimaAtualizacao
+        },
+        comercial: {
+            id: 1,
+            autorizadas: RESPOSTA_COMERCIAL.autorizadas,
+            cancelados: RESPOSTA_COMERCIAL.cancelados,
+            convocados: RESPOSTA_COMERCIAL.convocados,
+            desistentes: RESPOSTA_COMERCIAL.desistentes,
+            emQualificacao: RESPOSTA_COMERCIAL.emQualificacao,
+            empossados: RESPOSTA_COMERCIAL.empossados,
+            expedidas: RESPOSTA_COMERCIAL.expedidas,
+            inaptos: RESPOSTA_COMERCIAL.inaptos,
+            inconsistentes: RESPOSTA_COMERCIAL.inconsistentes,
+            qualificados: RESPOSTA_COMERCIAL.qualificados,
+            naoConvocados: RESPOSTA_COMERCIAL.naoConvocados,
+            ultimaAtualizacao: RESPOSTA_COMERCIAL.ultimaAtualizacao,
+        }
     }
     return resposta
 }

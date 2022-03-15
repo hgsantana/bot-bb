@@ -96,20 +96,36 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
         reply_to_message_id,
         text: `Status atual das convocações:\n` +
             `<pre>\n` +
-            `Não Convocados: ${statusCompleto.naoConvocados}\n` +
-            `Convocados: ${statusCompleto.convocados}\n` +
+            `--- TI ---:\n` +
+            `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+            `Convocados: ${statusCompleto.ti.convocados}\n` +
             `\n` +
-            `Autorizadas: ${statusCompleto.autorizadas}\n` +
-            `Expedidas: ${statusCompleto.expedidas}\n` +
-            `Qualificação: ${statusCompleto.emQualificacao}\n` +
-            `Qualificados: ${statusCompleto.qualificados}\n` +
-            `Empossados: ${statusCompleto.empossados}\n` +
-            `Cancelados: ${statusCompleto.cancelados}\n` +
-            `Desistentes: ${statusCompleto.desistentes}\n` +
-            `Inaptos: ${statusCompleto.inaptos}\n` +
+            `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+            `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+            `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+            `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+            `Empossados: ${statusCompleto.ti.empossados}\n` +
+            `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+            `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+            `Inaptos: ${statusCompleto.ti.inaptos}\n` +
             `\n` +
-            `${statusCompleto.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `</pre>`
+            `${statusCompleto.ti.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `\n\n` +
+            `--- COMERCIAL ---:\n` +
+            `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+            `Convocados: ${statusCompleto.comercial.convocados}\n` +
+            `\n` +
+            `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+            `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+            `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+            `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+            `Empossados: ${statusCompleto.comercial.empossados}\n` +
+            `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+            `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+            `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
+            `\n` +
+            `${statusCompleto.comercial.ultimaAtualizacao.toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `< /pre>`
     }
 }
 
@@ -228,13 +244,13 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
     })
 }
 
-export const enviaStatus = (resposta: RespostaJSON) => {
+export const enviaStatus = (resposta: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
     chatsCadastrados.forEach(async chat => {
         try {
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração no status geral:\n` +
+                text: `Alteração no status de ${tipo}:\n` +
                     `<pre>\n` +
                     `Não Convocados: ${resposta.naoConvocados}\n` +
                     `Convocados: ${resposta.convocados}\n` +
