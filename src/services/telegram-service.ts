@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios"
 import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
 import { AGENTES_TI } from "../data/nomes-ti"
 import { AMBIENTE } from "../main"
+import { BotMessageResponse } from "../models/bot-message-response"
 import { BotPinnedMessage } from "../models/bot-pinned-message"
 import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
@@ -368,10 +369,18 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
             `</pre>`
     }
 
-    const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
-    await axios.post<BotUpdateResponse>(api, mensagem)
+    axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/sendMessage', mensagem)
         .then(({ data: resposta }) => {
-            console.log("Resposta da mensagem pinada:", resposta)
+            if (resposta.ok) {
+                console.log("Pinando mensagem:", resposta.result.message_id)
+                console.log("Chat:", resposta.result.chat)
+                console.log("From:", resposta.result.from)
+                // axios.post(AMBIENTE.TELEGRAM_API + '/pinMessage').then(({ data: respostaPinada }) => {
+                //     console.log("Resposta da mensagem pinada:", respostaPinada)
+                // }).catch(erro => {
+                //     console.log("Erro=>", erro)
+                // })
+            }
         })
         .catch((e: AxiosError) => {
             console.log("Erro=>", e.response?.data || e)
