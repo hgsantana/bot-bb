@@ -371,7 +371,7 @@ const pinar = async (mensagemRecebida: BotUpdate) => {
     const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
     await axios.post<BotUpdateResponse>(api, mensagem)
         .then(resposta => {
-            console.log("Resposta da mensagem pinada:", resposta.data)
+            console.log("Resposta da mensagem pinada:", resposta)
         })
         .catch((e: AxiosError) => {
             console.log("Erro=>", e.response?.data || e)
