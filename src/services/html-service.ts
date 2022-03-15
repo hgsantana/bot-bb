@@ -286,13 +286,13 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo:
             ?.replace("&atilde;", "ã")
             ?.trim()
 
-        candidato.agenciaSituacao = situacaoCompleta?.match(/(?<=ag[e|ê]ncia )([\w\/\ \.\-])*/gi)?.[0] || "None"
+        candidato.agenciaSituacao = situacaoCompleta?.match(/(?<=ag[e|ê]ncia )([\w\/\ \.\-])*/gi)?.[0] || null
 
         // formata data para YYYY-MM-DD
         const arrayDataSituacao = situacaoCompleta?.match(/[0-9\.]+/gi)?.[0]?.split(".")
         if (arrayDataSituacao?.length)
             candidato.dataSituacao = `${arrayDataSituacao?.[2]}-${arrayDataSituacao?.[1]}-${arrayDataSituacao?.[0]}`
-        else candidato.dataSituacao = "None"
+        else candidato.dataSituacao = null
 
         const situacaoAnterior = candidato.situacao
         const novaSituacao = situacaoCompleta

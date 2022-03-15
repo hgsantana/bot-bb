@@ -7,7 +7,7 @@ export type Candidato = {
     macroRegiao: number
     microRegiao: number
 
-    agenciaSituacao?: string
-    dataSituacao?: string
-    quantidadeCadastros?: number
+    agenciaSituacao?: string | null
+    dataSituacao?: string | null
+    quantidadeCadastros?: number | null
 }

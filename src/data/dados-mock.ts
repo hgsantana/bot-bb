@@ -47,8 +47,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1981-02-06",
@@ -80,8 +80,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1989-03-27",
@@ -102,7 +102,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-24"
     },
     {
@@ -113,8 +113,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-07-04",
@@ -136,8 +136,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1984-01-02",
@@ -158,8 +158,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-12-27",
@@ -169,8 +169,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1988-10-07",
@@ -180,8 +180,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2001-06-02",
@@ -213,8 +213,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-06-19",
@@ -224,8 +224,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1989-03-17",
@@ -257,8 +257,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-10-20",
@@ -290,8 +290,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-12-26",
@@ -301,8 +301,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2002-05-01",
@@ -368,8 +368,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-09-23",
@@ -390,8 +390,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-06-27",
@@ -412,8 +412,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-03-05",
@@ -423,8 +423,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-07-24",
@@ -434,8 +434,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-12-17",
@@ -445,8 +445,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-07-16",
@@ -512,8 +512,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-11-11",
@@ -523,7 +523,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -534,7 +534,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-03-03"
     },
     {
@@ -545,7 +545,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -567,8 +567,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2002-12-11",
@@ -578,8 +578,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1987-08-28",
@@ -634,8 +634,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1987-12-19",
@@ -701,8 +701,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-08-21",
@@ -712,8 +712,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-12-04",
@@ -790,8 +790,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1979-04-12",
@@ -801,8 +801,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-12-23",
@@ -812,8 +812,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-09-04",
@@ -834,8 +834,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-04-06",
@@ -846,8 +846,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1988-03-13",
@@ -858,7 +858,7 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -880,7 +880,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -913,8 +913,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-03-13",
@@ -946,8 +946,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-05-27",
@@ -979,8 +979,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2002-12-21",
@@ -990,7 +990,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-03-04"
     },
     {
@@ -1001,8 +1001,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-06-24",
@@ -1012,8 +1012,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-03-21",
@@ -1078,8 +1078,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-03-15",
@@ -1089,8 +1089,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-05-15",
@@ -1133,8 +1133,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1978-06-18",
@@ -1144,8 +1144,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2003-11-03",
@@ -1188,8 +1188,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-01-27",
@@ -1210,8 +1210,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1970-07-20",
@@ -1234,8 +1234,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-06-20",
@@ -1245,8 +1245,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1985-02-15",
@@ -1257,8 +1257,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-11-06",
@@ -1279,8 +1279,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2001-11-29",
@@ -1312,8 +1312,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-02-07",
@@ -1323,8 +1323,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-09-21",
@@ -1345,8 +1345,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-01-18",
@@ -1356,8 +1356,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-06-17",
@@ -1389,8 +1389,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-10-29",
@@ -1411,7 +1411,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-22"
     },
     {
@@ -1434,8 +1434,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1982-10-11",
@@ -1523,8 +1523,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-06-27",
@@ -1545,8 +1545,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-08-29",
@@ -1589,8 +1589,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-09-30",
@@ -1600,7 +1600,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -1611,8 +1611,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-02-01",
@@ -1667,8 +1667,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-12-23",
@@ -1700,8 +1700,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-10-01",
@@ -1733,8 +1733,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1986-02-11",
@@ -1745,7 +1745,7 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-20"
     },
     {
@@ -1756,8 +1756,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-08-01",
@@ -1767,8 +1767,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-12-14",
@@ -1778,8 +1778,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-07-28",
@@ -1789,8 +1789,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-04-15",
@@ -1800,8 +1800,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-12-23",
@@ -1855,8 +1855,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-03-14",
@@ -1877,7 +1877,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-03-07"
     },
     {
@@ -1899,8 +1899,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-10-01",
@@ -1921,8 +1921,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1987-05-28",
@@ -1932,7 +1932,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -1943,8 +1943,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-01-20",
@@ -2020,8 +2020,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1990-06-05",
@@ -2042,8 +2042,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-11-05",
@@ -2064,7 +2064,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-23"
     },
     {
@@ -2108,7 +2108,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-19"
     },
     {
@@ -2130,8 +2130,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2001-05-22",
@@ -2141,8 +2141,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1988-10-12",
@@ -2163,8 +2163,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-05-23",
@@ -2186,7 +2186,7 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-15"
     },
     {
@@ -2197,8 +2197,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1979-06-20",
@@ -2208,8 +2208,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-05-02",
@@ -2241,8 +2241,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1986-10-16",
@@ -2263,8 +2263,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-12-30",
@@ -2319,8 +2319,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-07-23",
@@ -2330,8 +2330,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-04-29",
@@ -2341,8 +2341,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-08-08",
@@ -2374,8 +2374,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-01-28",
@@ -2385,8 +2385,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-09-22",
@@ -2429,8 +2429,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-09-02",
@@ -2451,8 +2451,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1988-03-31",
@@ -2462,7 +2462,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -2474,8 +2474,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-05-24",
@@ -2496,7 +2496,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -2518,8 +2518,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-01-14",
@@ -2529,7 +2529,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-22"
     },
     {
@@ -2584,8 +2584,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-06-20",
@@ -2606,7 +2606,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-22"
     },
     {
@@ -2617,8 +2617,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-05-11",
@@ -2628,8 +2628,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-08-19",
@@ -2639,8 +2639,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1988-07-04",
@@ -2650,7 +2650,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-28"
     },
     {
@@ -2661,8 +2661,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-06-04",
@@ -2683,8 +2683,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-06-16",
@@ -2694,7 +2694,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-21"
     },
     {
@@ -2727,8 +2727,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-09-28",
@@ -2749,8 +2749,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-08-17",
@@ -2782,7 +2782,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-24"
     },
     {
@@ -2793,8 +2793,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-01-21",
@@ -2815,8 +2815,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-11-27",
@@ -2837,8 +2837,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-08-05",
@@ -2859,8 +2859,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2001-04-04",
@@ -2881,8 +2881,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1986-05-31",
@@ -2915,8 +2915,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-02-13",
@@ -2926,7 +2926,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-16"
     },
     {
@@ -2937,8 +2937,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-12-27",
@@ -2992,8 +2992,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-05-20",
@@ -3036,8 +3036,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2001-01-09",
@@ -3058,7 +3058,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-22"
     },
     {
@@ -3080,8 +3080,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-07-04",
@@ -3091,8 +3091,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-04-08",
@@ -3113,8 +3113,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-08-02",
@@ -3146,8 +3146,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-04-22",
@@ -3158,7 +3158,7 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-03-02"
     },
     {
@@ -3169,8 +3169,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-08-24",
@@ -3180,8 +3180,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-07-29",
@@ -3191,8 +3191,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-04-23",
@@ -3213,7 +3213,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -3224,8 +3224,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-12-26",
@@ -3257,8 +3257,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-05-06",
@@ -3279,8 +3279,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-09-08",
@@ -3290,8 +3290,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-10-31",
@@ -3301,8 +3301,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-12-27",
@@ -3345,8 +3345,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-09-05",
@@ -3367,8 +3367,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1974-12-26",
@@ -3379,7 +3379,7 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-28"
     },
     {
@@ -3390,7 +3390,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -3412,8 +3412,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1978-11-11",
@@ -3424,8 +3424,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1985-08-19",
@@ -3435,8 +3435,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-09-10",
@@ -3446,8 +3446,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-10-08",
@@ -3457,7 +3457,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -3468,8 +3468,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-12-27",
@@ -3490,8 +3490,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-02-14",
@@ -3501,8 +3501,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1989-10-05",
@@ -3512,8 +3512,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-09-02",
@@ -3523,8 +3523,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1988-02-08",
@@ -3534,8 +3534,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1985-11-20",
@@ -3678,8 +3678,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-02-02",
@@ -3700,7 +3700,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -3711,8 +3711,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-04-17",
@@ -3722,7 +3722,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-20"
     },
     {
@@ -3755,7 +3755,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-21"
     },
     {
@@ -3777,8 +3777,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-09-24",
@@ -3788,8 +3788,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-10-01",
@@ -3799,8 +3799,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2001-04-30",
@@ -3810,7 +3810,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-24"
     },
     {
@@ -3821,8 +3821,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-11-20",
@@ -3832,8 +3832,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1996-08-02",
@@ -3854,8 +3854,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-10-01",
@@ -3876,8 +3876,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-07-18",
@@ -3899,8 +3899,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-01-14",
@@ -3932,8 +3932,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-04-12",
@@ -3954,8 +3954,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-06-11",
@@ -3965,8 +3965,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-06-26",
@@ -3976,8 +3976,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-10-01",
@@ -3987,8 +3987,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-05-04",
@@ -3998,8 +3998,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1979-11-10",
@@ -4009,8 +4009,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1975-03-28",
@@ -4020,7 +4020,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -4031,8 +4031,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-03-24",
@@ -4042,8 +4042,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1977-08-05",
@@ -4064,8 +4064,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-08-31",
@@ -4075,8 +4075,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1978-09-30",
@@ -4086,8 +4086,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-11-17",
@@ -4142,8 +4142,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-09-23",
@@ -4208,8 +4208,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-03-13",
@@ -4241,8 +4241,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-04-06",
@@ -4319,8 +4319,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-02-06",
@@ -4352,8 +4352,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-08-25",
@@ -4363,8 +4363,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1979-11-20",
@@ -4374,8 +4374,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-04-12",
@@ -4385,8 +4385,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-05-31",
@@ -4396,8 +4396,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1995-03-08",
@@ -4430,8 +4430,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-09-19",
@@ -4452,8 +4452,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-09-17",
@@ -4463,8 +4463,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2002-03-10",
@@ -4530,8 +4530,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1980-01-11",
@@ -4542,8 +4542,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 3,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1975-11-05",
@@ -4553,8 +4553,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1993-12-17",
@@ -4576,7 +4576,7 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -4587,7 +4587,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-01-16"
     },
     {
@@ -4609,7 +4609,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -4653,8 +4653,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-03-11",
@@ -4686,8 +4686,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-03-17",
@@ -4708,8 +4708,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-08-25",
@@ -4719,7 +4719,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -4741,8 +4741,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1987-11-21",
@@ -4763,8 +4763,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-06-09",
@@ -4774,8 +4774,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-12-21",
@@ -4818,7 +4818,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-20"
     },
     {
@@ -4829,8 +4829,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-01-17",
@@ -4885,8 +4885,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1990-07-22",
@@ -4984,8 +4984,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1997-03-07",
@@ -4995,8 +4995,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1994-09-28",
@@ -5006,8 +5006,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "2000-02-16",
@@ -5028,8 +5028,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1998-09-15",
@@ -5083,8 +5083,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1989-02-01",
@@ -5116,8 +5116,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1987-02-25",
@@ -5127,7 +5127,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -5160,8 +5160,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-08-02",
@@ -5204,7 +5204,7 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CLASSIFICADO",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
+        "agenciaSituacao": null,
         "dataSituacao": "2022-02-21"
     },
     {
@@ -5226,8 +5226,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1983-08-09",
@@ -5249,8 +5249,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 4,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1959-11-12",
@@ -5261,8 +5261,8 @@ export const candidatosMock: Candidato[] = [
         "macroRegiao": 10,
         "microRegiao": 16,
         "quantidadeCadastros": 2,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1982-03-03",
@@ -5283,8 +5283,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1991-01-25",
@@ -5294,8 +5294,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1992-06-13",
@@ -5327,8 +5327,8 @@ export const candidatosMock: Candidato[] = [
         "tipo": "CADASTRO-RESERVA",
         "macroRegiao": 10,
         "microRegiao": 16,
-        "agenciaSituacao": "None",
-        "dataSituacao": "None"
+        "agenciaSituacao": null,
+        "dataSituacao": null
     },
     {
         "dataNascimento": "1999-12-09",
