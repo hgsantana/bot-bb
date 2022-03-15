@@ -14,16 +14,18 @@ import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
 const nomesCandidatos = [...AGENTES_COMERCIAL.map(a => a.nome), ...AGENTES_TI.map(a => a.nome)]
 export let usuariosCadastrados: UsuarioCadastrado[] = []
 export let chatsCadastrados: ChatCadastrado[] = []
+export let mensagensPinadas: BotUpdateResponse[] = []
 
 // restaura backup do telegram
 buscaDadosTelegram().then(dados => {
     if (dados) {
-        usuariosCadastrados = dados.usuariosCadastrados
-        chatsCadastrados = dados.chatsCadastrados
+        usuariosCadastrados = dados.usuariosCadastrados || []
+        chatsCadastrados = dados.chatsCadastrados || []
+        mensagensPinadas = dados.mensagensPinadas || []
     }
 })
 
-export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
+export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     if (!mensagemRecebida?.message?.text) return null
 
     if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/iniciar"))
@@ -34,6 +36,11 @@ export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | 
 
     if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/status"))
         return status(mensagemRecebida)
+
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/pinar")) {
+        pinar(mensagemRecebida)
+        return null
+    }
 
     if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/cadastrar"))
         return cadastrar(mensagemRecebida)
@@ -52,7 +59,7 @@ const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
         console.log("Ativando atualizações para o chat:", mensagemRecebida.message.chat.id)
         text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
         chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
     }
     const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
@@ -70,7 +77,7 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     if (chat) {
         const indiceChat = chatsCadastrados.indexOf(chat)
         chatsCadastrados.splice(indiceChat, 1)
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
         console.log("Desativando atualizações para o chat:", mensagemRecebida.message.chat.id)
         text = `As atualizações foram interrompidas para este chat.`
     } else {
@@ -153,7 +160,7 @@ const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
         else {
             console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
             usuariosCadastrados.push({ id: idDestinatario, nomeChecagem: nome })
-            salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
+            salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
         }
     }
 
@@ -176,7 +183,7 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
     if (usuario) {
         console.log("Descadastrando usuário para envio de mensagens:", usuario)
         usuariosCadastrados.splice(usuariosCadastrados.indexOf(usuario), 1)
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados })
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensPinadas })
     } else text = `Você ainda não está cadastrado para receber avisos.`
 
     return {
@@ -313,4 +320,59 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
         console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
         console.log("Erro=> ", error)
     }
+}
+
+const pinar = async (mensagemRecebida: BotUpdate) => {
+    const statusCompleto = geraStatusCompleto()
+    const mensagem: BotUpdateResponse = {
+        chat_id: mensagemRecebida?.message?.chat?.id,
+        method: "sendMessage",
+        parse_mode: "HTML",
+        text: `Status atual das convocações:\n` +
+            `<pre>\n` +
+            `--- TI ---\n` +
+            `${statusCompleto.ti.ultimaAtualizacao
+                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `\n` +
+            `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+            `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+            `Convocados: ${statusCompleto.ti.convocados}\n` +
+            `\n` +
+            `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+            `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+            `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+            `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+            `Empossados: ${statusCompleto.ti.empossados}\n` +
+            `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+            `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+            `Inaptos: ${statusCompleto.ti.inaptos}\n` +
+            `\n` +
+            `\n` +
+            `--- COMERCIAL ---\n` +
+            `${statusCompleto.comercial.ultimaAtualizacao
+                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+            `\n` +
+            `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+            `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+            `Convocados: ${statusCompleto.comercial.convocados}\n` +
+            `\n` +
+            `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+            `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+            `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+            `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+            `Empossados: ${statusCompleto.comercial.empossados}\n` +
+            `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+            `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+            `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
+            `</pre>`
+    }
+
+    const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
+    const resposta = await axios.post<BotUpdateResponse>(api, mensagem).catch((e: AxiosError) => {
+        console.log("Erro=>", e.response?.data || e)
+    })
+    if (resposta) {
+        console.log("Resposta da mensagem pinada:", resposta)
+    }
+
 }
