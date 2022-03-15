@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios"
 import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
 import { AGENTES_TI } from "../data/nomes-ti"
 import { AMBIENTE } from "../main"
+import { BotPinnedMessage } from "../models/bot-pinned-message"
 import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
 import { Candidato } from "../models/candidato"
@@ -14,7 +15,7 @@ import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
 const nomesCandidatos = [...AGENTES_COMERCIAL.map(a => a.nome), ...AGENTES_TI.map(a => a.nome)]
 export let usuariosCadastrados: UsuarioCadastrado[] = []
 export let chatsCadastrados: ChatCadastrado[] = []
-export let mensagensPinadas: BotUpdateResponse[] = []
+export let mensagensPinadas: BotPinnedMessage[] = []
 
 // restaura backup do telegram
 buscaDadosTelegram().then(dados => {
@@ -368,11 +369,11 @@ const pinar = async (mensagemRecebida: BotUpdate) => {
     }
 
     const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
-    const resposta = await axios.post<BotUpdateResponse>(api, mensagem).catch((e: AxiosError) => {
-        console.log("Erro=>", e.response?.data || e)
-    })
-    if (resposta) {
-        console.log("Resposta da mensagem pinada:", resposta)
-    }
-
+    await axios.post<BotUpdateResponse>(api, mensagem)
+        .then(resposta => {
+            console.log("Resposta da mensagem pinada:", resposta.data)
+        })
+        .catch((e: AxiosError) => {
+            console.log("Erro=>", e.response?.data || e)
+        })
 }
