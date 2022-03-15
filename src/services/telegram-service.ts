@@ -26,19 +26,19 @@ buscaDadosTelegram().then(dados => {
 export const checaMensagem = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     if (!mensagemRecebida?.message?.text) return null
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/iniciar"))
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/iniciar"))
         return iniciar(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/parar"))
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/parar"))
         return parar(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/status"))
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/status"))
         return status(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/cadastrar"))
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/cadastrar"))
         return cadastrar(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().startsWith("/descadastrar"))
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/descadastrar"))
         return descadastrar(mensagemRecebida)
 
     return null
