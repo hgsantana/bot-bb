@@ -38,8 +38,8 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/status"))
         return status(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/pinar")) {
-        pinar(mensagemRecebida)
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/fixar")) {
+        fixar(mensagemRecebida)
         return null
     }
 
@@ -323,7 +323,7 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
     }
 }
 
-const pinar = async (mensagemRecebida: BotUpdate) => {
+const fixar = async (mensagemRecebida: BotUpdate) => {
     const statusCompleto = geraStatusCompleto()
     const mensagem: BotUpdateResponse = {
         chat_id: mensagemRecebida?.message?.chat?.id,
@@ -370,7 +370,7 @@ const pinar = async (mensagemRecebida: BotUpdate) => {
 
     const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
     await axios.post<BotUpdateResponse>(api, mensagem)
-        .then(resposta => {
+        .then(({ data: resposta }) => {
             console.log("Resposta da mensagem pinada:", resposta)
         })
         .catch((e: AxiosError) => {
