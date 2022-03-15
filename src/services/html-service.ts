@@ -254,16 +254,16 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
         else if (candidato.situacao.includes("Inapto")) resposta.inaptos++
         else if (candidato.situacao.includes("Não Convocado")) resposta.naoConvocados++
         else candidatosNaoClassificados.push(candidato)
-        resposta.convocados = candidatos.length - resposta.naoConvocados
     })
 
+    resposta.convocados = candidatos.length - resposta.naoConvocados
     console.log(`Dados ${tipo} atualizados:`, resposta)
 
     if (candidatosNaoClassificados.length) {
-        resposta.inconsistentes = candidatosNaoClassificados.length
         console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
         enviaMensagemAdmin(candidatosNaoClassificados)
     }
+    resposta.inconsistentes = candidatosNaoClassificados.length
 
     if (tipo == "TI") {
         RESPOSTA_TI.id++
