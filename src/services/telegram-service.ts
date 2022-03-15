@@ -111,7 +111,7 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             `${statusCompleto.ti.ultimaAtualizacao
                 .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
             `\n` +
-            `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+            `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
             `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
             `Convocados: ${statusCompleto.ti.convocados}\n` +
             `\n` +
@@ -129,7 +129,7 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             `${statusCompleto.comercial.ultimaAtualizacao
                 .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
             `\n` +
-            `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+            `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
             `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
             `Convocados: ${statusCompleto.comercial.convocados}\n` +
             `\n` +
@@ -211,7 +211,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
             `${statusCompleto.ti.ultimaAtualizacao
                 .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
             `\n` +
-            `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+            `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
             `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
             `Convocados: ${statusCompleto.ti.convocados}\n` +
             `\n` +
@@ -229,7 +229,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
             `${statusCompleto.comercial.ultimaAtualizacao
                 .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
             `\n` +
-            `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+            `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
             `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
             `Convocados: ${statusCompleto.comercial.convocados}\n` +
             `\n` +
@@ -406,7 +406,7 @@ export const editaMensagensFixadas = async () => {
         `${statusCompleto.ti.ultimaAtualizacao
             .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
         `\n` +
-        `Total:${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+        `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
         `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
         `Convocados: ${statusCompleto.ti.convocados}\n` +
         `\n` +
@@ -424,7 +424,7 @@ export const editaMensagensFixadas = async () => {
         `${statusCompleto.comercial.ultimaAtualizacao
             .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
         `\n` +
-        `Total:${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+        `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
         `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
         `Convocados: ${statusCompleto.comercial.convocados}\n` +
         `\n` +
