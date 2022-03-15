@@ -172,7 +172,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
                 )
 
                 const formulario = await capturaFormulario(candidato, resposta.data, axiosConfig)
-                if (formulario) houveAlteracao = houveAlteracao || alteraSituacaoCandidato(candidato, formulario)
+                if (formulario) houveAlteracao = houveAlteracao || alteraSituacaoCandidato(candidato, formulario, tipo)
                 else throw { code: "SEM FORM" }
             } catch (error: any) {
                 erros.push(candidato)
@@ -275,7 +275,7 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
     if (houveAlteracao) enviaStatus(resposta, tipo)
 }
 
-const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
+const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo: "TI" | "COMERCIAL") => {
     const bolds = formulario.match(/<b>[\s\S]*?<\/b>/gi)
     let houveAlteracao = false
     if (bolds) {
@@ -302,7 +302,7 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string) => {
             candidato.situacao = novaSituacao
             if (situacaoAnterior != novaSituacao) {
                 houveAlteracao = true
-                enviaMensagemPublica(situacaoAnterior, candidato)
+                enviaMensagemPublica(situacaoAnterior, candidato, tipo)
                 const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
                 usuariosFiltrados.forEach(u => {
                     enviaMensagemPrivada(u, situacaoAnterior, candidato)

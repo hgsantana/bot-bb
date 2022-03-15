@@ -212,13 +212,13 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
     }
 }
 
-export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candidato) => {
+export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL") => {
     chatsCadastrados.forEach(async chat => {
         try {
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração detectada:\n` +
+                text: `Alteração detectada em ${tipo}:\n` +
                     `<pre>\n` +
                     `Nome: ${candidato.nome}\n` +
                     `Situação: ${candidato.situacao.toUpperCase()}\n` +
