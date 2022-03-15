@@ -3,8 +3,6 @@ import express, { json } from 'express'
 import { configurarAmbiente } from './config/ambiente'
 import { routes } from './routes'
 import { iniciarHTMLService } from './services/html-service'
-import { iniciaMockService } from './services/mock-service'
-import { iniciarWebsocketService } from './services/websocket-service'
 
 export const AMBIENTE = configurarAmbiente()
 
@@ -21,5 +19,4 @@ const server = app.listen(porta, () => {
     console.log("Servindo na porta", porta)
     iniciarHTMLService()
     // iniciarWebsocketService(server)
-    // iniciaMockService()
 })
