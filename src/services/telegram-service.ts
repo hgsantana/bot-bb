@@ -258,6 +258,10 @@ export const enviaStatus = (resposta: RespostaJSON, tipo: "TI" | "COMERCIAL") =>
                 parse_mode: "HTML",
                 text: `Alteração no status de ${tipo}:\n` +
                     `<pre>\n` +
+                    `${resposta.ultimaAtualizacao
+                        .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                    `\n` +
+                    `Total: ${resposta.naoConvocados + resposta.convocados}\n` +
                     `Não Convocados: ${resposta.naoConvocados}\n` +
                     `Convocados: ${resposta.convocados}\n` +
                     `\n` +
@@ -269,9 +273,6 @@ export const enviaStatus = (resposta: RespostaJSON, tipo: "TI" | "COMERCIAL") =>
                     `Cancelados: ${resposta.cancelados}\n` +
                     `Desistentes: ${resposta.desistentes}\n` +
                     `Inaptos: ${resposta.inaptos}\n` +
-                    `\n` +
-                    `${resposta.ultimaAtualizacao
-                        .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
                     `</pre>`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
