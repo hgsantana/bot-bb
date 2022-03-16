@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios"
 import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
 import { AGENTES_TI } from "../data/nomes-ti"
 import { AMBIENTE } from "../main"
+import { BotPinCommandResponse } from "../models/bot-command-response"
 import { BotEditMessageCommand } from "../models/bot-edit-message-command"
 import { BotMessageResponse } from "../models/bot-message-response"
 import { BotPinCommand } from "../models/bot-pin-command"
@@ -258,9 +259,10 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
                     message_id: resposta.result.message_id,
                     disable_notification: false
                 }
-                axios.post(AMBIENTE.TELEGRAM_API + '/pinChatMessage', mensagemFixada)
+                axios.post<BotPinCommandResponse>(AMBIENTE.TELEGRAM_API + '/pinChatMessage', mensagemFixada)
                     .then(({ data: respostaFixada }) => {
-                        console.log("Resposta da mensagem fixada:", respostaFixada)
+                        if (respostaFixada.result) console.log("Mensagem fixada:", mensagemFixada)
+                        else console.log("Falha ao fixar mensagem:", mensagemFixada)
                     }).catch(erro => {
                         console.log("Erro=>", erro)
                     })
