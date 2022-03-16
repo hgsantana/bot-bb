@@ -253,7 +253,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
                     chat_id: resposta.result.chat.id,
                     message_id: resposta.result.message_id
                 })
-
+                salvaDadosTelegram({ chatsCadastrados, mensagensFixadas, usuariosCadastrados })
                 const mensagemFixada: BotPinCommand = {
                     chat_id: resposta.result.chat.id,
                     message_id: resposta.result.message_id,
