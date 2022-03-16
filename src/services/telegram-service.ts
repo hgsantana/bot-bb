@@ -320,7 +320,8 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                     `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}\n` +
                     `\n` +
                     `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
-                    `</pre>`
+                    `</pre>\n`+
+                    `Para ver o status geral atualizado, veja a mensagem fixada.`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 

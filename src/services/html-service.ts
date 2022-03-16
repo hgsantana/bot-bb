@@ -273,7 +273,6 @@ const atualizaJSON = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
 
     salvaDados(resposta, tipo)
     if (houveAlteracao) {
-        enviaStatus(resposta, tipo)
         editaMensagensFixadas()
     }
 }
