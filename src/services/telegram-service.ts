@@ -248,7 +248,6 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
     axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/sendMessage', mensagem)
         .then(({ data: resposta }) => {
             if (resposta.ok) {
-                console.log("Pinando mensagem:", resposta.result.message_id)
                 mensagensFixadas.push({
                     chat_id: resposta.result.chat.id,
                     message_id: resposta.result.message_id
