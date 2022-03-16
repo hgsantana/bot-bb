@@ -248,11 +248,6 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
     axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/sendMessage', mensagem)
         .then(({ data: resposta }) => {
             if (resposta.ok) {
-                mensagensFixadas.push({
-                    chat_id: resposta.result.chat.id,
-                    message_id: resposta.result.message_id
-                })
-                salvaDadosTelegram({ chatsCadastrados, mensagensFixadas, usuariosCadastrados })
                 const mensagemFixada: BotPinCommand = {
                     chat_id: resposta.result.chat.id,
                     message_id: resposta.result.message_id,
@@ -260,8 +255,14 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
                 }
                 axios.post<BotPinCommandResponse>(AMBIENTE.TELEGRAM_API + '/pinChatMessage', mensagemFixada)
                     .then(({ data: respostaFixada }) => {
-                        if (respostaFixada.result) console.log("Mensagem fixada:", mensagemFixada)
-                        else console.log("Falha ao fixar mensagem:", mensagemFixada)
+                        if (respostaFixada.result) {
+                            console.log("Mensagem fixada:", mensagemFixada)
+                            mensagensFixadas.push({
+                                chat_id: resposta.result.chat.id,
+                                message_id: resposta.result.message_id
+                            })
+                            salvaDadosTelegram({ chatsCadastrados, mensagensFixadas, usuariosCadastrados })
+                        } else console.log("Falha ao fixar mensagem:", mensagemFixada)
                     }).catch(erro => {
                         console.log("Erro=>", erro)
                     })
