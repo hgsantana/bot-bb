@@ -163,7 +163,7 @@ const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL
 
                 const axiosConfig: AxiosRequestConfig = {
                     headers,
-                    timeout: 10000
+                    timeout: 5000
                 }
 
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
