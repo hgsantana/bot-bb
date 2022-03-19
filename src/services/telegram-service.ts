@@ -321,7 +321,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                     `\n` +
                     `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
                     `</pre>\n`+
-                    Status geral na mensagem fixada.`
+                    `Status geral na mensagem fixada.`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
