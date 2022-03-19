@@ -206,7 +206,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
         chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
-        text: `Status atual das convocações:\n` +
+        text: `Status geral atualizado:\n` +
             `<pre>\n` +
             `--- TI ---\n` +
             `${statusCompleto.ti.ultimaAtualizacao
@@ -308,7 +308,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração detectada em ${tipo}:\n` +
+                text: `Alteração ${tipo}:\n` +
                     `<pre>\n` +
                     `Nome: ${candidato.nome}\n` +
                     `Situação: ${candidato.situacao.toUpperCase()}\n` +
@@ -341,7 +341,7 @@ export const enviaStatus = (resposta: RespostaJSON, tipo: "TI" | "COMERCIAL") =>
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
-                text: `Alteração no status de ${tipo}:\n` +
+                text: `Status ${tipo}:\n` +
                     `<pre>\n` +
                     `${resposta.ultimaAtualizacao
                         .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
@@ -403,7 +403,7 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
 
 export const editaMensagensFixadas = async () => {
     const statusCompleto = geraStatusCompleto()
-    const text = `Status atual das convocações:\n` +
+    const text = `Status geral atualizado:\n` +
         `<pre>\n` +
         `--- TI ---\n` +
         `${statusCompleto.ti.ultimaAtualizacao
