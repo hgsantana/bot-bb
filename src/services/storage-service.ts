@@ -1,24 +1,25 @@
 import fs from 'fs/promises'
-import { AGENTES_COMERCIAL } from '../data/nomes-comercial'
-import { AGENTES_TI } from '../data/nomes-ti'
 import { BackupTelegram } from '../models/backup-telegram'
-import { RespostaJSON } from "../models/resposta-json"
+import { StatusCompleto } from '../models/status-completo'
 
-export const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON | null> => {
+export const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<StatusCompleto | null> => {
     try {
         await fs.readdir("./backups")
     } catch (error) {
         await fs.mkdir("./backups")
     }
-    
+
     try {
         const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'r')
         const conteudo = await arquivo.readFile()
         await arquivo.close()
-        
+
         if (conteudo.toString()) {
             console.log(`Backup de ${tipo} localizado.`)
-            return JSON.parse(conteudo.toString())
+            const dados: StatusCompleto = JSON.parse(conteudo.toString())
+            dados.ultimaAtualizacao = new Date(dados.ultimaAtualizacao)
+            if (!dados.inconsistentes) dados.inconsistentes = 0
+            return dados
         } else {
             console.log(`Backup de ${tipo} incompleto.`)
             return null
@@ -29,10 +30,8 @@ export const buscaDados = async (tipo: "TI" | "COMERCIAL"): Promise<RespostaJSON
     }
 }
 
-export const salvaDados = async (dados: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
-    const dadosBackup = {...dados}
-    dadosBackup.candidatos = tipo == "TI" ? AGENTES_TI : AGENTES_COMERCIAL
-    const dadosString = JSON.stringify(dadosBackup)
+export const salvaDados = async (dados: StatusCompleto, tipo: "TI" | "COMERCIAL") => {
+    const dadosString = JSON.stringify(dados)
     const arquivo = await fs.open(`backups/backup_${tipo}.json`, 'w+')
     await arquivo.writeFile(dadosString)
     await arquivo.close()
@@ -44,12 +43,12 @@ export const buscaDadosTelegram = async (): Promise<BackupTelegram | null> => {
     } catch (error) {
         await fs.mkdir("./backups")
     }
-    
+
     try {
         const arquivo = await fs.open(`backups/telegram.json`, 'r')
         const conteudo = await arquivo.readFile()
         await arquivo.close()
-        
+
         if (conteudo.toString()) {
             console.log(`Backup do Telegram localizado.`)
             return JSON.parse(conteudo.toString())
@@ -64,7 +63,7 @@ export const buscaDadosTelegram = async (): Promise<BackupTelegram | null> => {
 }
 
 export const salvaDadosTelegram = async (dados: BackupTelegram) => {
-    const dadosBackup = {...dados}
+    const dadosBackup = { ...dados }
     const dadosString = JSON.stringify(dadosBackup)
     const arquivo = await fs.open(`backups/telegram.json`, 'w+')
     await arquivo.writeFile(dadosString)

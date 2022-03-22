@@ -11,9 +11,9 @@ import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
 import { Candidato } from "../models/candidato"
 import { ChatCadastrado } from "../models/chat-cadastrado"
-import { RespostaJSON } from "../models/resposta-json"
+import { StatusResumido } from "../models/status-resumido"
 import { UsuarioCadastrado } from "../models/usuario-registrado"
-import { geraStatusCompleto } from "./html-service"
+import { geraRespostaCompleta } from "./html-service"
 import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
 
 const nomesCandidatos = [...AGENTES_COMERCIAL.map(a => a.nome), ...AGENTES_TI.map(a => a.nome)]
@@ -99,7 +99,7 @@ const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 }
 
 const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
-    const statusCompleto = geraStatusCompleto()
+    const statusCompleto = geraRespostaCompleta()
     const reply_to_message_id = mensagemRecebida?.message?.message_id
     return {
         chat_id: mensagemRecebida?.message?.chat?.id,
@@ -201,7 +201,7 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
 }
 
 const fixar = async (mensagemRecebida: BotUpdate) => {
-    const statusCompleto = geraStatusCompleto()
+    const statusCompleto = geraRespostaCompleta()
     const mensagem: BotUpdateResponse = {
         chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
@@ -320,7 +320,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                     `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}\n` +
                     `\n` +
                     `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
-                    `</pre>\n`+
+                    `</pre>\n` +
                     `Status geral na mensagem fixada.`
             }
             const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
@@ -335,7 +335,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
     })
 }
 
-export const enviaStatus = (resposta: RespostaJSON, tipo: "TI" | "COMERCIAL") => {
+export const enviaStatus = (resposta: StatusResumido, tipo: "TI" | "COMERCIAL") => {
     chatsCadastrados.forEach(async chat => {
         try {
             const mensagem: BotUpdateResponse = {
@@ -402,7 +402,7 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
 }
 
 export const editaMensagensFixadas = async () => {
-    const statusCompleto = geraStatusCompleto()
+    const statusCompleto = geraRespostaCompleta()
     const text = `Status geral atualizado:\n` +
         `<pre>\n` +
         `--- TI ---\n` +

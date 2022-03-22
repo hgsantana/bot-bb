@@ -1,6 +1,4 @@
-import { Candidato } from "./candidato";
-
-export type RespostaJSON = {
+export type StatusResumido = {
     id: number
     empossados: number
     cancelados: number
@@ -14,6 +12,4 @@ export type RespostaJSON = {
     convocados: number
     inconsistentes: number
     ultimaAtualizacao: Date
-
-    candidatos?: Candidato[]
 }
