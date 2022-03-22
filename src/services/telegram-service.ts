@@ -21,6 +21,21 @@ export let usuariosCadastrados: UsuarioCadastrado[] = []
 export let chatsCadastrados: ChatCadastrado[] = []
 export let mensagensFixadas: BotPinnedMessage[] = []
 
+const pilhaMensagens: BotUpdateResponse[] = []
+
+setInterval(() => {
+    if (pilhaMensagens.length) {
+        const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
+        const mensagem = pilhaMensagens.shift()
+        axios
+            .post(api, mensagem)
+            .catch((e: AxiosError) => {
+                if (mensagem) pilhaMensagens.unshift(mensagem)
+                console.log("Erro=>", e.response?.data || e)
+            })
+    }
+}, 1000)
+
 // restaura backup do telegram
 buscaDadosTelegram().then(dados => {
     if (dados) {
@@ -291,11 +306,8 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
                 `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
                 `</pre>`
         }
-        const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
 
-        await axios.post(api, mensagem).catch((e: AxiosError) => {
-            console.log("Erro=>", e.response?.data || e)
-        })
+        pilhaMensagens.push(mensagem)
     } catch (error) {
         console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
         console.log("Erro=> ", error)
@@ -323,11 +335,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                     `</pre>\n` +
                     `Status geral na mensagem fixada.`
             }
-            const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
-
-            await axios.post(api, mensagem).catch(e => {
-                console.log("Erro=>", e.response?.data || e)
-            })
+            pilhaMensagens.push(mensagem)
         } catch (error) {
             console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
             console.log("Erro=> ", error)
@@ -360,11 +368,7 @@ export const enviaStatus = (resposta: StatusResumido, tipo: "TI" | "COMERCIAL") 
                     `Inaptos: ${resposta.inaptos}\n` +
                     `</pre>`
             }
-            const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
-
-            await axios.post(api, mensagem).catch(e => {
-                console.log("Erro=>", e.response?.data || e)
-            })
+            pilhaMensagens.push(mensagem)
         } catch (error) {
             console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
             console.log("Erro=> ", error)
@@ -390,11 +394,7 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
                 `${textoInconsistentes}\n` +
                 `</pre>`
         }
-        const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
-
-        await axios.post(api, mensagem).catch(e => {
-            console.log("Erro=>", e.response?.data || e)
-        })
+        pilhaMensagens.push(mensagem)
     } catch (error) {
         console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
         console.log("Erro=> ", error)
