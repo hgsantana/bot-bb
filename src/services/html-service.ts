@@ -66,7 +66,12 @@ const atualizaTudo = async () => {
     }, 60 * 1000)
 }
 
-const atualizaSituacao = async (candidatos: Candidato[], tipo: "TI" | "COMERCIAL", msIntervalo = 100, houveAlteracao = false) => {
+const atualizaSituacao = async (
+    candidatos: Candidato[],
+    tipo: "TI" | "COMERCIAL",
+    msIntervalo = 250,
+    houveAlteracao = false
+) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
     let total = candidatos.length
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
