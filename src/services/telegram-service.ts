@@ -49,19 +49,8 @@ buscaDadosTelegram().then(dados => {
 export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     if (!mensagemRecebida?.message?.text) return null
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/iniciar"))
-        return iniciar(mensagemRecebida)
-
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/parar"))
-        return parar(mensagemRecebida)
-
     if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/status"))
         return status(mensagemRecebida)
-
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/fixar")) {
-        fixar(mensagemRecebida)
-        return null
-    }
 
     if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/cadastrar"))
         return cadastrar(mensagemRecebida)
@@ -69,10 +58,26 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/descadastrar"))
         return descadastrar(mensagemRecebida)
 
+    // comandos abaixo somente permitidos para admins reconhecidos
+    if (mensagemRecebida.message.from.id != 1574661558) return null
+
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/iniciar"))
+        return iniciar(mensagemRecebida)
+
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/parar"))
+        return parar(mensagemRecebida)
+
+    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/fixar")) {
+        fixar(mensagemRecebida)
+        return null
+    }
+
     return null
 }
 
 const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
+    // somente permitido para admins reconhecidos
+    if (mensagemRecebida.message.from.id != 1574661558) return null
     const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
     let text = ""
     if (chat) text = `As atualizações já estão ativas para este chat.`
