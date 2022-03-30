@@ -224,7 +224,11 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) =>
 }
 
 const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo: "TI" | "COMERCIAL") => {
+    formulario = formulario.replace(/(\n)*(\t)*(\s\s)*/g, "") // remove espaços duplos, tabs e quebras
     const bolds = formulario.match(/<b>[\s\S]*?<\/b>/gi)
+    let proximos: number[] = []
+    const proximosTexto = formulario.match(/(?<=[\d]º[\s\S]*?<td[\s\S]*?\s)([\d])+/gi)
+    if (proximosTexto) proximos = proximosTexto.map(str => parseInt(str))
     let houveAlteracao = false
     if (bolds) {
         const situacaoCompleta = bolds[2]
@@ -250,10 +254,10 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo:
             candidato.situacao = novaSituacao
             if (situacaoAnterior != novaSituacao) {
                 houveAlteracao = true
-                enviaMensagemPublica(situacaoAnterior, candidato, tipo)
+                enviaMensagemPublica(situacaoAnterior, candidato, tipo, proximos)
                 const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
                 usuariosFiltrados.forEach(u => {
-                    enviaMensagemPrivada(u, situacaoAnterior, candidato)
+                    enviaMensagemPrivada(u, situacaoAnterior, candidato, proximos)
                 })
                 // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
             }

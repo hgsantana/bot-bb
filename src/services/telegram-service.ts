@@ -23,6 +23,7 @@ export let mensagensFixadas: BotPinnedMessage[] = []
 
 const pilhaMensagens: BotUpdateResponse[] = []
 
+// consome a pilha de mensagens a cada 1s
 setInterval(() => {
     if (pilhaMensagens.length) {
         const api = AMBIENTE.TELEGRAM_API + '/sendMessage'
@@ -288,7 +289,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
         })
 }
 
-export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado, situacaoAnterior: string, candidato: Candidato) => {
+export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado, situacaoAnterior: string, candidato: Candidato, proximos: number[]) => {
     try {
         const mensagem: BotUpdateResponse = {
             chat_id: UsuarioRegistrado.id,
@@ -296,12 +297,15 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":\n` +
                 `<pre>\n` +
                 `Situação: ${candidato.situacao.toUpperCase()}\n` +
+                `\n` +
                 `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
                 `\n` +
                 `Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}\n` +
                 `Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}\n` +
                 `Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}\n` +
                 `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}\n` +
+                `\n` +
+                `Próximos:${proximos.length ? proximos.map(proximo => ' ' + proximo) : ' 0'}\n` +
                 `\n` +
                 `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
                 `</pre>`
@@ -314,7 +318,7 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
     }
 }
 
-export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL") => {
+export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL", proximos: number[]) => {
     chatsCadastrados.forEach(async chat => {
         try {
             const mensagem: BotUpdateResponse = {
@@ -324,12 +328,15 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                     `<pre>\n` +
                     `Nome: ${candidato.nome}\n` +
                     `Situação: ${candidato.situacao.toUpperCase()}\n` +
+                    `\n` +
                     `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
                     `\n` +
                     `Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}\n` +
                     `Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}\n` +
                     `Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}\n` +
                     `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}\n` +
+                    `\n` +
+                    `Próximos:${proximos.length ? proximos.map(proximo => ' ' + proximo) : ' 0'}\n` +
                     `\n` +
                     `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
                     `</pre>\n` +
