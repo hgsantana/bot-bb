@@ -205,8 +205,8 @@ const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     let text = ""
     if (chat) text = `As atualizações já estão ativas para este chat.`
     else {
-        console.log("Ativando atualizações para o chat:", mensagemRecebida.message.chat.id)
-        text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
+        console.log(`Ativando atualizações ${tipo ? 'de ' + tipo + ' ' : ''}para o chat:`, mensagemRecebida.message.chat.id)
+        text = `Ativando atualizações ${tipo ? 'de ' + tipo + ' ' : ''}para este chat. Para interrompê-las, use o comando /parar.`
         chatsCadastrados.push({ id: mensagemRecebida.message.chat.id, tipo })
         salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
     }
