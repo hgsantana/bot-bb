@@ -11,7 +11,6 @@ import { BotUpdate } from "../models/bot-update"
 import { BotUpdateResponse } from "../models/bot-update-response"
 import { Candidato } from "../models/candidato"
 import { ChatCadastrado } from "../models/chat-cadastrado"
-import { StatusResumido } from "../models/status-resumido"
 import { UsuarioCadastrado } from "../models/usuario-registrado"
 import { geraRespostaCompleta } from "./html-service"
 import { buscaDadosTelegram, salvaDadosTelegram } from "./storage-service"
@@ -75,94 +74,65 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     return null
 }
 
-const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
-    // somente permitido para admins reconhecidos
-    if (mensagemRecebida.message.from.id != 1574661558) return null
-    const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
-    let text = ""
-    if (chat) text = `As atualizações já estão ativas para este chat.`
-    else {
-        console.log("Ativando atualizações para o chat:", mensagemRecebida.message.chat.id)
-        text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
-        chatsCadastrados.push({ id: mensagemRecebida.message.chat.id })
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
-    }
-    const reply_to_message_id = mensagemRecebida?.message?.message_id
-    return {
-        chat_id: mensagemRecebida?.message?.chat?.id,
-        method: "sendMessage",
-        parse_mode: "HTML",
-        reply_to_message_id,
-        text
-    }
-}
-
-const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
-    const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
-    let text = ""
-    if (chat) {
-        const indiceChat = chatsCadastrados.indexOf(chat)
-        chatsCadastrados.splice(indiceChat, 1)
-        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
-        console.log("Desativando atualizações para o chat:", mensagemRecebida.message.chat.id)
-        text = `As atualizações foram interrompidas para este chat.`
-    } else {
-        text = `Não há atualizações ativas para este chat. Caso deseje ativa-las, use o comando /iniciar.`
-    }
-    const reply_to_message_id = mensagemRecebida?.message?.message_id
-    return {
-        chat_id: mensagemRecebida?.message?.chat?.id,
-        method: "sendMessage",
-        parse_mode: "HTML",
-        reply_to_message_id,
-        text
-    }
-}
-
 const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     const statusCompleto = geraRespostaCompleta()
     const reply_to_message_id = mensagemRecebida?.message?.message_id
+    const parametros = mensagemRecebida.message.text
+        .toLocaleUpperCase()
+        .trim()
+        .replace("/\s\s/gi", " ")
+        .split(" ")
+    let tipo: "TI" | "COMERCIAL" | undefined
+    if (parametros && parametros[1] && (parametros[1] == "TI" || parametros[1] == "COMERCIAL")) tipo = parametros[1]
     return {
         chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
         reply_to_message_id,
-        text: `Status atual das convocações:\n` +
+        text: `Status geral atualizado:\n` +
             `<pre>\n` +
-            `--- TI ---\n` +
-            `${statusCompleto.ti.ultimaAtualizacao
-                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `\n` +
-            `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
-            `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
-            `Convocados: ${statusCompleto.ti.convocados}\n` +
-            `\n` +
-            `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
-            `Expedidas: ${statusCompleto.ti.expedidas}\n` +
-            `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
-            `Qualificados: ${statusCompleto.ti.qualificados}\n` +
-            `Empossados: ${statusCompleto.ti.empossados}\n` +
-            `Cancelados: ${statusCompleto.ti.cancelados}\n` +
-            `Desistentes: ${statusCompleto.ti.desistentes}\n` +
-            `Inaptos: ${statusCompleto.ti.inaptos}\n` +
-            `\n` +
-            `\n` +
-            `--- COMERCIAL ---\n` +
-            `${statusCompleto.comercial.ultimaAtualizacao
-                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `\n` +
-            `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
-            `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
-            `Convocados: ${statusCompleto.comercial.convocados}\n` +
-            `\n` +
-            `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
-            `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
-            `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
-            `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
-            `Empossados: ${statusCompleto.comercial.empossados}\n` +
-            `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
-            `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
-            `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
+            // só inclui este texto no caso de TI ou sem tipo
+            ((tipo == "TI" || !tipo) ?
+                `--- TI ---\n` +
+                `${statusCompleto.ti.ultimaAtualizacao
+                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                `\n` +
+                `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+                `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+                `Convocados: ${statusCompleto.ti.convocados}\n` +
+                `\n` +
+                `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+                `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+                `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+                `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+                `Empossados: ${statusCompleto.ti.empossados}\n` +
+                `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+                `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+                `Inaptos: ${statusCompleto.ti.inaptos}\n`
+                : ''
+            ) +
+            // adiciona um espaço no caso de ambos
+            ((!tipo) ? `\n\n` : '') +
+            // só inclui este texto no caso de COMERCIAL ou sem tipo
+            ((tipo == "COMERCIAL" || !tipo) ?
+                `--- COMERCIAL ---\n` +
+                `${statusCompleto.comercial.ultimaAtualizacao
+                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                `\n` +
+                `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+                `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+                `Convocados: ${statusCompleto.comercial.convocados}\n` +
+                `\n` +
+                `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+                `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+                `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+                `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+                `Empossados: ${statusCompleto.comercial.empossados}\n` +
+                `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+                `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+                `Inaptos: ${statusCompleto.comercial.inaptos}\n`
+                : ''
+            ) +
             `</pre>`
     }
 }
@@ -221,48 +191,114 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
     }
 }
 
+const iniciar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
+    // somente permitido para admins reconhecidos
+    if (mensagemRecebida.message.from.id != 1574661558) return null
+    const parametros = mensagemRecebida.message.text
+        .toLocaleUpperCase()
+        .trim()
+        .replace("/\s\s/gi", " ")
+        .split(" ")
+    let tipo: "TI" | "COMERCIAL" | undefined
+    if (parametros && parametros[1] && (parametros[1] == "TI" || parametros[1] == "COMERCIAL")) tipo = parametros[1]
+    const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
+    let text = ""
+    if (chat) text = `As atualizações já estão ativas para este chat.`
+    else {
+        console.log("Ativando atualizações para o chat:", mensagemRecebida.message.chat.id)
+        text = `Ativando atualizações para este chat. Para interrompê-las, use o comando /parar.`
+        chatsCadastrados.push({ id: mensagemRecebida.message.chat.id, tipo })
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
+    }
+    const reply_to_message_id = mensagemRecebida?.message?.message_id
+    return {
+        chat_id: mensagemRecebida?.message?.chat?.id,
+        method: "sendMessage",
+        parse_mode: "HTML",
+        reply_to_message_id,
+        text
+    }
+}
+
+const parar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
+    const chat = chatsCadastrados.find(c => c.id == mensagemRecebida.message.chat.id)
+    let text = ""
+    if (chat) {
+        const indiceChat = chatsCadastrados.indexOf(chat)
+        chatsCadastrados.splice(indiceChat, 1)
+        salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
+        console.log("Desativando atualizações para o chat:", mensagemRecebida.message.chat.id)
+        text = `As atualizações foram interrompidas para este chat.`
+    } else {
+        text = `Não há atualizações ativas para este chat. Caso deseje ativa-las, use o comando /iniciar.`
+    }
+    const reply_to_message_id = mensagemRecebida?.message?.message_id
+    return {
+        chat_id: mensagemRecebida?.message?.chat?.id,
+        method: "sendMessage",
+        parse_mode: "HTML",
+        reply_to_message_id,
+        text
+    }
+}
+
 const fixar = async (mensagemRecebida: BotUpdate) => {
     const statusCompleto = geraRespostaCompleta()
+    const parametros = mensagemRecebida.message.text
+        .toLocaleUpperCase()
+        .trim()
+        .replace("/\s\s/gi", " ")
+        .split(" ")
+    let tipo: "TI" | "COMERCIAL" | undefined
+    if (parametros && parametros[1] && (parametros[1] == "TI" || parametros[1] == "COMERCIAL")) tipo = parametros[1]
     const mensagem: BotUpdateResponse = {
         chat_id: mensagemRecebida?.message?.chat?.id,
         method: "sendMessage",
         parse_mode: "HTML",
         text: `Status geral atualizado:\n` +
             `<pre>\n` +
-            `--- TI ---\n` +
-            `${statusCompleto.ti.ultimaAtualizacao
-                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `\n` +
-            `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
-            `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
-            `Convocados: ${statusCompleto.ti.convocados}\n` +
-            `\n` +
-            `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
-            `Expedidas: ${statusCompleto.ti.expedidas}\n` +
-            `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
-            `Qualificados: ${statusCompleto.ti.qualificados}\n` +
-            `Empossados: ${statusCompleto.ti.empossados}\n` +
-            `Cancelados: ${statusCompleto.ti.cancelados}\n` +
-            `Desistentes: ${statusCompleto.ti.desistentes}\n` +
-            `Inaptos: ${statusCompleto.ti.inaptos}\n` +
-            `\n` +
-            `\n` +
-            `--- COMERCIAL ---\n` +
-            `${statusCompleto.comercial.ultimaAtualizacao
-                .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-            `\n` +
-            `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
-            `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
-            `Convocados: ${statusCompleto.comercial.convocados}\n` +
-            `\n` +
-            `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
-            `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
-            `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
-            `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
-            `Empossados: ${statusCompleto.comercial.empossados}\n` +
-            `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
-            `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
-            `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
+            // só inclui este texto no caso de TI ou sem tipo
+            ((tipo == "TI" || !tipo) ?
+                `--- TI ---\n` +
+                `${statusCompleto.ti.ultimaAtualizacao
+                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                `\n` +
+                `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+                `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+                `Convocados: ${statusCompleto.ti.convocados}\n` +
+                `\n` +
+                `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+                `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+                `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+                `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+                `Empossados: ${statusCompleto.ti.empossados}\n` +
+                `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+                `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+                `Inaptos: ${statusCompleto.ti.inaptos}\n`
+                : ''
+            ) +
+            // adiciona um espaço no caso de ambos
+            ((!tipo) ? `\n\n` : '') +
+            // só inclui este texto no caso de COMERCIAL ou sem tipo
+            ((tipo == "COMERCIAL" || !tipo) ?
+                `--- COMERCIAL ---\n` +
+                `${statusCompleto.comercial.ultimaAtualizacao
+                    .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                `\n` +
+                `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+                `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+                `Convocados: ${statusCompleto.comercial.convocados}\n` +
+                `\n` +
+                `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+                `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+                `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+                `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+                `Empossados: ${statusCompleto.comercial.empossados}\n` +
+                `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+                `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+                `Inaptos: ${statusCompleto.comercial.inaptos}\n`
+                : ''
+            ) +
             `</pre>`
     }
 
@@ -280,7 +316,8 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
                             console.log("Mensagem fixada:", mensagemFixada)
                             mensagensFixadas.push({
                                 chat_id: resposta.result.chat.id,
-                                message_id: resposta.result.message_id
+                                message_id: resposta.result.message_id,
+                                tipo
                             })
                             salvaDadosTelegram({ chatsCadastrados, mensagensFixadas, usuariosCadastrados })
                         } else console.log("Falha ao fixar mensagem:", mensagemFixada)
@@ -355,39 +392,6 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
     })
 }
 
-export const enviaStatus = (resposta: StatusResumido, tipo: "TI" | "COMERCIAL") => {
-    chatsCadastrados.forEach(async chat => {
-        try {
-            const mensagem: BotUpdateResponse = {
-                chat_id: chat.id,
-                parse_mode: "HTML",
-                text: `Status ${tipo}:\n` +
-                    `<pre>\n` +
-                    `${resposta.ultimaAtualizacao
-                        .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-                    `\n` +
-                    `Total: ${resposta.naoConvocados + resposta.convocados}\n` +
-                    `Não Convocados: ${resposta.naoConvocados}\n` +
-                    `Convocados: ${resposta.convocados}\n` +
-                    `\n` +
-                    `Autorizadas: ${resposta.autorizadas}\n` +
-                    `Expedidas: ${resposta.expedidas}\n` +
-                    `Qualificação: ${resposta.emQualificacao}\n` +
-                    `Qualificados: ${resposta.qualificados}\n` +
-                    `Empossados: ${resposta.empossados}\n` +
-                    `Cancelados: ${resposta.cancelados}\n` +
-                    `Desistentes: ${resposta.desistentes}\n` +
-                    `Inaptos: ${resposta.inaptos}\n` +
-                    `</pre>`
-            }
-            pilhaMensagens.push(mensagem)
-        } catch (error) {
-            console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
-            console.log("Erro=> ", error)
-        }
-    })
-}
-
 export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) => {
     try {
         let textoInconsistentes = ""
@@ -415,51 +419,57 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
 
 export const editaMensagensFixadas = async () => {
     const statusCompleto = geraRespostaCompleta()
-    const text = `Status geral atualizado:\n` +
-        `<pre>\n` +
-        `--- TI ---\n` +
-        `${statusCompleto.ti.ultimaAtualizacao
-            .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-        `\n` +
-        `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
-        `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
-        `Convocados: ${statusCompleto.ti.convocados}\n` +
-        `\n` +
-        `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
-        `Expedidas: ${statusCompleto.ti.expedidas}\n` +
-        `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
-        `Qualificados: ${statusCompleto.ti.qualificados}\n` +
-        `Empossados: ${statusCompleto.ti.empossados}\n` +
-        `Cancelados: ${statusCompleto.ti.cancelados}\n` +
-        `Desistentes: ${statusCompleto.ti.desistentes}\n` +
-        `Inaptos: ${statusCompleto.ti.inaptos}\n` +
-        `\n` +
-        `\n` +
-        `--- COMERCIAL ---\n` +
-        `${statusCompleto.comercial.ultimaAtualizacao
-            .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
-        `\n` +
-        `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
-        `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
-        `Convocados: ${statusCompleto.comercial.convocados}\n` +
-        `\n` +
-        `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
-        `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
-        `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
-        `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
-        `Empossados: ${statusCompleto.comercial.empossados}\n` +
-        `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
-        `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
-        `Inaptos: ${statusCompleto.comercial.inaptos}\n` +
-        `</pre>`
-
     mensagensFixadas.forEach(mensagem => {
         const { chat_id, message_id } = mensagem
         const novaMensagemFixada: BotEditMessageCommand = {
             chat_id,
             message_id,
             parse_mode: "HTML",
-            text
+            text: `Status geral atualizado:\n` +
+                `<pre>\n` +
+                // só inclui este texto no caso de TI ou sem tipo
+                ((mensagem.tipo == "TI" || !mensagem.tipo) ?
+                    `--- TI ---\n` +
+                    `${statusCompleto.ti.ultimaAtualizacao
+                        .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                    `\n` +
+                    `Total: ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados}\n` +
+                    `Não Convocados: ${statusCompleto.ti.naoConvocados}\n` +
+                    `Convocados: ${statusCompleto.ti.convocados}\n` +
+                    `\n` +
+                    `Autorizadas: ${statusCompleto.ti.autorizadas}\n` +
+                    `Expedidas: ${statusCompleto.ti.expedidas}\n` +
+                    `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
+                    `Qualificados: ${statusCompleto.ti.qualificados}\n` +
+                    `Empossados: ${statusCompleto.ti.empossados}\n` +
+                    `Cancelados: ${statusCompleto.ti.cancelados}\n` +
+                    `Desistentes: ${statusCompleto.ti.desistentes}\n` +
+                    `Inaptos: ${statusCompleto.ti.inaptos}\n`
+                    : ''
+                ) +
+                // adiciona um espaço no caso de ambos
+                ((!mensagem.tipo) ? `\n\n` : '') +
+                // só inclui este texto no caso de COMERCIAL ou sem tipo
+                ((mensagem.tipo == "COMERCIAL" || !mensagem.tipo) ?
+                    `--- COMERCIAL ---\n` +
+                    `${statusCompleto.comercial.ultimaAtualizacao
+                        .toLocaleString("pt-br", { timeStyle: 'short', dateStyle: 'short', timeZone: "America/Sao_Paulo" } as any)}\n` +
+                    `\n` +
+                    `Total: ${statusCompleto.comercial.naoConvocados + statusCompleto.comercial.convocados}\n` +
+                    `Não Convocados: ${statusCompleto.comercial.naoConvocados}\n` +
+                    `Convocados: ${statusCompleto.comercial.convocados}\n` +
+                    `\n` +
+                    `Autorizadas: ${statusCompleto.comercial.autorizadas}\n` +
+                    `Expedidas: ${statusCompleto.comercial.expedidas}\n` +
+                    `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
+                    `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
+                    `Empossados: ${statusCompleto.comercial.empossados}\n` +
+                    `Cancelados: ${statusCompleto.comercial.cancelados}\n` +
+                    `Desistentes: ${statusCompleto.comercial.desistentes}\n` +
+                    `Inaptos: ${statusCompleto.comercial.inaptos}\n`
+                    : ''
+                ) +
+                `</pre>`
         }
         axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/editMessageText', novaMensagemFixada)
             .then(({ data: resposta }) => {
