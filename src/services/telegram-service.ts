@@ -363,6 +363,7 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
 export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL", proximos: number[]) => {
     chatsCadastrados.forEach(async chat => {
         try {
+            if (chat.tipo && chat.tipo != tipo) return null
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
