@@ -338,6 +338,7 @@ export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado,
             parse_mode: "HTML",
             text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":\n` +
                 `<pre>\n` +
+                `\n`+
                 `Situação: ${candidato.situacao.toUpperCase()}\n` +
                 `\n` +
                 `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
@@ -370,6 +371,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                 text: `Alteração ${tipo}:\n` +
                     `<pre>\n` +
                     `Nome: ${candidato.nome}\n` +
+                    `\n`+
                     `Situação: ${candidato.situacao.toUpperCase()}\n` +
                     `\n` +
                     `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
