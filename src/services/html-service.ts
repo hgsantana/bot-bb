@@ -227,7 +227,7 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo:
     formulario = formulario.replace(/(\n)*(\t)*(\s\s)*/g, "") // remove espaços duplos, tabs e quebras
     const bolds = formulario.match(/<b>[\s\S]*?<\/b>/gi)
     let proximos: number[] = []
-    const proximosTexto = formulario.match(/(?<=(º|&ordm;)(\D)*?)(\d)+/gi)
+    const proximosTexto = formulario.match(/(?<=(º|&ordm;)(\D)*?)((\d)+(?=<))/gi)
     if (proximosTexto) proximos = proximosTexto.map(str => parseInt(str))
     let houveAlteracao = false
     if (bolds) {
