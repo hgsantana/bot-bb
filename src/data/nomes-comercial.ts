@@ -11548,15 +11548,15 @@ export const AGENTES_COMERCIAL: Candidato[] = [
         macroRegiao: 22,
         microRegiao: 41
     },
-    {
-        dataNascimento: "1993-02-15",
-        nome: "CHRISTIAN DIOGO CUNHA E SILVA",
-        posicao: 49,
-        situacao: "",
-        tipo: "CADASTRO-RESERVA",
-        macroRegiao: 22,
-        microRegiao: 41
-    },
+    // {
+    //     dataNascimento: "1993-02-15",
+    //     nome: "CHRISTIAN DIOGO CUNHA E SILVA",
+    //     posicao: 49,
+    //     situacao: "",
+    //     tipo: "CADASTRO-RESERVA",
+    //     macroRegiao: 22,
+    //     microRegiao: 41
+    // },
     {
         dataNascimento: "1993-04-23",
         nome: "ELANA ANGELICA COSTA GOMES",
