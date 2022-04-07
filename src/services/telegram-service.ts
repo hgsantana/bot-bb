@@ -30,7 +30,7 @@ setInterval(() => {
         axios
             .post(api, mensagem)
             .catch((e: AxiosError) => {
-                if (mensagem) pilhaMensagens.unshift(mensagem)
+                if (mensagem) pilhaMensagens.push(mensagem)
                 console.log("Erro=>", e.response?.data || e)
             })
     }
@@ -335,7 +335,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
 
 export const enviaMensagemAlteracao = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL", proximos: number[]) => {
     chatsCadastrados.forEach(async chat => {
-        const usuarios = usuariosCadastrados.filter(u => u.nomeChecagem = candidato.nome)
+        const usuarios = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome && u.idChat == `${chat.id}`)
         let avisaUsuarios = ""
         if (usuarios.length) {
             avisaUsuarios += "\n\n"
