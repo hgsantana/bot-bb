@@ -153,7 +153,7 @@ const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     else {
         text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. ` +
             `A partir de agora, você receberá os avisos de alterações para "${nome}" neste chat. ` +
-            `Para cancelar os avisos, use o comando <pre>/descadastrar</pre>.`
+            `Para cancelar os avisos, use o comando <pre>/descadastrar</pre>`
         if (usuario) usuario.nomeChecagem = nome
         else {
             console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
