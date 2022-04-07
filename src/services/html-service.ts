@@ -58,8 +58,8 @@ const checaBackups = async () => {
 }
 
 const atualizaTudo = async () => {
-    await atualizaSituacao(RESPOSTA_TI.candidatos, "TI")
-    await atualizaSituacao(RESPOSTA_COMERCIAL.candidatos, "COMERCIAL")
+    await atualizaSituacao(AGENTES_TI, "TI")
+    await atualizaSituacao(AGENTES_COMERCIAL, "COMERCIAL")
     // reinicia atualizações após 60 segundos
     setTimeout(() => {
         atualizaTudo()
@@ -84,6 +84,12 @@ const atualizaSituacao = async (
 
         const intervalo: any = setInterval(async () => {
             const candidato = candidatos[indiceCandidato]
+            const resposta = tipo == "TI" ? RESPOSTA_TI : RESPOSTA_COMERCIAL
+            const candidatoResposta = resposta.candidatos.find(candidatoAntigo => candidatoAntigo.nome == candidato.nome)
+            if (!candidatoResposta) {
+                console.log("Candidato não encontrado na listagem:", candidato.nome)
+                return false
+            }
             const dados = new URLSearchParams({
                 "formulario": "formulario",
                 "publicadorformvalue": ",802,0,0,2,0,1",
@@ -116,7 +122,7 @@ const atualizaSituacao = async (
                 )
 
                 const formulario = await capturaFormulario(candidato, resposta.data, axiosConfig)
-                if (formulario) houveAlteracao = alteraSituacaoCandidato(candidato, formulario, tipo) || houveAlteracao
+                if (formulario) houveAlteracao = alteraSituacaoCandidato(candidatoResposta, formulario, tipo) || houveAlteracao
                 else throw { code: "SEM FORM" }
             } catch (error: any) {
                 erros.push(candidato)
@@ -266,7 +272,7 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo:
             throw { code: "FALHA REGEX" }
         }
     } else {
-        throw { code: "SEM SITUAÇÃO" }
+        console.log(`Erro=> ${candidato.nome} - SEM SITUAÇÃO`)
     }
     return houveAlteracao
 }
