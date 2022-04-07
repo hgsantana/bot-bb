@@ -5,7 +5,7 @@ import { Candidato } from '../models/candidato'
 import { RespostaCompleta } from '../models/resposta-completa'
 import { StatusCompleto } from '../models/status-completo'
 import { buscaDados, salvaDados } from './storage-service'
-import { editaMensagensFixadas, enviaMensagemAdmin, enviaMensagemPrivada, enviaMensagemPublica, usuariosCadastrados } from './telegram-service'
+import { editaMensagensFixadas, enviaMensagemAdmin, enviaMensagemAlteracao } from './telegram-service'
 
 export let RESPOSTA_TI: StatusCompleto = {
     id: 1000,
@@ -260,11 +260,7 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo:
             candidato.situacao = novaSituacao
             if (situacaoAnterior != novaSituacao) {
                 houveAlteracao = true
-                enviaMensagemPublica(situacaoAnterior, candidato, tipo, proximos)
-                const usuariosFiltrados = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome)
-                usuariosFiltrados.forEach(u => {
-                    enviaMensagemPrivada(u, situacaoAnterior, candidato, proximos)
-                })
+                enviaMensagemAlteracao(situacaoAnterior, candidato, tipo, proximos)
                 // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
             }
         } else {

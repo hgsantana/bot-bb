@@ -140,6 +140,8 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
 const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     const nome = mensagemRecebida.message.text.split("/cadastrar")[1].replace(/\ \ /gi, " ").trim().toUpperCase()
     const idDestinatario = `${mensagemRecebida.message.from.id}`
+    const idChat = `${mensagemRecebida.message.chat.id}`
+    const nomeUsuario = `${mensagemRecebida.message.from.username || mensagemRecebida.message.from.first_name}`
     const usuario = usuariosCadastrados.find(u => u.id == idDestinatario)
     const reply_to_message_id = mensagemRecebida?.message?.message_id
 
@@ -150,12 +152,12 @@ const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     else if (!candidato) text = `Este nome não existe no resultado final oficial.`
     else {
         text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. ` +
-            `A partir de agora, você receberá os avisos de alterações para "${nome}" no privado. ` +
-            `Para cancelar os avisos, use o comando /descadastrar.`
+            `A partir de agora, você receberá os avisos de alterações para "${nome}" neste chat. ` +
+            `Para cancelar os avisos, use o comando <pre>/descadastrar</pre>.`
         if (usuario) usuario.nomeChecagem = nome
         else {
             console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
-            usuariosCadastrados.push({ id: idDestinatario, nomeChecagem: nome })
+            usuariosCadastrados.push({ id: idDestinatario, nomeChecagem: nome, idChat, usuario: nomeUsuario })
             salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
         }
     }
@@ -331,38 +333,16 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
         })
 }
 
-export const enviaMensagemPrivada = async (UsuarioRegistrado: UsuarioCadastrado, situacaoAnterior: string, candidato: Candidato, proximos: number[]) => {
-    try {
-        const mensagem: BotUpdateResponse = {
-            chat_id: UsuarioRegistrado.id,
-            parse_mode: "HTML",
-            text: `Alteração em "${UsuarioRegistrado.nomeChecagem}":\n` +
-                `<pre>\n` +
-                `\n`+
-                `Situação: ${candidato.situacao.toUpperCase()}\n` +
-                `\n` +
-                `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
-                `\n` +
-                `Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"}\n` +
-                `Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"}\n` +
-                `Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"}\n` +
-                `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"}\n` +
-                `\n` +
-                `Próximos:${proximos.length ? proximos.map(proximo => ' ' + proximo) : ' 0'}\n` +
-                `\n` +
-                `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
-                `</pre>`
-        }
-
-        pilhaMensagens.push(mensagem)
-    } catch (error) {
-        console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
-        console.log("Erro=> ", error)
-    }
-}
-
-export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL", proximos: number[]) => {
+export const enviaMensagemAlteracao = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL", proximos: number[]) => {
     chatsCadastrados.forEach(async chat => {
+        const usuarios = usuariosCadastrados.filter(u => u.nomeChecagem = candidato.nome)
+        let avisaUsuarios = ""
+        if (usuarios.length) {
+            avisaUsuarios += "\n\n"
+            usuarios.forEach(usuario => {
+                avisaUsuarios += `<a href="tg://user?id=${usuario.id}">@${usuario.usuario}</a> `
+            })
+        }
         try {
             if (chat.tipo && chat.tipo != tipo) return null
             const mensagem: BotUpdateResponse = {
@@ -371,7 +351,7 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                 text: `Alteração ${tipo}:\n` +
                     `<pre>\n` +
                     `Nome: ${candidato.nome}\n` +
-                    `\n`+
+                    `\n` +
                     `Situação: ${candidato.situacao.toUpperCase()}\n` +
                     `\n` +
                     `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
@@ -385,7 +365,8 @@ export const enviaMensagemPublica = (situacaoAnterior: string, candidato: Candid
                     `\n` +
                     `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
                     `</pre>\n` +
-                    `Status geral na mensagem fixada.`
+                    `Status geral na mensagem fixada.` +
+                    avisaUsuarios
             }
             pilhaMensagens.push(mensagem)
         } catch (error) {
