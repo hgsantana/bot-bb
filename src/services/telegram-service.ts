@@ -59,7 +59,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
         return descadastrar(mensagemRecebida)
 
     // comandos abaixo somente permitidos para admins reconhecidos
-    if (mensagemRecebida.message.from.id != 1574661558) return null
+    if (mensagemRecebida.message.from.id.toString() != AMBIENTE.TELEGRAM_ADMIN_ID) return null
 
     if (textoMensagem.startsWith("/iniciar"))
         return iniciar(mensagemRecebida)
