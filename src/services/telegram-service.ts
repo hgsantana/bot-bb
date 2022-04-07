@@ -47,26 +47,27 @@ buscaDadosTelegram().then(dados => {
 
 export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     if (!mensagemRecebida?.message?.text) return null
+    const textoMensagem = mensagemRecebida.message.text.replace(/\@BB_convocacao_bot/gi, "").toLocaleLowerCase().trim()
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/status"))
+    if (textoMensagem.startsWith("/status"))
         return status(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/cadastrar"))
+    if (textoMensagem.startsWith("/cadastrar"))
         return cadastrar(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/descadastrar"))
+    if (textoMensagem.startsWith("/descadastrar"))
         return descadastrar(mensagemRecebida)
 
     // comandos abaixo somente permitidos para admins reconhecidos
     if (mensagemRecebida.message.from.id != 1574661558) return null
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/iniciar"))
+    if (textoMensagem.startsWith("/iniciar"))
         return iniciar(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/parar"))
+    if (textoMensagem.startsWith("/parar"))
         return parar(mensagemRecebida)
 
-    if (mensagemRecebida.message.text.toLocaleLowerCase().trim().startsWith("/fixar")) {
+    if (textoMensagem.startsWith("/fixar")) {
         fixar(mensagemRecebida)
         return null
     }
