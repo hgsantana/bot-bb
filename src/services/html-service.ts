@@ -69,7 +69,7 @@ const atualizaTudo = async () => {
 const atualizaSituacao = async (
     candidatos: Candidato[],
     tipo: "TI" | "COMERCIAL",
-    msIntervalo = 400,
+    msIntervalo = 300,
     houveAlteracao = false
 ) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
@@ -82,9 +82,9 @@ const atualizaSituacao = async (
         let indiceCandidato = 0
         let erros: Candidato[] = []
 
-        for await (const candidato of candidatos) {
-        // const intervalo: any = setInterval(async () => {
-        //     const candidato = candidatos[indiceCandidato]
+        // for await (const candidato of candidatos) {
+        const intervalo: any = setInterval(async () => {
+            const candidato = candidatos[indiceCandidato]
             const resposta = tipo == "TI" ? RESPOSTA_TI : RESPOSTA_COMERCIAL
             const candidatoResposta = resposta.candidatos.find(candidatoAntigo => candidatoAntigo.nome == candidato.nome)
             if (!candidatoResposta) {
@@ -100,9 +100,9 @@ const atualizaSituacao = async (
                 "javax.faces.ViewState": "j_id1",
             }).toString()
 
-            // const ultimoCandidato = indiceCandidato == candidatos.length - 1
-            // if (ultimoCandidato) clearInterval(intervalo)
-            // else indiceCandidato++
+            const ultimoCandidato = indiceCandidato == candidatos.length - 1
+            if (ultimoCandidato) clearInterval(intervalo)
+            else indiceCandidato++
 
             try {
                 const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
@@ -115,7 +115,7 @@ const atualizaSituacao = async (
                 }
                 const axiosConfig: AxiosRequestConfig = {
                     headers,
-                    timeout: 1000
+                    timeout: 5000
                 }
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
                     dados,
@@ -145,7 +145,7 @@ const atualizaSituacao = async (
                     resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100, houveAlteracao))
                 }
             }
-        }//, msIntervalo)
+        }, msIntervalo)
     })
 }
 
