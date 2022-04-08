@@ -69,21 +69,22 @@ const atualizaTudo = async () => {
 const atualizaSituacao = async (
     candidatos: Candidato[],
     tipo: "TI" | "COMERCIAL",
-    msIntervalo = 300,
+    msIntervalo = 400,
     houveAlteracao = false
 ) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
     let total = candidatos.length
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
-    return new Promise<void>(resolve => {
+    return new Promise<void>(async resolve => {
         const inicio = new Date().getTime()
 
-        let totalIndices = 0
+        let indiceAtual = 0
         let indiceCandidato = 0
         let erros: Candidato[] = []
 
-        const intervalo: any = setInterval(async () => {
-            const candidato = candidatos[indiceCandidato]
+        for await (const candidato of candidatos) {
+        // const intervalo: any = setInterval(async () => {
+        //     const candidato = candidatos[indiceCandidato]
             const resposta = tipo == "TI" ? RESPOSTA_TI : RESPOSTA_COMERCIAL
             const candidatoResposta = resposta.candidatos.find(candidatoAntigo => candidatoAntigo.nome == candidato.nome)
             if (!candidatoResposta) {
@@ -99,9 +100,9 @@ const atualizaSituacao = async (
                 "javax.faces.ViewState": "j_id1",
             }).toString()
 
-            const ultimoCandidato = indiceCandidato == candidatos.length - 1
-            if (ultimoCandidato) clearInterval(intervalo)
-            else indiceCandidato++
+            // const ultimoCandidato = indiceCandidato == candidatos.length - 1
+            // if (ultimoCandidato) clearInterval(intervalo)
+            // else indiceCandidato++
 
             try {
                 const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
@@ -114,7 +115,7 @@ const atualizaSituacao = async (
                 }
                 const axiosConfig: AxiosRequestConfig = {
                     headers,
-                    timeout: 5000
+                    timeout: 1000
                 }
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
                     dados,
@@ -129,8 +130,8 @@ const atualizaSituacao = async (
                 console.log(`Erro=> ${candidato.nome} - ${error?.code || error?.err || error}`)
             }
 
-            totalIndices++
-            if (totalIndices == total) {
+            indiceAtual++
+            if (indiceAtual == total) {
                 const fim = new Date().getTime()
                 const tempo = (fim - inicio)
                 console.log("Total de Erros:", erros.length)
@@ -144,7 +145,7 @@ const atualizaSituacao = async (
                     resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100, houveAlteracao))
                 }
             }
-        }, msIntervalo)
+        }//, msIntervalo)
     })
 }
 
