@@ -202,9 +202,7 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) =>
         else if (situacao.includes("desistente")) desistentes++
         else if (situacao.includes("inapto")) inaptos++
         else if (situacao.includes("não convocado")) naoConvocados++
-        else {
-            candidatosNaoClassificados.push(candidato)
-        }
+        else candidatosNaoClassificados.push(candidato)
     })
 
     resposta.autorizadas = autorizadas

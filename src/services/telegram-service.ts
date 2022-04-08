@@ -392,7 +392,7 @@ export const enviaMensagemAdmin = async (candidatosInconsistentes: Candidato[]) 
             text: `Candidatos com inconsistência detectados:\n` +
                 `<pre>\n` +
                 `Inconsistências: ${candidatosInconsistentes.length}\n` +
-                `${textoInconsistentes}\n` +
+                `${textoInconsistentes.length > 3000 ? "Muitos candidatos. Olhe o LOG." : textoInconsistentes}\n` +
                 `</pre>`
         }
         pilhaMensagens.push(mensagem)
