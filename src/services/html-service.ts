@@ -228,9 +228,7 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) =>
     resposta.id++
 
     salvaDados(resposta, tipo)
-    if (houveAlteracao) {
-        editaMensagensFixadas()
-    }
+    editaMensagensFixadas()
 }
 
 const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo: "TI" | "COMERCIAL") => {
