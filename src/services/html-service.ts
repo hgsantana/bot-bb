@@ -69,7 +69,7 @@ const atualizaTudo = async () => {
 const atualizaSituacao = async (
     candidatos: Candidato[],
     tipo: "TI" | "COMERCIAL",
-    msIntervalo = 250,
+    msIntervalo = 100,
     houveAlteracao = false
 ) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
@@ -201,10 +201,13 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) =>
         else if (situacao.includes("expedida")) expedidas++
         else if (situacao.includes("desistente")) desistentes++
         else if (situacao.includes("inapto")) inaptos++
-        else if (situacao.includes("não Convocado")) naoConvocados++
-        else candidatosNaoClassificados.push(candidato)
+        else if (situacao.includes("não convocado")) naoConvocados++
+        else {
+            candidatosNaoClassificados.push(candidato)
+        }
     })
 
+    resposta.autorizadas = autorizadas
     resposta.cancelados = cancelados
     resposta.desistentes = desistentes
     resposta.emQualificacao = emQualificacao
@@ -218,7 +221,8 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) =>
     console.log(`Dados ${tipo} atualizados.`)
 
     if (candidatosNaoClassificados.length) {
-        console.log(`Candidatos ${tipo} não classificados:`, candidatosNaoClassificados)
+        console.log(`Erro=> Candidatos não classificados:`, candidatosNaoClassificados)
+        console.log("Total não classificados:", candidatosNaoClassificados.length)
         enviaMensagemAdmin(candidatosNaoClassificados)
     }
     resposta.inconsistentes = candidatosNaoClassificados.length
