@@ -69,7 +69,7 @@ const atualizaTudo = async () => {
 const atualizaSituacao = async (
     candidatos: Candidato[],
     tipo: "TI" | "COMERCIAL",
-    msIntervalo = 100,
+    msIntervalo = 300,
     houveAlteracao = false
 ) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
