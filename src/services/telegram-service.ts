@@ -458,7 +458,7 @@ export const editaMensagensFixadas = async () => {
         }
         axios.post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + '/editMessageText', novaMensagemFixada)
             .then(({ data: resposta }) => {
-                console.log("Editando mensagem:", resposta.result)
+                console.log("Editando mensagem fixada:", { chat: resposta.result.chat.id, mensagem: resposta.result.message_id })
             })
             .catch((e: AxiosError) => {
                 console.log("Erro=>", e.response?.data || e)
