@@ -126,7 +126,7 @@ const atualizaSituacao = async (
                 else throw { code: "SEM FORM" }
             } catch (error: any) {
                 erros.push(candidato)
-                console.log(`Erro: ${candidato.nome} - ${error?.code || error?.err || error}`)
+                console.log(`Erro=> ${candidato.nome} - ${error?.code || error?.err || error}`)
             }
 
             totalIndices++
@@ -136,12 +136,12 @@ const atualizaSituacao = async (
                 console.log("Total de Erros:", erros.length)
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
 
-                if (erros.length) {
+                atualizaRespostas(tipo, houveAlteracao)
+                if (!erros.length) {
+                    resolve()
+                } else {
                     console.log("Corrigindo erros...")
                     resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100, houveAlteracao))
-                } else {
-                    atualizaRespostas(tipo, houveAlteracao)
-                    resolve()
                 }
             }
         }, msIntervalo)
@@ -192,15 +192,16 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) =>
     const candidatosNaoClassificados: Candidato[] = []
 
     resposta.candidatos.forEach(candidato => {
-        if (candidato.situacao.includes("autorizada")) autorizadas++
-        else if (candidato.situacao.includes("Cancelado")) cancelados++
-        else if (candidato.situacao.includes("qualificacao")) emQualificacao++
-        else if (candidato.situacao.includes("Empossado")) empossados++
-        else if (candidato.situacao.includes("Qualificado")) qualificados++
-        else if (candidato.situacao.includes("expedida")) expedidas++
-        else if (candidato.situacao.includes("Desistente")) desistentes++
-        else if (candidato.situacao.includes("Inapto")) inaptos++
-        else if (candidato.situacao.includes("Não Convocado")) naoConvocados++
+        const situacao = candidato.situacao.toLowerCase()
+        if (situacao.includes("autorizada")) autorizadas++
+        else if (situacao.includes("cancelado")) cancelados++
+        else if (situacao.includes("qualificacao")) emQualificacao++
+        else if (situacao.includes("empossado")) empossados++
+        else if (situacao.includes("qualificado")) qualificados++
+        else if (situacao.includes("expedida")) expedidas++
+        else if (situacao.includes("desistente")) desistentes++
+        else if (situacao.includes("inapto")) inaptos++
+        else if (situacao.includes("não Convocado")) naoConvocados++
         else candidatosNaoClassificados.push(candidato)
     })
 
