@@ -115,7 +115,7 @@ const atualizaSituacao = async (
                 }
                 const axiosConfig: AxiosRequestConfig = {
                     headers,
-                    timeout: 10000 // 10s para cancelar a requisição
+                    timeout: 30 * 1000 // 30s para cancelar a requisição
                 }
                 const resposta = await axios.post<string>('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx',
                     dados,
