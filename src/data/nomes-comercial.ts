@@ -14152,15 +14152,15 @@ export const AGENTES_COMERCIAL: Candidato[] = [
         agenciaSituacao: "CIDADE INDUSTRIAL/MT",
         dataSituacao: "2022-03-29"
     },
-    {
-        dataNascimento: "1993-02-15",
-        nome: "CHRISTIAN DIOGO CUNHA E SILVA",
-        posicao: 49,
-        situacao: "",
-        tipo: "CADASTRO-RESERVA",
-        macroRegiao: 22,
-        microRegiao: 41
-    },
+    // {
+    //     dataNascimento: "1993-02-15",
+    //     nome: "CHRISTIAN DIOGO CUNHA E SILVA",
+    //     posicao: 49,
+    //     situacao: "",
+    //     tipo: "CADASTRO-RESERVA",
+    //     macroRegiao: 22,
+    //     microRegiao: 41
+    // },
     {
         dataNascimento: "1978-09-20",
         nome: "ALLIRSON OLIVEIRA FORTES PEREIRA",
