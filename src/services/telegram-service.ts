@@ -345,7 +345,10 @@ export const enviaMensagemAlteracao = (situacaoAnterior: string, candidato: Cand
             })
         }
         try {
-            if (chat.tipo && chat.tipo != tipo) return null
+            if (
+                (chat.tipo && chat.tipo != tipo)
+                || (chat.tipo == "TI" && candidato.situacao.search(/qualificado|autorizada|desistente/gi) < 0)
+            ) return null
             const mensagem: BotUpdateResponse = {
                 chat_id: chat.id,
                 parse_mode: "HTML",
