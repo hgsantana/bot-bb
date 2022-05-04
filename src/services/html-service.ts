@@ -69,8 +69,7 @@ const atualizaTudo = async () => {
 const atualizaSituacao = async (
     candidatos: Candidato[],
     tipo: "TI" | "COMERCIAL",
-    msIntervalo = 300,
-    houveAlteracao = false
+    msIntervalo = 300
 ) => {
     candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
     let total = candidatos.length
@@ -123,7 +122,7 @@ const atualizaSituacao = async (
                 )
 
                 const formulario = await capturaFormulario(candidato, resposta.data, axiosConfig)
-                if (formulario) houveAlteracao = alteraSituacaoCandidato(candidatoResposta, formulario, tipo) || houveAlteracao
+                if (formulario) alteraSituacaoCandidato(candidatoResposta, formulario, tipo)
                 else throw { code: "SEM FORM" }
             } catch (error: any) {
                 erros.push(candidato)
@@ -137,12 +136,12 @@ const atualizaSituacao = async (
                 console.log("Total de Erros:", erros.length)
                 console.log(`Batch ${tipo} executada em ${tempo} ms.`)
 
-                atualizaRespostas(tipo, houveAlteracao)
+                atualizaRespostas(tipo,)
                 if (!erros.length) {
                     resolve()
                 } else {
                     console.log("Corrigindo erros...")
-                    resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100, houveAlteracao))
+                    resolve(await atualizaSituacao(erros, tipo, msIntervalo + 100))
                 }
             }
         }, msIntervalo)
@@ -177,7 +176,7 @@ const capturaFormulario = async (candidato: Candidato, formString: string, axios
     } else return null
 }
 
-const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) => {
+const atualizaRespostas = (tipo: "TI" | "COMERCIAL") => {
     let resposta: StatusCompleto = tipo == "COMERCIAL" ? RESPOSTA_COMERCIAL : RESPOSTA_TI
     let autorizadas = 0
     let cancelados = 0
@@ -192,7 +191,11 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL", houveAlteracao: boolean) =>
 
     const candidatosNaoClassificados: Candidato[] = []
 
-    resposta.candidatos.forEach(candidato => {
+    resposta.candidatos.forEach((candidato, indice) => {
+        // remove candidatos que já foram removidos da lista original
+        const candidatosOriginais = tipo == 'TI' ? AGENTES_TI : AGENTES_COMERCIAL
+        if (!candidatosOriginais.find(c => c.nome == candidato.nome)) resposta.candidatos.splice(indice, 1)
+
         const situacao = candidato.situacao.toLowerCase()
         if (situacao.includes("autorizada")) autorizadas++
         else if (situacao.includes("cancelado")) cancelados++
