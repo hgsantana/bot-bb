@@ -153,11 +153,11 @@ const cadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
     else if (!candidato) text = `Este nome não existe no resultado final oficial.`
     else {
         text = `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. ` +
-            `A partir de agora, você receberá os avisos de alterações para "${nome}" neste chat. ` +
-            `Para cancelar os avisos, use o comando <pre>/descadastrar</pre>`
+            `A partir de agora, você será marcado nas alterações para "${nome}" neste chat. ` +
+            `Para cancelar, use o comando <pre>/descadastrar</pre>`
         if (usuario) usuario.nomeChecagem = nome
         else {
-            console.log("Cadastrando novo usuário para envio de mensagens:", { id: idDestinatario, nomeChecagem: nome })
+            console.log("Cadastrando novo usuário para marcação:", { id: idDestinatario, nomeChecagem: nome })
             usuariosCadastrados.push({ id: idDestinatario, nomeChecagem: nome, idChat, usuario: nomeUsuario })
             salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
         }
@@ -178,12 +178,12 @@ const descadastrar = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => 
 
     const reply_to_message_id = mensagemRecebida?.message?.message_id
 
-    let text = `A partir de agora, você não receberá mais avisos.`
+    let text = `A partir de agora, você não será mais marcado neste chat.`
     if (usuario) {
-        console.log("Descadastrando usuário para envio de mensagens:", usuario)
+        console.log("Descadastrando usuário para marcação:", usuario)
         usuariosCadastrados.splice(usuariosCadastrados.indexOf(usuario), 1)
         salvaDadosTelegram({ usuariosCadastrados, chatsCadastrados, mensagensFixadas })
-    } else text = `Você ainda não está cadastrado para receber avisos.`
+    } else text = `Você ainda não está cadastrado para ser marcado.`
 
     return {
         chat_id: mensagemRecebida?.message?.chat?.id,
@@ -336,11 +336,12 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
 
 export const enviaMensagemAlteracao = (situacaoAnterior: string, candidato: Candidato, tipo: "TI" | "COMERCIAL", proximos: number[]) => {
     chatsCadastrados.forEach(async chat => {
-        const usuarios = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome && u.idChat == `${chat.id}`)
+        const usuariosChat = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome && u.idChat == `${chat.id}`)
+        const usuariosPrivado = usuariosCadastrados.filter(u => u.nomeChecagem == candidato.nome && u.idChat == u.id)
         let avisaUsuarios = ""
-        if (usuarios.length) {
+        if (usuariosChat.length) {
             avisaUsuarios += "\n\n"
-            usuarios.forEach(usuario => {
+            usuariosChat.forEach(usuario => {
                 avisaUsuarios += `<a href="tg://user?id=${usuario.id}">@${usuario.usuario}</a> `
             })
         }
@@ -373,6 +374,7 @@ export const enviaMensagemAlteracao = (situacaoAnterior: string, candidato: Cand
                     avisaUsuarios
             }
             pilhaMensagens.push(mensagem)
+            if(usuariosPrivado.length) usuariosPrivado.forEach(up=> pilhaMensagens.push({...mensagem, chat_id: up.id}))
         } catch (error) {
             console.log("Erro=> Erro enviando mensagem para o grupo do Telegram")
             console.log("Erro=> ", error)
