@@ -85,10 +85,11 @@ const atualizaSituacao = async (
         const intervalo: any = setInterval(async () => {
             const candidato = candidatos[indiceCandidato]
             const resposta = tipo == "TI" ? RESPOSTA_TI : RESPOSTA_COMERCIAL
-            const candidatoResposta = resposta.candidatos.find(candidatoAntigo => candidatoAntigo.nome == candidato.nome)
+            let candidatoResposta = resposta.candidatos.find(candidatoAntigo => candidatoAntigo.nome == candidato.nome)
             if (!candidatoResposta) {
-                console.log("Candidato não encontrado na listagem:", candidato.nome)
-                return false
+                console.log("Candidato não encontrado na listagem, incluindo:", candidato.nome)
+                resposta.candidatos.push(candidato)
+                candidatoResposta = candidato
             }
             const dados = new URLSearchParams({
                 "formulario": "formulario",
@@ -194,7 +195,8 @@ const atualizaRespostas = (tipo: "TI" | "COMERCIAL") => {
     resposta.candidatos.forEach((candidato, indice) => {
         // remove candidatos que já foram removidos da lista original
         const candidatosOriginais = tipo == 'TI' ? AGENTES_TI : AGENTES_COMERCIAL
-        if (!candidatosOriginais.find(c => c.nome == candidato.nome)) resposta.candidatos.splice(indice, 1)
+        const candidatoOriginal = candidatosOriginais.find(c => c.nome == candidato.nome)
+        if (!candidatoOriginal) resposta.candidatos.splice(indice, 1)
 
         const situacao = candidato.situacao.toLowerCase()
         if (situacao.includes("autorizada")) autorizadas++

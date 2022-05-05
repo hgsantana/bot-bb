@@ -9041,7 +9041,7 @@ export const AGENTES_COMERCIAL: Candidato[] = [
     },
     {
         dataNascimento: "1985-05-11",
-        nome: "JULIANA APARECIDA SILVA",
+        nome: "JULIANA APARECIDA DA SILVA",
         posicao: 23,
         situacao: "Em qualificacao",
         tipo: "CLASSIFICADO",
