@@ -106,6 +106,7 @@ const atualizaSituacao = async (
 
             try {
                 const getCookies = await axios.get('https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx')
+                if (!getCookies) throw { code: "FALHA GET COOKIE" }
                 const cookies = getCookies.headers['set-cookie']
                 let Cookie = ""
                 if (cookies) Cookie = cookies[0].split(";")[0] + ";" // pega apenas JSESSION
