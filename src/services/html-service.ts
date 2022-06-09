@@ -71,7 +71,7 @@ const atualizaSituacao = async (
     tipo: "TI" | "COMERCIAL",
     msIntervalo = 300
 ) => {
-    candidatos = candidatos.filter(c => c.situacao != "Empossado" && c.situacao != "Desistente")
+    candidatos = candidatos.filter(c => c.situacao.toLowerCase() != "empossado" && c.situacao.toLowerCase() != "desistente")
     let total = candidatos.length
     console.log(`Consultando ${total} candidatos de ${tipo}...`)
     return new Promise<void>(async resolve => {
