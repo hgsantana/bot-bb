@@ -102,7 +102,7 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
       `<pre>\n` +
       // só inclui este texto no caso de TI ou sem tipo
       (tipo == "TI" || !tipo
-        ? `--- TI ---\n` +
+        ? `------ TI ------\n` +
           `${statusCompleto.ti.ultimaAtualizacao.toLocaleString("pt-br", {
             timeStyle: "short",
             dateStyle: "short",
@@ -406,7 +406,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
       `<pre>\n` +
       // só inclui este texto no caso de TI ou sem tipo
       (tipo == "TI" || !tipo
-        ? `--- TI ---\n` +
+        ? `------ TI ------\n` +
           `${statusCompleto.ti.ultimaAtualizacao.toLocaleString("pt-br", {
             timeStyle: "short",
             dateStyle: "short",
@@ -686,7 +686,7 @@ export const editaMensagensFixadas = async () => {
         `<pre>\n` +
         // só inclui este texto no caso de TI ou sem tipo
         (mensagem.tipo == "TI" || !mensagem.tipo
-          ? `--- TI ---\n` +
+          ? `------ TI ------\n` +
             `${statusCompleto.ti.ultimaAtualizacao.toLocaleString("pt-br", {
               timeStyle: "short",
               dateStyle: "short",
