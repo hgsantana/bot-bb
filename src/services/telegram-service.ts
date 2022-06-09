@@ -131,8 +131,8 @@ const status = (mensagemRecebida: BotUpdate): BotUpdateResponse | null => {
             100
           ).toFixed(2)}%)\n` +
           (statusCompleto.ti.proximoConvocado
-            ? `Proximo       : ${statusCompleto.ti.proximoConvocado}`
-            : "") +
+            ? `Proximo       : ${statusCompleto.ti.proximoConvocado}\n`
+            : "\n") +
           `\n` +
           `Autorizadas : ${statusCompleto.ti.autorizadas}\n` +
           `Expedidas   : ${statusCompleto.ti.expedidas}\n` +
@@ -435,8 +435,8 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
             100
           ).toFixed(2)}%)\n` +
           (statusCompleto.ti.proximoConvocado
-            ? `Proximo       : ${statusCompleto.ti.proximoConvocado}`
-            : "") +
+            ? `Proximo       : ${statusCompleto.ti.proximoConvocado}\n`
+            : "\n") +
           `\n` +
           `Autorizadas : ${statusCompleto.ti.autorizadas}\n` +
           `Expedidas   : ${statusCompleto.ti.expedidas}\n` +
@@ -715,8 +715,8 @@ export const editaMensagensFixadas = async () => {
               100
             ).toFixed(2)}%)\n` +
             (statusCompleto.ti.proximoConvocado
-              ? `Proximo       : ${statusCompleto.ti.proximoConvocado}`
-              : "") +
+              ? `Proximo       : ${statusCompleto.ti.proximoConvocado}\n`
+              : "\n") +
             `\n` +
             `Autorizadas : ${statusCompleto.ti.autorizadas}\n` +
             `Expedidas   : ${statusCompleto.ti.expedidas}\n` +
