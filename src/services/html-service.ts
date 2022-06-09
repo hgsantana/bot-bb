@@ -1,15 +1,15 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { AGENTES_COMERCIAL } from "../data/nomes-comercial";
-import { AGENTES_TI } from "../data/nomes-ti";
-import { Candidato } from "../models/candidato";
-import { RespostaCompleta } from "../models/resposta-completa";
-import { StatusCompleto } from "../models/status-completo";
-import { buscaDados, salvaDados } from "./storage-service";
+import axios, { AxiosRequestConfig } from "axios"
+import { AGENTES_COMERCIAL } from "../data/nomes-comercial"
+import { AGENTES_TI } from "../data/nomes-ti"
+import { Candidato } from "../models/candidato"
+import { RespostaCompleta } from "../models/resposta-completa"
+import { StatusCompleto } from "../models/status-completo"
+import { buscaDados, salvaDados } from "./storage-service"
 import {
   editaMensagensFixadas,
   enviaMensagemAdmin,
-  enviaMensagemAlteracao,
-} from "./telegram-service";
+  enviaMensagemAlteracao
+} from "./telegram-service"
 
 export let RESPOSTA_TI: StatusCompleto = {
   id: 1000,
@@ -62,8 +62,8 @@ const checaBackups = async () => {
 };
 
 const atualizaTudo = async () => {
-  await atualizaSituacao(AGENTES_TI, "TI");
-  await atualizaSituacao(AGENTES_COMERCIAL, "COMERCIAL");
+  await atualizaSituacao(RESPOSTA_TI.candidatos, "TI");
+  await atualizaSituacao(RESPOSTA_COMERCIAL.candidatos, "COMERCIAL");
   // reinicia atualizações após 60 segundos
   setTimeout(() => {
     atualizaTudo();
