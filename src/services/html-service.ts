@@ -260,6 +260,10 @@ const alteraSituacaoCandidato = (candidato: Candidato, formulario: string, tipo:
             candidato.dataSituacao = `${arrayDataSituacao?.[2]}-${arrayDataSituacao?.[1]}-${arrayDataSituacao?.[0]}`
         else candidato.dataSituacao = null
 
+        if(tipo == 'TI' && proximos.length > 0) {
+            RESPOSTA_TI.proximoConvocado = proximos[0]
+        }
+
         const situacaoAnterior = candidato.situacao
         const novaSituacao = situacaoCompleta
             ?.match(/qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi)

@@ -15,4 +15,6 @@ export type StatusCompleto = {
     inconsistentes: number
     ultimaAtualizacao: Date
     candidatos: Candidato[]
+
+    proximoConvocado?: number
 }
