@@ -1,12 +1,13 @@
-import compression from 'compression'
-import express, { json } from 'express'
-import { configurarAmbiente } from './config/ambiente'
-import { routes } from './routes'
-import { iniciarHTMLService } from './services/html-service'
+import compression from "compression"
+import express, { json } from "express"
+import { iniciarBot } from "./bot"
+import { configurarAmbiente } from "./config/ambiente"
+import { configurarBancoDados } from "./config/banco-dados"
+import { routes } from "./routes"
 
 export const AMBIENTE = configurarAmbiente()
-
-const app = express()
+export const SQL = configurarBancoDados()
+export const app = express()
 
 app.use(compression())
 app.use(json())
@@ -15,8 +16,7 @@ app.all("*", routes)
 
 const porta = process.env.PORT || 4000
 
-const server = app.listen(porta, () => {
-    console.log("Servindo na porta", porta)
-    iniciarHTMLService()
-    // iniciarWebsocketService(server)
+app.listen(porta, () => {
+  console.log("Servindo na porta", porta)
+  iniciarBot()
 })
