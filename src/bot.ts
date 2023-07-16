@@ -8,5 +8,6 @@ const BOT_CONTIG: BotConfig = {
 
 export const iniciarBot = async () => {
   console.log("Bot iniciado.")
+  console.log("Configuração do BOT:", BOT_CONTIG)
   iniciaChecagemCandidatos(BOT_CONTIG)
 }

@@ -47,14 +47,8 @@ const percorreFilaCandidatos = async (
     }
     emProcessamento.add(candidato)
     console.log(`Verificando candidato ${candidato.id}: '${candidato.nome}'`)
-    const sucesso = await checaSituacaoCandidato(candidato)
-    emProcessamento.delete(candidato)
-    if (sucesso) {
-      erros.delete(candidato)
-    } else {
-      erros.add(candidato)
-    }
 
+    // log parcial
     if (candidato.id != 0 && candidato.id % 100 === 0) {
       console.log("Erros:", erros.size)
       console.log("Em processamento:", emProcessamento.size)
@@ -63,6 +57,14 @@ const percorreFilaCandidatos = async (
         totalFila - (filaCandidatos.length + emProcessamento.size)
       )
       console.log("Restam na fila:", filaCandidatos.length)
+    }
+
+    const sucesso = await checaSituacaoCandidato(candidato)
+    emProcessamento.delete(candidato)
+    if (sucesso) {
+      erros.delete(candidato)
+    } else {
+      erros.add(candidato)
     }
   }, CONFIG.tempoEntreChecagens)
 }
