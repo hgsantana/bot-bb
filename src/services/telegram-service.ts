@@ -83,7 +83,6 @@ const status = async (
     mensagemRecebida.message.chat.id,
     mensagemRecebida.message.message_id
   )
-  pilhaMensagens.push(mensagemStatus)
   return mensagemStatus
 }
 
@@ -134,7 +133,6 @@ const cadastrar = async (
     reply_to_message_id,
     text,
   }
-  pilhaMensagens.push(mensagem)
   return mensagem
 }
 
@@ -158,7 +156,6 @@ const descadastrar = async (
     reply_to_message_id,
     text,
   }
-  pilhaMensagens.push(mensagem)
   return mensagem
 }
 
@@ -184,7 +181,6 @@ const iniciar = async (
     reply_to_message_id,
     text,
   }
-  pilhaMensagens.push(mensagem)
   return mensagem
 }
 
@@ -208,7 +204,6 @@ const parar = async (
     reply_to_message_id,
     text,
   }
-  pilhaMensagens.push(mensagem)
   return mensagem
 }
 
@@ -218,7 +213,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
     mensagemRecebida.message.message_id
   )
 
-  axios
+  await axios
     .post<BotMessageResponse>(AMBIENTE.TELEGRAM_API + "/sendMessage", mensagem)
     .then(({ data: resposta }) => {
       if (resposta.ok) {
@@ -232,7 +227,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
             AMBIENTE.TELEGRAM_API + "/pinChatMessage",
             mensagemFixada
           )
-          .then(({ data: respostaFixada }) => {
+          .then(async ({ data: respostaFixada }) => {
             if (respostaFixada.result) {
               const novaMensagemPinada: Pick<
                 MensagemPinada,
@@ -241,7 +236,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
                 idChat: resposta.result.chat.id,
                 idMensagem: resposta.result.message_id,
               }
-              insereMensagemPinada(novaMensagemPinada)
+              await insereMensagemPinada(novaMensagemPinada)
               console.log("Mensagem fixada:", novaMensagemPinada)
             } else console.error("Falha ao fixar mensagem:", mensagemFixada)
           })
@@ -253,6 +248,7 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
     .catch((e: AxiosError) => {
       console.error("Erro=>", e.response?.data || e)
     })
+  return null
 }
 
 const desafixar = async (mensagemRecebida: BotUpdate) => {
@@ -260,13 +256,13 @@ const desafixar = async (mensagemRecebida: BotUpdate) => {
     chat_id: mensagemRecebida.message.chat.id,
     message_id: mensagemRecebida.message.message_id,
   }
-  axios
+  await axios
     .post<BotMessageResponse>(
       AMBIENTE.TELEGRAM_API + "/unpinChatMessage",
       mensagemUnpin
     )
-    .then(async ({ data: respostaFixada }) => {
-      if (respostaFixada.result) {
+    .then(async ({ data: resposta }) => {
+      if (resposta.ok) {
         const mensagemPinada = mensagensPinadas.find(
           (m) => m.idChat == mensagemUnpin.chat_id
         )
@@ -274,11 +270,15 @@ const desafixar = async (mensagemRecebida: BotUpdate) => {
           throw `Mensagem Pinada não localizada. Chat ${mensagemUnpin.chat_id}.`
         await removeMensagemPinada(mensagemPinada.id)
         console.log("Mensagem desafixada:", mensagemPinada)
-      } else console.error("Falha ao desafixar mensagem:", mensagemUnpin)
+      } else {
+        console.error("Falha ao desafixar mensagem:", mensagemUnpin)
+        console.error(resposta)
+      }
     })
     .catch((erro) => {
       console.error("Erro=>", erro)
     })
+  return null
 }
 
 export async function enviaMensagemAlteracao(
