@@ -38,7 +38,7 @@ setInterval(() => {
       console.error("Erro=>", e.response?.data || e)
     })
   }
-}, 1000)
+}, 2000)
 
 export const checaMensagem = (mensagemRecebida: BotUpdate) => {
   if (!mensagemRecebida?.message?.text) return null
