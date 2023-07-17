@@ -7,11 +7,12 @@ import { AreaCandidato } from "../models/tipo-candidato"
 import {
   atualizaSituacao,
   buscaCandidatoPorId,
+  buscaCandidatosPorIds,
   listaCandidatos,
   listaNomeCandidatos,
 } from "./bd-service"
 import { capturaFormulario } from "./html-service"
-import { enviaMensagemAlteracao } from "./telegram-service"
+import { enviaMensagemAdmin, enviaMensagemAlteracao } from "./telegram-service"
 
 export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
   console.log("Iniciando checagem de nomes.")
@@ -108,6 +109,16 @@ async function processaErros(erros: Set<Pick<Candidato, "id" | "nome">>) {
     }
     if (erros.size) {
       console.error("Permanecem com erro:", erros)
+      const ids: Array<number> = []
+      erros.forEach((erro) => ids.push(erro.id))
+      const candidatosErros = await buscaCandidatosPorIds(ids)
+      if (candidatosErros) {
+        await enviaMensagemAdmin(candidatosErros)
+      } else {
+        console.error(
+          `Candidatos com erro não localizados. Ids: ${ids.toString()}`
+        )
+      }
     }
     const fimErros = new Date()
     console.log(
