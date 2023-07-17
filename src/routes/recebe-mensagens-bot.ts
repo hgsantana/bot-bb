@@ -9,7 +9,7 @@ export const recebeMensagensBot: Handler = async (req, res) => {
   if (!headerToken) return res.status(401).send()
 
   try {
-    const resposta = checaMensagem(mensagemRecebida)
+    const resposta = await checaMensagem(mensagemRecebida)
     if (resposta) res.send(resposta)
     else res.send()
     // const relatorio = await compilaRelatorio()
