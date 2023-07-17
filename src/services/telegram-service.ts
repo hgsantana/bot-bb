@@ -94,7 +94,6 @@ const cadastrar = async (
     .trim()
     .toUpperCase()
   const idDestinatario = mensagemRecebida.message.from.id
-  const idChat = `${mensagemRecebida.message.chat.id}`
   const nomeUsuario = `${
     mensagemRecebida.message.from.username ||
     mensagemRecebida.message.from.first_name
