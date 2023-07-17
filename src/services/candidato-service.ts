@@ -17,60 +17,64 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
   console.log("Iniciando checagem de nomes.")
 
   console.log("Capturando nomes do Banco de Dados...")
-  const filaCandidatos = await listaNomeCandidatos()
+  try {
+    const filaCandidatos = await listaNomeCandidatos()
 
-  const totalFila = filaCandidatos.length
-  const inicio = new Date()
-  const emProcessamento = new Set<Pick<Candidato, "id" | "nome">>()
-  const erros = new Set<Pick<Candidato, "id" | "nome">>()
+    const totalFila = filaCandidatos.length
+    const inicio = new Date()
+    const emProcessamento = new Set<Pick<Candidato, "id" | "nome">>()
+    const erros = new Set<Pick<Candidato, "id" | "nome">>()
 
-  console.log(`${filaCandidatos.length} nomes capturados.`)
-  console.log("Início da checagem:", inicio.toLocaleString())
-  console.log(`Consultando ${totalFila} candidatos...`)
+    console.log(`${filaCandidatos.length} nomes capturados.`)
+    console.log("Início da checagem:", inicio.toLocaleString())
+    console.log(`Consultando ${totalFila} candidatos...`)
 
-  const intervalo: NodeJS.Timeout = setInterval(async () => {
-    const candidato = filaCandidatos.shift()
+    const intervalo: NodeJS.Timeout = setInterval(async () => {
+      const candidato = filaCandidatos.shift()
 
-    // Verifica o fim da fila
-    if (candidato) {
+      // Verifica o fim da fila
+      if (candidato) {
+        emProcessamento.add(candidato)
+      } else {
+        const fim = new Date()
+        clearInterval(intervalo)
+        console.log("Fim da fila:", fim.toLocaleString())
+        console.log(
+          "Tempo transcorrido (s):",
+          (fim.getTime() - inicio.getTime()) / 1000
+        )
+        await aguardaProcessamento(emProcessamento)
+        await processaErros(erros)
+        console.log(`Reiniciando checagem em ${CONFIG.tempoDescansoFila}s`)
+        return setTimeout(() => {
+          iniciaChecagemCandidatos(CONFIG)
+        }, CONFIG.tempoDescansoFila * 1000)
+      }
       emProcessamento.add(candidato)
-    } else {
-      const fim = new Date()
-      clearInterval(intervalo)
-      console.log("Fim da fila:", fim.toLocaleString())
-      console.log(
-        "Tempo transcorrido (s):",
-        (fim.getTime() - inicio.getTime()) / 1000
-      )
-      await aguardaProcessamento(emProcessamento)
-      await processaErros(erros)
-      console.log(`Reiniciando checagem em ${CONFIG.tempoDescansoFila}s`)
-      return setTimeout(() => {
-        iniciaChecagemCandidatos(CONFIG)
-      }, CONFIG.tempoDescansoFila * 1000)
-    }
-    emProcessamento.add(candidato)
 
-    // log parcial
-    if (candidato.id != 0 && candidato.id % 100 === 0) {
-      console.log("Erros:", erros.size)
-      console.log("Em processamento:", emProcessamento.size)
-      console.log(
-        "Processados:",
-        totalFila - (filaCandidatos.length + emProcessamento.size)
-      )
-      console.log("Restam na fila:", filaCandidatos.length)
-    }
+      // log parcial
+      if (candidato.id != 0 && candidato.id % 100 === 0) {
+        console.log("Erros:", erros.size)
+        console.log("Em processamento:", emProcessamento.size)
+        console.log(
+          "Processados:",
+          totalFila - (filaCandidatos.length + emProcessamento.size)
+        )
+        console.log("Restam na fila:", filaCandidatos.length)
+      }
 
-    // Verifica situação do candidato
-    const sucesso = await checaSituacaoCandidato(candidato)
-    emProcessamento.delete(candidato)
-    if (sucesso) {
-      erros.delete(candidato)
-    } else {
-      erros.add(candidato)
-    }
-  }, CONFIG.tempoEntreChecagens)
+      // Verifica situação do candidato
+      const sucesso = await checaSituacaoCandidato(candidato)
+      emProcessamento.delete(candidato)
+      if (sucesso) {
+        erros.delete(candidato)
+      } else {
+        erros.add(candidato)
+      }
+    }, CONFIG.tempoEntreChecagens)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 async function aguardaProcessamento(
