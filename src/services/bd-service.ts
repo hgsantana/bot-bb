@@ -51,6 +51,12 @@ export async function buscaCandidatoPorNome(
   return SQL<Candidato>("botBB_candidatos").select("*").first().where({ nome })
 }
 
+export async function buscaCandidatosPorIds(
+  ids: Array<number>
+): Promise<Array<Candidato> | undefined> {
+  return SQL<Candidato>("botBB_candidatos").select("*").whereIn("id", ids)
+}
+
 export async function listaUsuariosCadastrados() {
   return SQL<UsuarioCadastrado>("botBB_usuarios").select("*")
 }

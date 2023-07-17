@@ -339,29 +339,25 @@ export const enviaMensagemAdmin = async (
   candidatosInconsistentes: Candidato[]
 ) => {
   try {
-    let textoInconsistentes = ""
-    candidatosInconsistentes.forEach((c) => {
-      textoInconsistentes +=
-        `\n\n` +
-        `Nome: ${c.nome}\n` +
-        `Situação: ${c.situacao}\n` +
-        `Micro-Região: ${c.microRegiao}`
-    })
     const mensagem: BotUpdateResponse = {
       chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
       parse_mode: "HTML",
-      text:
-        `Candidatos com inconsistência detectados:\n` +
-        `<pre>\n` +
-        `Inconsistências: ${candidatosInconsistentes.length}\n` +
-        `${
-          textoInconsistentes.length > 3000
-            ? "Muitos candidatos. Olhe o LOG."
-            : textoInconsistentes
-        }\n` +
-        `</pre>`,
+      text: `Inconsistências detectadas: ${candidatosInconsistentes.length}\n`,
     }
     pilhaMensagens.push(mensagem)
+    candidatosInconsistentes.forEach((c) => {
+      const mensagemCandidato: BotUpdateResponse = {
+        chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
+        parse_mode: "HTML",
+        text:
+          `Inconsistente` +
+          `\n\n` +
+          `Nome: ${c.nome}\n` +
+          `Situação: ${c.situacao}\n` +
+          `Micro-Região: ${c.microRegiao}`,
+      }
+      pilhaMensagens.push(mensagemCandidato)
+    })
   } catch (error) {
     console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
     console.log("Erro=> ", error)
