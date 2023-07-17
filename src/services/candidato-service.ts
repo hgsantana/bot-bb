@@ -1,33 +1,37 @@
 import axios, { AxiosRequestConfig } from "axios"
 import { BotConfig } from "../models/bot-config"
 import { Candidato } from "../models/candidato"
-import { buscaCandidato, listaNomeCandidatos } from "./bd-service"
+import { RespostaResumida } from "../models/resposta-resumida"
+import { Situacao } from "../models/situacao"
+import { AreaCandidato } from "../models/tipo-candidato"
+import {
+  atualizaSituacao,
+  buscaCandidatoPorId,
+  listaCandidatos,
+  listaNomeCandidatos,
+} from "./bd-service"
 import { capturaFormulario } from "./html-service"
+import { enviaMensagemAlteracao } from "./telegram-service"
 
 export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
   console.log("Iniciando checagem de nomes.")
+
   console.log("Capturando nomes do Banco de Dados...")
+  const filaCandidatos = await listaNomeCandidatos()
 
-  const nomesCandidatos = await listaNomeCandidatos()
-  console.log(`${nomesCandidatos.length} nomes capturados.`)
-  percorreFilaCandidatos(nomesCandidatos, CONFIG)
-}
-
-const percorreFilaCandidatos = async (
-  filaCandidatos: Array<Pick<Candidato, "id" | "nome">>,
-  CONFIG: BotConfig
-) => {
   const totalFila = filaCandidatos.length
   const inicio = new Date()
   const emProcessamento = new Set<Pick<Candidato, "id" | "nome">>()
   const erros = new Set<Pick<Candidato, "id" | "nome">>()
 
+  console.log(`${filaCandidatos.length} nomes capturados.`)
   console.log("Início da checagem:", inicio.toLocaleString())
   console.log(`Consultando ${totalFila} candidatos...`)
 
   const intervalo: NodeJS.Timeout = setInterval(async () => {
     const candidato = filaCandidatos.shift()
-    // finaliza se deu sucesso em todos
+
+    // Verifica o fim da fila
     if (candidato) {
       emProcessamento.add(candidato)
     } else {
@@ -46,7 +50,6 @@ const percorreFilaCandidatos = async (
       }, CONFIG.tempoDescansoFila * 1000)
     }
     emProcessamento.add(candidato)
-    console.log(`Verificando candidato ${candidato.id}: '${candidato.nome}'`)
 
     // log parcial
     if (candidato.id != 0 && candidato.id % 100 === 0) {
@@ -59,6 +62,7 @@ const percorreFilaCandidatos = async (
       console.log("Restam na fila:", filaCandidatos.length)
     }
 
+    // Verifica situação do candidato
     const sucesso = await checaSituacaoCandidato(candidato)
     emProcessamento.delete(candidato)
     if (sucesso) {
@@ -87,20 +91,26 @@ async function aguardaProcessamento(
 }
 
 async function processaErros(erros: Set<Pick<Candidato, "id" | "nome">>) {
+  const inicioErros = new Date()
   return new Promise(async (resolve, reject) => {
     const fila = Array.from(erros)
     console.log(`Aguardando o processamento de ${fila.length} erros.`)
     for await (const candidato of fila) {
-      console.log(`Verificando candidato ${candidato.id}: '${candidato.nome}'`)
+      console.log(`Verificando erro ${candidato.id}: '${candidato.nome}'`)
       const sucesso = await checaSituacaoCandidato(candidato)
       if (sucesso) {
         erros.delete(candidato)
       }
     }
-    console.log("Erros finalizados.")
     if (erros.size) {
       console.error("Permanecem com erro:", erros)
     }
+    const fimErros = new Date()
+    console.log(
+      `Erros finalizados em ${
+        (fimErros.getTime() - inicioErros.getTime()) / 1000
+      }s`
+    )
     resolve(null)
   })
 }
@@ -156,7 +166,7 @@ const alteraSituacaoCandidato = async (
   idCandidato: number,
   formulario: string
 ) => {
-  const candidato = await buscaCandidato(idCandidato)
+  const candidato = await buscaCandidatoPorId(idCandidato)
   if (!candidato) {
     throw "Candidado não localizado."
   }
@@ -193,13 +203,42 @@ const alteraSituacaoCandidato = async (
         /qualificado|cancelado por prazo|inapto|Convoca(c|ç)(a|ã)o (autorizada|expedida)|em qualifica(c|ç)(a|ã)o|Desistente|n(a|ã)o convocado|Empossado/gi
       )?.[0] || ""
     if (novaSituacao) {
-      candidato.situacao = novaSituacao
+      switch (novaSituacao) {
+        case Situacao.AUTORIZADA:
+          candidato.situacao = Situacao.AUTORIZADA
+          break
+        case Situacao.CANCELADO:
+          candidato.situacao = Situacao.CANCELADO
+          break
+        case Situacao.DESISTENTE:
+          candidato.situacao = Situacao.DESISTENTE
+          break
+        case Situacao.EMPOSSADO:
+          candidato.situacao = Situacao.EMPOSSADO
+          break
+        case Situacao.EM_QUALIFICACAO:
+          candidato.situacao = Situacao.EM_QUALIFICACAO
+          break
+        case Situacao.EXPEDIDA:
+          candidato.situacao = Situacao.EXPEDIDA
+          break
+        case Situacao.INAPTO:
+          candidato.situacao = Situacao.INAPTO
+          break
+        case Situacao.NAO_CONVOCADO:
+          candidato.situacao = Situacao.NAO_CONVOCADO
+          break
+        case Situacao.QUALIFICADO:
+          candidato.situacao = Situacao.QUALIFICADO
+          break
+      }
       if (situacaoAnterior != novaSituacao) {
         houveAlteracao = true
-        // enviaMensagemAlteracao(situacaoAnterior, candidato, tipo, proximos)
-        // websocketsAbertos.ti.forEach(w => w.send(JSON.stringify(candidato)))
-        console.log(`Alterando situação de ${candidato?.nome}`)
-        console.log(`Nova situação: ${novaSituacao}`)
+        console.log(
+          `Nova Situação de '${candidato?.nome}': ${situacaoAnterior} > ${novaSituacao}`
+        )
+        await atualizaSituacao(candidato)
+        await enviaMensagemAlteracao(situacaoAnterior, candidato)
       }
     } else {
       console.log("Erro=> Regex não capturou situação:", situacaoCompleta)
@@ -209,4 +248,118 @@ const alteraSituacaoCandidato = async (
     console.log(`Erro=> ${candidato.nome} - SEM SITUAÇÃO`)
   }
   return houveAlteracao
+}
+
+export async function compilaRelatorio() {
+  const relatorio: RespostaResumida = {
+    comercial: {
+      autorizadas: 0,
+      cancelados: 0,
+      convocados: 0,
+      desistentes: 0,
+      empossados: 0,
+      emQualificacao: 0,
+      expedidas: 0,
+      id: 0,
+      inaptos: 0,
+      inconsistentes: 0,
+      naoConvocados: 0,
+      qualificados: 0,
+    },
+    ti: {
+      autorizadas: 0,
+      cancelados: 0,
+      convocados: 0,
+      desistentes: 0,
+      empossados: 0,
+      emQualificacao: 0,
+      expedidas: 0,
+      id: 0,
+      inaptos: 0,
+      inconsistentes: 0,
+      naoConvocados: 0,
+      qualificados: 0,
+    },
+    ultimaAtualizacao: new Date(),
+  }
+
+  const candidatos = await listaCandidatos()
+
+  candidatos.forEach((candidato) => {
+    switch (candidato.situacao) {
+      case Situacao.AUTORIZADA:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.autorizadas += 1
+        } else {
+          relatorio.ti.autorizadas += 1
+        }
+        break
+      case Situacao.CANCELADO:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.cancelados += 1
+        } else {
+          relatorio.ti.cancelados += 1
+        }
+        break
+      case Situacao.DESISTENTE:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.desistentes += 1
+        } else {
+          relatorio.ti.desistentes += 1
+        }
+        break
+      case Situacao.EMPOSSADO:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.empossados += 1
+        } else {
+          relatorio.ti.empossados += 1
+        }
+        break
+      case Situacao.EM_QUALIFICACAO:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.emQualificacao += 1
+        } else {
+          relatorio.ti.emQualificacao += 1
+        }
+        break
+      case Situacao.EXPEDIDA:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.expedidas += 1
+        } else {
+          relatorio.ti.expedidas += 1
+        }
+        break
+      case Situacao.INAPTO:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.inaptos += 1
+        } else {
+          relatorio.ti.inaptos += 1
+        }
+        break
+      case Situacao.NAO_CONVOCADO:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.naoConvocados += 1
+        } else {
+          relatorio.ti.naoConvocados += 1
+        }
+        break
+      case Situacao.QUALIFICADO:
+        if (candidato.area == AreaCandidato.COMERCIAL) {
+          relatorio.comercial.qualificados += 1
+        } else {
+          relatorio.ti.qualificados += 1
+        }
+        break
+    }
+  })
+
+  relatorio.comercial.convocados =
+    candidatos.filter((c) => c.area == AreaCandidato.COMERCIAL).length -
+    relatorio.comercial.naoConvocados
+
+  relatorio.ti.convocados =
+    candidatos.filter((c) => c.area == AreaCandidato.TI).length -
+    relatorio.ti.naoConvocados
+
+  return relatorio
 }

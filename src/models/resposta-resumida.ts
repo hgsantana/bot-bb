@@ -1,6 +1,7 @@
 import { StatusResumido } from "./status-resumido"
 
 export type RespostaResumida = {
-    ti: StatusResumido
-    comercial: StatusResumido
+  ti: StatusResumido
+  comercial: StatusResumido
+  ultimaAtualizacao: Date
 }

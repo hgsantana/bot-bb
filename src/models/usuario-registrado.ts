@@ -1,6 +1,6 @@
 export type UsuarioCadastrado = {
-    id: string
-    idChat: string
-    usuario: string
-    nomeChecagem: string
+  id: number
+  usuario: string
+  idUsuario: number
+  nomeChecagem: string
 }

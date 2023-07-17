@@ -1,5 +1,4 @@
-export type BotPinnedMessage = {
-    chat_id: number | string
-    message_id: number,
-    tipo?: "TI" | "COMERCIAL"
+export type MensagemPinada = {
+  idChat: number
+  idMensagem: number
 }
