@@ -263,10 +263,10 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
   return null
 }
 
-const desafixar = async (mensagemRecebida: BotUpdate) => {
+async function desafixar(mensagemRecebida: BotUpdate) {
   try {
     const mensagemPinada = mensagensPinadas.find(
-      (m) => m.idChat == mensagemUnpin.chat_id
+      (m) => m.idChat == mensagemRecebida.message.chat.id
     )
     if (!mensagemPinada) {
       console.error(
