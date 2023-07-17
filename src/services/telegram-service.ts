@@ -39,7 +39,6 @@ setInterval(() => {
 }, 1000)
 
 export const checaMensagem = (mensagemRecebida: BotUpdate) => {
-  console.log("Checando mensagem:", mensagemRecebida)
   if (!mensagemRecebida?.message?.text) return null
 
   const textoMensagem = mensagemRecebida?.message?.text
@@ -48,6 +47,10 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     .trim()
 
   if (!textoMensagem || !textoMensagem.startsWith("/")) return null
+
+  console.log(
+    `Mensagem recebida de '${mensagemRecebida.message.from.username}': '${textoMensagem}'`
+  )
 
   if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
 
