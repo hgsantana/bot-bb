@@ -252,9 +252,15 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
 }
 
 const desafixar = async (mensagemRecebida: BotUpdate) => {
+  const mensagemPinada = mensagensPinadas.find(
+    (m) => m.idChat == mensagemUnpin.chat_id
+  )
+  if (!mensagemPinada)
+    throw `Mensagem Pinada não localizada. Chat ${mensagemRecebida.message.chat.id}.`
+
   const mensagemUnpin: BotUnpinMessage = {
-    chat_id: mensagemRecebida.message.chat.id,
-    message_id: mensagemRecebida.message.message_id,
+    chat_id: mensagemPinada.idChat,
+    message_id: mensagemPinada.idMensagem,
   }
   await axios
     .post<BotMessageResponse>(
@@ -263,14 +269,8 @@ const desafixar = async (mensagemRecebida: BotUpdate) => {
     )
     .then(async ({ data: resposta }) => {
       if (resposta.ok) {
-        const mensagemPinada = mensagensPinadas.find(
-          (m) => m.idChat == mensagemUnpin.chat_id
-        )
-        if (!mensagemPinada)
-          throw `Mensagem Pinada não localizada. Chat ${mensagemUnpin.chat_id}.`
         await removeMensagemPinada(mensagemPinada.id)
         console.log("Mensagem desafixada:", mensagemUnpin)
-        console.log(resposta)
       } else {
         console.error("Falha ao desafixar mensagem:", mensagemUnpin)
         console.error(resposta)
