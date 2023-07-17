@@ -80,8 +80,8 @@ const status = async (
   mensagemRecebida: BotUpdate
 ): Promise<BotUpdateResponse | null> => {
   const mensagemStatus = await compilaMensagemStatus(
-    mensagemRecebida.message.message_id,
-    mensagemRecebida.message.chat.id
+    mensagemRecebida.message.chat.id,
+    mensagemRecebida.message.message_id
   )
   pilhaMensagens.push(mensagemStatus)
   return mensagemStatus
@@ -214,8 +214,8 @@ const parar = async (
 
 const fixar = async (mensagemRecebida: BotUpdate) => {
   const mensagem = await compilaMensagemStatus(
-    mensagemRecebida.message.message_id,
-    mensagemRecebida.message.chat.id
+    mensagemRecebida.message.chat.id,
+    mensagemRecebida.message.message_id
   )
 
   axios
@@ -294,7 +294,7 @@ export async function enviaMensagemAlteracao(
       avisaUsuarios += `<a href="tg://user?id=${usuario.id}">@${usuario.usuario}</a> `
     })
     try {
-      const mensagem = await novaMensagemAviso(
+      const mensagem = novaMensagemAviso(
         candidato,
         chat.idChat,
         situacaoAnterior,
@@ -344,7 +344,7 @@ export const enviaMensagemAdmin = async (
 export const editaMensagensFixadas = async () => {
   for await (const mensagem of mensagensPinadas) {
     const { idChat, idMensagem } = mensagem
-    const mensagemGerada = await compilaMensagemStatus(idMensagem, idChat)
+    const mensagemGerada = await compilaMensagemStatus(idChat, idMensagem)
     const novaMensagemFixada: BotEditMessageCommand = {
       chat_id: idChat,
       message_id: idMensagem,
@@ -369,8 +369,8 @@ export const editaMensagensFixadas = async () => {
 }
 
 async function compilaMensagemStatus(
-  reply_to_message_id: number,
-  chat_id: number
+  chat_id: number,
+  reply_to_message_id?: number
 ) {
   const statusCompleto = await compilaRelatorio()
   const mensagemStatus: BotUpdateResponse = {
@@ -473,7 +473,7 @@ async function compilaMensagemStatus(
   return mensagemStatus
 }
 
-async function novaMensagemAviso(
+function novaMensagemAviso(
   candidato: Candidato,
   chat_id: number,
   situacaoAnterior: string,
