@@ -10,11 +10,12 @@ export const configurarAmbiente = () => {
   const DB_PASS = process.env.DB_PASS
   const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
   const TELEGRAM_ADMIN_ID = process.env.TELEGRAM_ADMIN_ID
-  const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_TOKEN}`
+  const TELEGRAM_API = process.env.TELEGRAM_API
 
   if (
     !TELEGRAM_TOKEN ||
     !TELEGRAM_ADMIN_ID ||
+    !TELEGRAM_API ||
     !DB_HOST ||
     !DB_DATABASE ||
     !DB_USER ||
