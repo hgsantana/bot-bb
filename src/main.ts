@@ -4,6 +4,7 @@ import { iniciarBot } from "./bot"
 import { configurarAmbiente } from "./config/ambiente"
 import { configurarBancoDados } from "./config/banco-dados"
 import { routes } from "./routes"
+import { iniciaBancoDados } from "./services/bd-service"
 
 export const AMBIENTE = configurarAmbiente()
 export const SQL = configurarBancoDados()
@@ -16,7 +17,8 @@ app.all("*", routes)
 
 const porta = process.env.PORT || 4000
 
-app.listen(porta, () => {
+app.listen(porta, async () => {
   console.log("Servindo na porta", porta)
-  iniciarBot()
+  await iniciaBancoDados()
+  await iniciarBot()
 })

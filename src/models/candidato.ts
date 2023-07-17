@@ -1,4 +1,5 @@
-import { TipoCandidato } from "./tipo-candidato"
+import { Situacao } from "./situacao"
+import { AreaCandidato } from "./tipo-candidato"
 
 export type Candidato = {
   id: number
@@ -13,8 +14,8 @@ export type Candidato = {
   posicao: number
   posicaoPcd: number | null
   posicaoPpp: number | null
-  situacao: string
+  situacao: Situacao
   dataSituacao: string
   agenciaSituacao: string
-  tecnologia: TipoCandidato
+  area: AreaCandidato
 }

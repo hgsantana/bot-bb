@@ -1,4 +1,4 @@
 export type ChatCadastrado = {
-    id: number,
-    tipo?: "TI" | "COMERCIAL"
+  id: number
+  idChat: number
 }
