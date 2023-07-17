@@ -112,7 +112,7 @@ const cadastrar = async (
   else if (!candidato) text = `Este nome não existe no resultado final oficial.`
   else {
     text =
-      `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${mensagemRecebida.message.from.first_name}</a>. ` +
+      `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${nomeUsuario}</a>. ` +
       `A partir de agora, você será marcado nas alterações para "${nome}" no Grupo de Atualizações. ` +
       `Para cancelar, use o comando <pre>/descadastrar</pre>`
     if (usuario) {
@@ -310,7 +310,7 @@ export async function enviaMensagemAlteracao(
 ) {
   for await (const chat of chatsCadastrados) {
     const usuariosAvisar = usuariosCadastrados.filter(
-      (u) => u.nomeChecagem == candidato.nome
+      (u) => u.nomeChecagem.toUpperCase() == candidato.nome.toUpperCase()
     )
     let avisaUsuarios = "\n\n"
     usuariosAvisar.forEach((usuario) => {
