@@ -54,14 +54,14 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     `Mensagem recebida de '${mensagemRecebida.message.from.username}': '${textoMensagem}'`
   )
 
-  if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
-
   if (textoMensagem.startsWith("/cadastrar")) return cadastrar(mensagemRecebida)
 
   if (textoMensagem.startsWith("/descadastrar"))
     return descadastrar(mensagemRecebida)
 
   // comandos abaixo somente permitidos para admins reconhecidos
+  if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
+
   if (mensagemRecebida.message.from.id.toString() != AMBIENTE.TELEGRAM_ADMIN_ID)
     return null
 
@@ -74,16 +74,6 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
   if (textoMensagem.startsWith("/desafixar")) return desafixar(mensagemRecebida)
 
   return null
-}
-
-const status = async (
-  mensagemRecebida: BotUpdate
-): Promise<BotUpdateResponse | null> => {
-  const mensagemStatus = await compilaMensagemStatus(
-    mensagemRecebida.message.chat.id,
-    mensagemRecebida.message.message_id
-  )
-  return mensagemStatus
 }
 
 const cadastrar = async (
@@ -159,6 +149,18 @@ const descadastrar = async (
     text,
   }
   return mensagem
+}
+
+const status = async (
+  mensagemRecebida: BotUpdate
+): Promise<BotUpdateResponse | null> => {
+  // somente permitido para admins reconhecidos
+  if (mensagemRecebida.message.from.id != 1574661558) return null
+  const mensagemStatus = await compilaMensagemStatus(
+    mensagemRecebida.message.chat.id,
+    mensagemRecebida.message.message_id
+  )
+  return mensagemStatus
 }
 
 const iniciar = async (
@@ -414,83 +416,107 @@ async function compilaMensagemStatus(
       `Aprovados     : ${
         statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados
       }\n` +
-      `Convocados    : ${statusCompleto.ti.convocados} (${(
-        (statusCompleto.ti.convocados /
-          (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Não Convocados: ${statusCompleto.ti.naoConvocados} (${(
-        (statusCompleto.ti.naoConvocados /
-          (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Empossados    : ${statusCompleto.ti.empossados} (${(
-        (statusCompleto.ti.empossados /
-          (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-        100
-      ).toFixed(2)}%)\n` +
+      `Convocados    : ${statusCompleto.ti.convocados} (${
+        (
+          (statusCompleto.ti.convocados /
+            (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Não Convocados: ${statusCompleto.ti.naoConvocados} (${
+        (
+          (statusCompleto.ti.naoConvocados /
+            (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Empossados    : ${statusCompleto.ti.empossados} (${
+        (
+          (statusCompleto.ti.empossados /
+            (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
       `Autorizadas : ${statusCompleto.ti.autorizadas}\n` +
       `Expedidas   : ${statusCompleto.ti.expedidas}\n` +
       `Qualificação: ${statusCompleto.ti.emQualificacao}\n` +
       `Qualificados: ${statusCompleto.ti.qualificados}\n` +
       `\n` +
-      `Cancelados : ${statusCompleto.ti.cancelados} (${(
-        (statusCompleto.ti.cancelados / statusCompleto.ti.convocados) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Desistentes: ${statusCompleto.ti.desistentes} (${(
-        (statusCompleto.ti.desistentes / statusCompleto.ti.convocados) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Inaptos    : ${statusCompleto.ti.inaptos} (${(
-        (statusCompleto.ti.inaptos / statusCompleto.ti.convocados) *
-        100
-      ).toFixed(2)}%)\n` +
+      `Cancelados : ${statusCompleto.ti.cancelados} (${
+        (
+          (statusCompleto.ti.cancelados / statusCompleto.ti.convocados) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Desistentes: ${statusCompleto.ti.desistentes} (${
+        (
+          (statusCompleto.ti.desistentes / statusCompleto.ti.convocados) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Inaptos    : ${statusCompleto.ti.inaptos} (${
+        (
+          (statusCompleto.ti.inaptos / statusCompleto.ti.convocados) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
       `\n\n` +
       `--- COMERCIAL ---\n` +
       `Aprovados     : ${
         statusCompleto.comercial.naoConvocados +
         statusCompleto.comercial.convocados
       }\n` +
-      `Convocados    : ${statusCompleto.comercial.convocados} (${(
-        (statusCompleto.comercial.convocados /
-          (statusCompleto.comercial.naoConvocados +
-            statusCompleto.comercial.convocados)) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Não Convocados: ${statusCompleto.comercial.naoConvocados} (${(
-        (statusCompleto.comercial.naoConvocados /
-          (statusCompleto.comercial.naoConvocados +
-            statusCompleto.comercial.convocados)) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Empossados    : ${statusCompleto.comercial.empossados} (${(
-        (statusCompleto.comercial.empossados /
-          (statusCompleto.comercial.naoConvocados +
-            statusCompleto.comercial.convocados)) *
-        100
-      ).toFixed(2)}%)\n` +
+      `Convocados    : ${statusCompleto.comercial.convocados} (${
+        (
+          (statusCompleto.comercial.convocados /
+            (statusCompleto.comercial.naoConvocados +
+              statusCompleto.comercial.convocados)) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Não Convocados: ${statusCompleto.comercial.naoConvocados} (${
+        (
+          (statusCompleto.comercial.naoConvocados /
+            (statusCompleto.comercial.naoConvocados +
+              statusCompleto.comercial.convocados)) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Empossados    : ${statusCompleto.comercial.empossados} (${
+        (
+          (statusCompleto.comercial.empossados /
+            (statusCompleto.comercial.naoConvocados +
+              statusCompleto.comercial.convocados)) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
       `\n` +
       `Autorizadas : ${statusCompleto.comercial.autorizadas}\n` +
       `Expedidas   : ${statusCompleto.comercial.expedidas}\n` +
       `Qualificação: ${statusCompleto.comercial.emQualificacao}\n` +
       `Qualificados: ${statusCompleto.comercial.qualificados}\n` +
       `\n` +
-      `Cancelados : ${statusCompleto.comercial.cancelados} (${(
-        (statusCompleto.comercial.cancelados /
-          statusCompleto.comercial.convocados) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Desistentes: ${statusCompleto.comercial.desistentes} (${(
-        (statusCompleto.comercial.desistentes /
-          statusCompleto.comercial.convocados) *
-        100
-      ).toFixed(2)}%)\n` +
-      `Inaptos    : ${statusCompleto.comercial.inaptos} (${(
-        (statusCompleto.comercial.inaptos /
-          statusCompleto.comercial.convocados) *
-        100
-      ).toFixed(2)}%)\n` +
+      `Cancelados : ${statusCompleto.comercial.cancelados} (${
+        (
+          (statusCompleto.comercial.cancelados /
+            statusCompleto.comercial.convocados) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Desistentes: ${statusCompleto.comercial.desistentes} (${
+        (
+          (statusCompleto.comercial.desistentes /
+            statusCompleto.comercial.convocados) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
+      `Inaptos    : ${statusCompleto.comercial.inaptos} (${
+        (
+          (statusCompleto.comercial.inaptos /
+            statusCompleto.comercial.convocados) *
+          100
+        ).toFixed(2) || 0
+      }%)\n` +
       `</pre>`,
   }
   return mensagemStatus
