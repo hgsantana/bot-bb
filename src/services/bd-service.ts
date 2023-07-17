@@ -82,7 +82,8 @@ export async function atualizaUsuario(usuario: UsuarioCadastrado) {
     .update({ nomeChecagem: usuario.nomeChecagem })
     .where({ id: usuario.id })
   const usuarios = await listaUsuariosCadastrados()
-  usuariosCadastrados.splice(0, usuariosCadastrados.length, ...usuarios)
+  usuariosCadastrados.splice(0)
+  usuariosCadastrados.push(...usuarios)
 }
 
 export async function insereUsuario(
@@ -90,25 +91,29 @@ export async function insereUsuario(
 ) {
   await SQL<UsuarioCadastrado>("botBB_usuarios").insert(usuario)
   const usuarios = await listaUsuariosCadastrados()
-  usuariosCadastrados.splice(0, usuariosCadastrados.length, ...usuarios)
+  usuariosCadastrados.splice(0)
+  usuariosCadastrados.push(...usuarios)
 }
 
 export async function removeUsuario(id: number) {
   await SQL<UsuarioCadastrado>("botBB_usuarios").delete().where({ id })
   const usuarios = await listaUsuariosCadastrados()
-  usuariosCadastrados.splice(0, usuariosCadastrados.length, ...usuarios)
+  usuariosCadastrados.splice(0)
+  usuariosCadastrados.push(...usuarios)
 }
 
 export async function insereChat(chat: Pick<ChatCadastrado, "idChat">) {
   await SQL<ChatCadastrado>("botBB_chats").insert(chat)
   const chats = await listaChats()
-  chatsCadastrados.splice(0, chatsCadastrados.length, ...chats)
+  chatsCadastrados.splice(0)
+  chatsCadastrados.push(...chats)
 }
 
 export async function removeChat(id: number) {
   await SQL<ChatCadastrado>("botBB_chats").delete().where({ id })
   const chats = await listaChats()
-  chatsCadastrados.splice(0, chatsCadastrados.length, ...chats)
+  chatsCadastrados.splice(0)
+  chatsCadastrados.push(...chats)
 }
 
 export async function insereMensagemPinada(
@@ -116,11 +121,13 @@ export async function insereMensagemPinada(
 ) {
   await SQL<MensagemPinada>("botBB_mensagensPinadas").insert(mensagem)
   const mensagens = await listaMensagensPinadas()
-  mensagensPinadas.splice(0, mensagensPinadas.length, ...mensagens)
+  mensagensPinadas.splice(0)
+  mensagensPinadas.push(...mensagens)
 }
 
 export async function removeMensagemPinada(id: number) {
   await SQL<MensagemPinada>("botBB_mensagensPinadas").delete().where({ id })
   const mensagens = await listaMensagensPinadas()
-  mensagensPinadas.splice(0, mensagensPinadas.length, ...mensagens)
+  mensagensPinadas.splice(0)
+  mensagensPinadas.push(...mensagens)
 }
