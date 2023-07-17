@@ -208,6 +208,18 @@ const parar = async (
 }
 
 const fixar = async (mensagemRecebida: BotUpdate) => {
+  const mensagemPinada = mensagensPinadas.find(
+    (m) => m.idChat == mensagemRecebida.message.chat.id
+  )
+  if (mensagemPinada) {
+    const mensagem = await compilaMensagemStatus(
+      mensagemRecebida.message.chat.id,
+      mensagemRecebida.message.message_id
+    )
+    mensagem.text = `Já existe uma mensagem fixada neste grupo.`
+    return mensagem
+  }
+
   const mensagem = await compilaMensagemStatus(
     mensagemRecebida.message.chat.id,
     mensagemRecebida.message.message_id
