@@ -57,11 +57,11 @@ export async function listaChats() {
   return SQL<ChatCadastrado>("botBB_chats").select("*")
 }
 
-export async function buscaUsuario(id: number) {
+export async function buscaUsuarioPorId(id: number) {
   return SQL<UsuarioCadastrado>("botBB_usuarios").first().where({ id })
 }
 
-export async function buscaChat(idChat: number) {
+export async function buscaChatPorIdChat(idChat: number) {
   return SQL<ChatCadastrado>("botBB_chats").first().where({ idChat })
 }
 
@@ -99,8 +99,8 @@ export async function insereChat(chat: Pick<ChatCadastrado, "idChat">) {
   chatsCadastrados.splice(0, chatsCadastrados.length, ...chats)
 }
 
-export async function removeChat(idChat: number) {
-  await SQL<ChatCadastrado>("botBB_chats").delete().where({ idChat })
+export async function removeChat(id: number) {
+  await SQL<ChatCadastrado>("botBB_chats").delete().where({ id })
   const chats = await listaChats()
   chatsCadastrados.splice(0, chatsCadastrados.length, ...chats)
 }

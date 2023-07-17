@@ -12,8 +12,8 @@ import { BotUnpinMessage } from "../models/bot-unpin-message"
 import {
   atualizaUsuario,
   buscaCandidatoPorNome,
-  buscaChat,
-  buscaUsuario,
+  buscaChatPorIdChat,
+  buscaUsuarioPorId,
   chatsCadastrados,
   insereChat,
   insereMensagemPinada,
@@ -100,7 +100,7 @@ const cadastrar = async (
     mensagemRecebida.message.from.username ||
     mensagemRecebida.message.from.first_name
   }`
-  const usuario = await buscaUsuario(mensagemRecebida.message.from.id)
+  const usuario = await buscaUsuarioPorId(mensagemRecebida.message.from.id)
   const reply_to_message_id = mensagemRecebida?.message?.message_id
 
   let text = ``
@@ -142,7 +142,7 @@ const descadastrar = async (
   mensagemRecebida: BotUpdate
 ): Promise<BotUpdateResponse | null> => {
   const idDestinatario = mensagemRecebida.message.from.id
-  const usuario = await buscaUsuario(idDestinatario)
+  const usuario = await buscaUsuarioPorId(idDestinatario)
   const reply_to_message_id = mensagemRecebida?.message?.message_id
 
   let text = `A partir de agora, você não será mais marcado no Grupo de Atualizações.`
@@ -167,7 +167,7 @@ const iniciar = async (
 ): Promise<BotUpdateResponse | null> => {
   // somente permitido para admins reconhecidos
   if (mensagemRecebida.message.from.id != 1574661558) return null
-  const chat = await buscaChat(mensagemRecebida.message.chat.id)
+  const chat = await buscaChatPorIdChat(mensagemRecebida.message.chat.id)
   let text = ""
   if (chat) text = `As atualizações já estão ativas para este chat.`
   else {
@@ -191,7 +191,7 @@ const iniciar = async (
 const parar = async (
   mensagemRecebida: BotUpdate
 ): Promise<BotUpdateResponse | null> => {
-  const chat = await buscaChat(mensagemRecebida.message.chat.id)
+  const chat = await buscaChatPorIdChat(mensagemRecebida.message.chat.id)
   let text = ""
   if (chat) {
     await removeChat(chat.id)
