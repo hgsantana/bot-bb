@@ -54,14 +54,14 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     `Mensagem recebida de '${mensagemRecebida.message.from.username}': '${textoMensagem}'`
   )
 
-  if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
-
   if (textoMensagem.startsWith("/cadastrar")) return cadastrar(mensagemRecebida)
 
   if (textoMensagem.startsWith("/descadastrar"))
     return descadastrar(mensagemRecebida)
 
   // comandos abaixo somente permitidos para admins reconhecidos
+  if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
+
   if (mensagemRecebida.message.from.id.toString() != AMBIENTE.TELEGRAM_ADMIN_ID)
     return null
 
@@ -74,16 +74,6 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
   if (textoMensagem.startsWith("/desafixar")) return desafixar(mensagemRecebida)
 
   return null
-}
-
-const status = async (
-  mensagemRecebida: BotUpdate
-): Promise<BotUpdateResponse | null> => {
-  const mensagemStatus = await compilaMensagemStatus(
-    mensagemRecebida.message.chat.id,
-    mensagemRecebida.message.message_id
-  )
-  return mensagemStatus
 }
 
 const cadastrar = async (
@@ -159,6 +149,18 @@ const descadastrar = async (
     text,
   }
   return mensagem
+}
+
+const status = async (
+  mensagemRecebida: BotUpdate
+): Promise<BotUpdateResponse | null> => {
+  // somente permitido para admins reconhecidos
+  if (mensagemRecebida.message.from.id != 1574661558) return null
+  const mensagemStatus = await compilaMensagemStatus(
+    mensagemRecebida.message.chat.id,
+    mensagemRecebida.message.message_id
+  )
+  return mensagemStatus
 }
 
 const iniciar = async (
