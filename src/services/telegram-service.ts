@@ -255,8 +255,12 @@ const desafixar = async (mensagemRecebida: BotUpdate) => {
   const mensagemPinada = mensagensPinadas.find(
     (m) => m.idChat == mensagemUnpin.chat_id
   )
-  if (!mensagemPinada)
-    throw `Mensagem Pinada não localizada. Chat ${mensagemRecebida.message.chat.id}.`
+  if (!mensagemPinada) {
+    console.error(
+      `Mensagem Pinada não localizada. Chat ${mensagemRecebida.message.chat.id}.`
+    )
+    return null
+  }
 
   const mensagemUnpin: BotUnpinMessage = {
     chat_id: mensagemPinada.idChat,
