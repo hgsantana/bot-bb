@@ -314,7 +314,7 @@ export async function enviaMensagemAlteracao(
     )
     let avisaUsuarios = "\n\n"
     usuariosAvisar.forEach((usuario) => {
-      avisaUsuarios += `<a href="tg://user?id=${usuario.id}">@${usuario.usuario}</a> `
+      avisaUsuarios += `<a href="tg://user?id=${usuario.idUsuario}">@${usuario.usuario}</a> `
     })
     try {
       const mensagem = novaMensagemAviso(
