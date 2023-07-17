@@ -105,8 +105,16 @@ export async function removeChat(idChat: number) {
   chatsCadastrados.splice(0, chatsCadastrados.length, ...chats)
 }
 
-export async function insereMensagemPinada(mensagem: MensagemPinada) {
+export async function insereMensagemPinada(
+  mensagem: Pick<MensagemPinada, "idChat" | "idMensagem">
+) {
   await SQL<MensagemPinada>("botBB_mensagensPinadas").insert(mensagem)
+  const mensagens = await listaMensagensPinadas()
+  mensagensPinadas.splice(0, mensagensPinadas.length, ...mensagens)
+}
+
+export async function removeMensagemPinada(id: number) {
+  await SQL<MensagemPinada>("botBB_mensagensPinadas").delete().where({ id })
   const mensagens = await listaMensagensPinadas()
   mensagensPinadas.splice(0, mensagensPinadas.length, ...mensagens)
 }

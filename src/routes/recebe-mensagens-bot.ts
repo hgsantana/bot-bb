@@ -8,9 +8,8 @@ export const recebeMensagensBot: Handler = async (req, res) => {
   const headerToken = req.headers["x-telegram-bot-api-secret-token"]
   if (!headerToken) return res.status(401).send()
   try {
-    const resposta = await checaMensagem(mensagemRecebida)
-    if (resposta) res.send(resposta)
-    else res.send()
+    await checaMensagem(mensagemRecebida)
+    res.status(200).send()
   } catch (error) {
     console.log("Erro=>", error)
     res.status(400).send()

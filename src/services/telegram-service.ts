@@ -8,6 +8,7 @@ import { BotUpdate } from "../../src/models/bot-update"
 import { BotUpdateResponse } from "../../src/models/bot-update-response"
 import { Candidato } from "../../src/models/candidato"
 import { MensagemPinada } from "../models/bot-pinned-message"
+import { BotUnpinMessage } from "../models/bot-unpin-message"
 import {
   atualizaUsuario,
   buscaCandidatoPorNome,
@@ -19,6 +20,7 @@ import {
   insereUsuario,
   mensagensPinadas,
   removeChat,
+  removeMensagemPinada,
   removeUsuario,
   usuariosCadastrados,
 } from "./bd-service"
@@ -67,10 +69,9 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
 
   if (textoMensagem.startsWith("/parar")) return parar(mensagemRecebida)
 
-  if (textoMensagem.startsWith("/fixar")) {
-    fixar(mensagemRecebida)
-    return null
-  }
+  if (textoMensagem.startsWith("/fixar")) return fixar(mensagemRecebida)
+
+  if (textoMensagem.startsWith("/desafixar")) return desafixar(mensagemRecebida)
 
   return null
 }
@@ -82,6 +83,7 @@ const status = async (
     mensagemRecebida.message.message_id,
     mensagemRecebida.message.chat.id
   )
+  pilhaMensagens.push(mensagemStatus)
   return mensagemStatus
 }
 
@@ -125,14 +127,15 @@ const cadastrar = async (
       console.log("Novo usuário cadastrado:", novoUsuario)
     }
   }
-
-  return {
+  const mensagem: BotUpdateResponse = {
     chat_id: mensagemRecebida?.message?.chat?.id,
     method: "sendMessage",
     parse_mode: "HTML",
     reply_to_message_id,
     text,
   }
+  pilhaMensagens.push(mensagem)
+  return mensagem
 }
 
 const descadastrar = async (
@@ -148,13 +151,15 @@ const descadastrar = async (
     console.log("Usuário removido:", usuario)
   } else text = `Você ainda não está cadastrado para ser marcado.`
 
-  return {
+  const mensagem: BotUpdateResponse = {
     chat_id: mensagemRecebida?.message?.chat?.id,
     method: "sendMessage",
     parse_mode: "HTML",
     reply_to_message_id,
     text,
   }
+  pilhaMensagens.push(mensagem)
+  return mensagem
 }
 
 const iniciar = async (
@@ -172,13 +177,15 @@ const iniciar = async (
     console.log(`Atualizações ativadas para o chat:`, novoChat)
   }
   const reply_to_message_id = mensagemRecebida?.message?.message_id
-  return {
+  const mensagem: BotUpdateResponse = {
     chat_id: mensagemRecebida?.message?.chat?.id,
     method: "sendMessage",
     parse_mode: "HTML",
     reply_to_message_id,
     text,
   }
+  pilhaMensagens.push(mensagem)
+  return mensagem
 }
 
 const parar = async (
@@ -194,13 +201,15 @@ const parar = async (
     text = `Não há atualizações ativas para este chat. Caso deseje ativa-las, use o comando /iniciar.`
   }
   const reply_to_message_id = mensagemRecebida?.message?.message_id
-  return {
+  const mensagem: BotUpdateResponse = {
     chat_id: mensagemRecebida?.message?.chat?.id,
     method: "sendMessage",
     parse_mode: "HTML",
     reply_to_message_id,
     text,
   }
+  pilhaMensagens.push(mensagem)
+  return mensagem
 }
 
 const fixar = async (mensagemRecebida: BotUpdate) => {
@@ -225,7 +234,10 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
           )
           .then(({ data: respostaFixada }) => {
             if (respostaFixada.result) {
-              const novaMensagemPinada: MensagemPinada = {
+              const novaMensagemPinada: Pick<
+                MensagemPinada,
+                "idChat" | "idMensagem"
+              > = {
                 idChat: resposta.result.chat.id,
                 idMensagem: resposta.result.message_id,
               }
@@ -240,6 +252,32 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
     })
     .catch((e: AxiosError) => {
       console.error("Erro=>", e.response?.data || e)
+    })
+}
+
+const desafixar = async (mensagemRecebida: BotUpdate) => {
+  const mensagemUnpin: BotUnpinMessage = {
+    chat_id: mensagemRecebida.message.chat.id,
+    message_id: mensagemRecebida.message.message_id,
+  }
+  axios
+    .post<BotMessageResponse>(
+      AMBIENTE.TELEGRAM_API + "/unpinChatMessage",
+      mensagemUnpin
+    )
+    .then(async ({ data: respostaFixada }) => {
+      if (respostaFixada.result) {
+        const mensagemPinada = mensagensPinadas.find(
+          (m) => m.idChat == mensagemUnpin.chat_id
+        )
+        if (!mensagemPinada)
+          throw `Mensagem Pinada não localizada. Chat ${mensagemUnpin.chat_id}.`
+        await removeMensagemPinada(mensagemPinada.id)
+        console.log("Mensagem desafixada:", mensagemPinada)
+      } else console.error("Falha ao desafixar mensagem:", mensagemUnpin)
+    })
+    .catch((erro) => {
+      console.error("Erro=>", erro)
     })
 }
 
@@ -304,7 +342,6 @@ export const enviaMensagemAdmin = async (
 }
 
 export const editaMensagensFixadas = async () => {
-  const statusCompleto = compilaRelatorio()
   for await (const mensagem of mensagensPinadas) {
     const { idChat, idMensagem } = mensagem
     const mensagemGerada = await compilaMensagemStatus(idMensagem, idChat)
@@ -445,6 +482,7 @@ async function novaMensagemAviso(
   const mensagem: BotUpdateResponse = {
     chat_id,
     parse_mode: "HTML",
+    method: "sendMessage",
     text:
       `Alteração:\n` +
       `<pre>\n` +
