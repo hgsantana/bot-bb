@@ -63,8 +63,8 @@ export async function listaChats() {
   return SQL<ChatCadastrado>("botBB_chats").select("*")
 }
 
-export async function buscaUsuarioPorId(id: number) {
-  return SQL<UsuarioCadastrado>("botBB_usuarios").first().where({ id })
+export async function buscaUsuarioPorIdUsuario(idUsuario: number) {
+  return SQL<UsuarioCadastrado>("botBB_usuarios").first().where({ idUsuario })
 }
 
 export async function buscaChatPorIdChat(idChat: number) {

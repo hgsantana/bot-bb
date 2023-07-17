@@ -13,7 +13,7 @@ import {
   atualizaUsuario,
   buscaCandidatoPorNome,
   buscaChatPorIdChat,
-  buscaUsuarioPorId,
+  buscaUsuarioPorIdUsuario,
   chatsCadastrados,
   insereChat,
   insereMensagemPinada,
@@ -38,7 +38,7 @@ setInterval(() => {
       console.error("Erro=>", e.response?.data || e)
     })
   }
-}, 1000)
+}, 2000)
 
 export const checaMensagem = (mensagemRecebida: BotUpdate) => {
   if (!mensagemRecebida?.message?.text) return null
@@ -99,7 +99,9 @@ const cadastrar = async (
     mensagemRecebida.message.from.username ||
     mensagemRecebida.message.from.first_name
   }`
-  const usuario = await buscaUsuarioPorId(mensagemRecebida.message.from.id)
+  const usuario = await buscaUsuarioPorIdUsuario(
+    mensagemRecebida.message.from.id
+  )
   const reply_to_message_id = mensagemRecebida?.message?.message_id
 
   let text = ``
@@ -115,7 +117,7 @@ const cadastrar = async (
       `Para cancelar, use o comando <pre>/descadastrar</pre>`
     if (usuario) {
       usuario.nomeChecagem = nome
-      atualizaUsuario(usuario)
+      await atualizaUsuario(usuario)
     } else {
       const novoUsuario = {
         idUsuario: idDestinatario,
@@ -140,7 +142,7 @@ const descadastrar = async (
   mensagemRecebida: BotUpdate
 ): Promise<BotUpdateResponse | null> => {
   const idDestinatario = mensagemRecebida.message.from.id
-  const usuario = await buscaUsuarioPorId(idDestinatario)
+  const usuario = await buscaUsuarioPorIdUsuario(idDestinatario)
   const reply_to_message_id = mensagemRecebida?.message?.message_id
 
   let text = `A partir de agora, você não será mais marcado no Grupo de Atualizações.`
