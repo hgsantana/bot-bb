@@ -16,6 +16,9 @@ export async function iniciaBancoDados() {
   if (chats && chats.length) chatsCadastrados.push(...chats)
   if (usuarios && usuarios.length) usuariosCadastrados.push(...usuarios)
   if (mensagens && mensagens.length) mensagensPinadas.push(...mensagens)
+  console.log("Total de chats cadastrados:", chats.length)
+  console.log("Total de usuarios cadastrados:", usuarios.length)
+  console.log("Total de mensagens pinadas:", mensagens.length)
 }
 
 export async function listaNomeCandidatos(
