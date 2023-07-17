@@ -10,9 +10,12 @@ export const usuariosCadastrados: Array<UsuarioCadastrado> = []
 export const mensagensPinadas: Array<MensagemPinada> = []
 
 export async function iniciaBancoDados() {
-  chatsCadastrados.push(...(await listaChats()))
-  usuariosCadastrados.push(...(await listaUsuariosCadastrados()))
-  mensagensPinadas.push(...(await listaMensagensPinadas()))
+  const chats = await listaChats()
+  const usuarios = await listaUsuariosCadastrados()
+  const mensagens = await listaMensagensPinadas()
+  if (chats && chats.length) chatsCadastrados.push(...chats)
+  if (usuarios && usuarios.length) usuariosCadastrados.push(...usuarios)
+  if (mensagens && mensagens.length) mensagensPinadas.push(...mensagens)
 }
 
 export async function listaNomeCandidatos(
