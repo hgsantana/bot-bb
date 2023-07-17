@@ -264,37 +264,41 @@ const fixar = async (mensagemRecebida: BotUpdate) => {
 }
 
 const desafixar = async (mensagemRecebida: BotUpdate) => {
-  const mensagemPinada = mensagensPinadas.find(
-    (m) => m.idChat == mensagemUnpin.chat_id
-  )
-  if (!mensagemPinada) {
-    console.error(
-      `Mensagem Pinada não localizada. Chat ${mensagemRecebida.message.chat.id}.`
+  try {
+    const mensagemPinada = mensagensPinadas.find(
+      (m) => m.idChat == mensagemUnpin.chat_id
     )
-    return null
-  }
+    if (!mensagemPinada) {
+      console.error(
+        `Mensagem Pinada não localizada. Chat ${mensagemRecebida.message.chat.id}.`
+      )
+      return null
+    }
 
-  const mensagemUnpin: BotUnpinMessage = {
-    chat_id: mensagemPinada.idChat,
-    message_id: mensagemPinada.idMensagem,
+    const mensagemUnpin: BotUnpinMessage = {
+      chat_id: mensagemPinada.idChat,
+      message_id: mensagemPinada.idMensagem,
+    }
+    await axios
+      .post<BotMessageResponse>(
+        AMBIENTE.TELEGRAM_API + "/unpinChatMessage",
+        mensagemUnpin
+      )
+      .then(async ({ data: resposta }) => {
+        if (resposta.ok) {
+          await removeMensagemPinada(mensagemPinada.id)
+          console.log("Mensagem desafixada:", mensagemUnpin)
+        } else {
+          console.error("Falha ao desafixar mensagem:", mensagemUnpin)
+          console.error(resposta)
+        }
+      })
+      .catch((erro) => {
+        console.error("Erro=>", erro)
+      })
+  } catch (error) {
+    console.error("Erro=>", error)
   }
-  await axios
-    .post<BotMessageResponse>(
-      AMBIENTE.TELEGRAM_API + "/unpinChatMessage",
-      mensagemUnpin
-    )
-    .then(async ({ data: resposta }) => {
-      if (resposta.ok) {
-        await removeMensagemPinada(mensagemPinada.id)
-        console.log("Mensagem desafixada:", mensagemUnpin)
-      } else {
-        console.error("Falha ao desafixar mensagem:", mensagemUnpin)
-        console.error(resposta)
-      }
-    })
-    .catch((erro) => {
-      console.error("Erro=>", erro)
-    })
   return null
 }
 
