@@ -312,10 +312,14 @@ export async function enviaMensagemAlteracao(
     const usuariosAvisar = usuariosCadastrados.filter(
       (u) => u.nomeChecagem.toUpperCase() == candidato.nome.toUpperCase()
     )
-    let avisaUsuarios = "\n\n"
-    usuariosAvisar.forEach((usuario) => {
-      avisaUsuarios += `<a href="tg://user?id=${usuario.idUsuario}">@${usuario.usuario}</a> `
-    })
+    let avisaUsuarios = ""
+    if (usuariosAvisar) {
+      console.log(`Avisando ${usuariosAvisar.length} usuários.`)
+      avisaUsuarios += "\n\n"
+      usuariosAvisar.forEach((usuario) => {
+        avisaUsuarios += `<a href="tg://user?id=${usuario.idUsuario}">@${usuario.usuario}</a> `
+      })
+    }
     try {
       const mensagem = novaMensagemAviso(
         candidato,
