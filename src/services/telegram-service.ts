@@ -269,7 +269,8 @@ const desafixar = async (mensagemRecebida: BotUpdate) => {
         if (!mensagemPinada)
           throw `Mensagem Pinada não localizada. Chat ${mensagemUnpin.chat_id}.`
         await removeMensagemPinada(mensagemPinada.id)
-        console.log("Mensagem desafixada:", mensagemPinada)
+        console.log("Mensagem desafixada:", mensagemUnpin)
+        console.log(resposta)
       } else {
         console.error("Falha ao desafixar mensagem:", mensagemUnpin)
         console.error(resposta)
