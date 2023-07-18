@@ -14,6 +14,8 @@ import {
 import { capturaFormulario } from "./html-service"
 import { enviaMensagemAdmin, enviaMensagemAlteracao } from "./telegram-service"
 
+export const CANDIDATOS_ERRO = new Set<Pick<Candidato, 'id' | 'nome'>>()
+
 export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
   console.log("Iniciando checagem de nomes.")
 
@@ -24,7 +26,6 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
     const totalFila = filaCandidatos.length
     const inicio = new Date()
     const emProcessamento = new Set<Pick<Candidato, "id" | "nome">>()
-    const erros = new Set<Pick<Candidato, "id" | "nome">>()
 
     console.log(`${filaCandidatos.length} nomes capturados.`)
     console.log("Início da checagem:", inicio.toLocaleString())
@@ -45,7 +46,7 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
           (fim.getTime() - inicio.getTime()) / 1000
         )
         await aguardaProcessamento(emProcessamento)
-        await processaErros(erros)
+        await processaErros()
         console.log(`Reiniciando checagem em ${CONFIG.tempoDescansoFila}s`)
         return setTimeout(() => {
           iniciaChecagemCandidatos(CONFIG)
@@ -55,7 +56,7 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
 
       // log parcial
       if (candidato.id != 0 && candidato.id % 100 === 0) {
-        console.log("Erros:", erros.size)
+        console.log("Erros:", CANDIDATOS_ERRO.size)
         console.log("Em processamento:", emProcessamento.size)
         console.log(
           "Processados:",
@@ -68,9 +69,9 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
       const sucesso = await checaSituacaoCandidato(candidato)
       emProcessamento.delete(candidato)
       if (sucesso) {
-        erros.delete(candidato)
+        CANDIDATOS_ERRO.delete(candidato)
       } else {
-        erros.add(candidato)
+        CANDIDATOS_ERRO.add(candidato)
       }
     }, CONFIG.tempoEntreChecagens)
   } catch (error) {
@@ -95,35 +96,25 @@ async function aguardaProcessamento(
   })
 }
 
-async function processaErros(erros: Set<Pick<Candidato, "id" | "nome">>) {
+async function processaErros() {
   const inicioErros = new Date()
   return new Promise(async (resolve, reject) => {
-    const fila = Array.from(erros)
+    const fila = Array.from(CANDIDATOS_ERRO)
     console.log(`Aguardando o processamento de ${fila.length} erros.`)
     for await (const candidato of fila) {
       console.log(`Verificando erro ${candidato.id}: '${candidato.nome}'`)
       const sucesso = await checaSituacaoCandidato(candidato)
       if (sucesso) {
-        erros.delete(candidato)
+        CANDIDATOS_ERRO.delete(candidato)
       }
     }
-    if (erros.size) {
-      console.error("Permanecem com erro:", erros)
-      const ids: Array<number> = []
-      erros.forEach((erro) => ids.push(erro.id))
-      const candidatosErros = await buscaCandidatosPorIds(ids)
-      if (candidatosErros) {
-        await enviaMensagemAdmin(candidatosErros)
-      } else {
-        console.error(
-          `Candidatos com erro não localizados. Ids: ${ids.toString()}`
-        )
-      }
+    if (CANDIDATOS_ERRO.size) {
+      console.error("Permanecem com erro:", CANDIDATOS_ERRO)
+      await enviaMensagemAdmin(CANDIDATOS_ERRO.size)
     }
     const fimErros = new Date()
     console.log(
-      `Erros finalizados em ${
-        (fimErros.getTime() - inicioErros.getTime()) / 1000
+      `Erros finalizados em ${(fimErros.getTime() - inicioErros.getTime()) / 1000
       }s`
     )
     resolve(null)
@@ -131,7 +122,7 @@ async function processaErros(erros: Set<Pick<Candidato, "id" | "nome">>) {
 }
 
 const checaSituacaoCandidato = async (
-  candidato: Pick<Candidato, "nome" | "id">
+  candidato: Pick<Candidato, "nome" | "id" | 'erro'>
 ) => {
   const dados = new URLSearchParams({
     formulario: "formulario",
@@ -169,9 +160,11 @@ const checaSituacaoCandidato = async (
     if (formulario) await alteraSituacaoCandidato(candidato.id, formulario)
     else throw { code: "SEM FORM" }
   } catch (error: any) {
+    const erro = `${error?.code || error?.err || error}`
     console.error(
-      `Erro=> ${candidato.nome} - ${error?.code || error?.err || error}`
+      `Erro=> ${candidato.nome} - ${erro}`
     )
+    candidato.erro = erro
     return false
   }
   return true
