@@ -27,6 +27,8 @@ export async function listaNomeCandidatos(
   const candidatos = await SQL<Candidato>("botBB_candidatos")
     .select("id", "nome")
     .whereIn("area", area.split(","))
+    .orderBy("area", "desc")
+    .orderBy("posicao", "asc")
   return candidatos
 }
 
@@ -36,6 +38,8 @@ export async function listaCandidatos(
   const candidatos = await SQL<Candidato>("botBB_candidatos")
     .select("*")
     .whereIn("area", area.split(","))
+    .orderBy("area", "desc")
+    .orderBy("posicao", "asc")
   return candidatos
 }
 
