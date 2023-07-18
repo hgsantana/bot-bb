@@ -18,4 +18,7 @@ export type Candidato = {
   dataSituacao: string
   agenciaSituacao: string
   area: AreaCandidato
+
+  // com erros
+  erro?: string
 }

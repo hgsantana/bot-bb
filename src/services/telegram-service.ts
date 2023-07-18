@@ -12,6 +12,7 @@ import { BotUnpinMessage } from "../models/bot-unpin-message"
 import {
   atualizaUsuario,
   buscaCandidatoPorNome,
+  buscaCandidatosPorIds,
   buscaChatPorIdChat,
   buscaUsuarioPorIdUsuario,
   chatsCadastrados,
@@ -24,7 +25,7 @@ import {
   removeUsuario,
   usuariosCadastrados,
 } from "./bd-service"
-import { compilaRelatorio } from "./candidato-service"
+import { CANDIDATOS_ERRO, compilaRelatorio } from "./candidato-service"
 
 const pilhaMensagens: Array<BotUpdateResponse> = []
 
@@ -60,10 +61,10 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     return descadastrar(mensagemRecebida)
 
   // comandos abaixo somente permitidos para admins reconhecidos
-  if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
-
   if (mensagemRecebida.message.from.id.toString() != AMBIENTE.TELEGRAM_ADMIN_ID)
-    return null
+  return null
+
+  if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
 
   if (textoMensagem.startsWith("/iniciar")) return iniciar(mensagemRecebida)
 
@@ -72,6 +73,8 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
   if (textoMensagem.startsWith("/fixar")) return fixar(mensagemRecebida)
 
   if (textoMensagem.startsWith("/desafixar")) return desafixar(mensagemRecebida)
+
+  if (textoMensagem.startsWith("/erros")) return erros()
 
   return null
 }
@@ -85,10 +88,9 @@ const cadastrar = async (
     .trim()
     .toUpperCase()
   const idDestinatario = mensagemRecebida.message.from.id
-  const nomeUsuario = `${
-    mensagemRecebida.message.from.username ||
+  const nomeUsuario = `${mensagemRecebida.message.from.username ||
     mensagemRecebida.message.from.first_name
-  }`
+    }`
   const usuario = await buscaUsuarioPorIdUsuario(
     mensagemRecebida.message.from.id
   )
@@ -306,6 +308,27 @@ async function desafixar(mensagemRecebida: BotUpdate) {
   return null
 }
 
+export async function erros() {
+  const ids: Array<number> = []
+  CANDIDATOS_ERRO.forEach((erro) => ids.push(erro.id))
+  const candidatosErros = await buscaCandidatosPorIds(ids)
+  if (candidatosErros) {
+    candidatosErros.forEach((c) => {
+      const mensagemCandidato: BotUpdateResponse = {
+        chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
+        parse_mode: "HTML",
+        text:
+          `Inconsistente` +
+          `\n\n` +
+          `Nome: ${c.nome}\n` +
+          `Situação: ${c.situacao}\n` +
+          `Micro-Região: ${c.microRegiao}`,
+      }
+      pilhaMensagens.push(mensagemCandidato)
+    })
+  }
+}
+
 export async function enviaMensagemAlteracao(
   situacaoAnterior: string,
   candidato: Candidato
@@ -338,28 +361,15 @@ export async function enviaMensagemAlteracao(
 }
 
 export const enviaMensagemAdmin = async (
-  candidatosInconsistentes: Candidato[]
+  total: number
 ) => {
   try {
     const mensagem: BotUpdateResponse = {
       chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
       parse_mode: "HTML",
-      text: `Inconsistências detectadas: ${candidatosInconsistentes.length}\n`,
+      text: `Inconsistências detectadas: ${total}\n`,
     }
     pilhaMensagens.push(mensagem)
-    candidatosInconsistentes.forEach((c) => {
-      const mensagemCandidato: BotUpdateResponse = {
-        chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
-        parse_mode: "HTML",
-        text:
-          `Inconsistente` +
-          `\n\n` +
-          `Nome: ${c.nome}\n` +
-          `Situação: ${c.situacao}\n` +
-          `Micro-Região: ${c.microRegiao}`,
-      }
-      pilhaMensagens.push(mensagemCandidato)
-    })
   } catch (error) {
     console.log("Erro=> Erro enviando mensagem para usuário do Telegram")
     console.log("Erro=> ", error)
@@ -413,23 +423,22 @@ async function compilaMensagemStatus(
       } as any)}\n` +
       `\n` +
       `------ TI ------\n` +
-      `Aprovados     : ${
-        statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados
+      `Aprovados     : ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados
       }\n` +
       `Convocados    : ${statusCompleto.ti.convocados} (${(
         (statusCompleto.ti.convocados /
           (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `Não Convocados: ${statusCompleto.ti.naoConvocados} (${(
         (statusCompleto.ti.naoConvocados /
           (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `Empossados    : ${statusCompleto.ti.empossados} (${(
         (statusCompleto.ti.empossados /
           (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `Autorizadas : ${statusCompleto.ti.autorizadas}\n` +
       `Expedidas   : ${statusCompleto.ti.expedidas}\n` +
@@ -448,27 +457,26 @@ async function compilaMensagemStatus(
       ).toFixed(2)}%)\n` +
       `\n\n` +
       `--- COMERCIAL ---\n` +
-      `Aprovados     : ${
-        statusCompleto.comercial.naoConvocados +
-        statusCompleto.comercial.convocados
+      `Aprovados     : ${statusCompleto.comercial.naoConvocados +
+      statusCompleto.comercial.convocados
       }\n` +
       `Convocados    : ${statusCompleto.comercial.convocados} (${(
         (statusCompleto.comercial.convocados /
           (statusCompleto.comercial.naoConvocados +
             statusCompleto.comercial.convocados)) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `Não Convocados: ${statusCompleto.comercial.naoConvocados} (${(
         (statusCompleto.comercial.naoConvocados /
           (statusCompleto.comercial.naoConvocados +
             statusCompleto.comercial.convocados)) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `Empossados    : ${statusCompleto.comercial.empossados} (${(
         (statusCompleto.comercial.empossados /
           (statusCompleto.comercial.naoConvocados +
             statusCompleto.comercial.convocados)) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `\n` +
       `Autorizadas : ${statusCompleto.comercial.autorizadas}\n` +
@@ -479,17 +487,17 @@ async function compilaMensagemStatus(
       `Cancelados : ${statusCompleto.comercial.cancelados} (${(
         (statusCompleto.comercial.cancelados /
           statusCompleto.comercial.convocados) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `Desistentes: ${statusCompleto.comercial.desistentes} (${(
         (statusCompleto.comercial.desistentes /
           statusCompleto.comercial.convocados) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `Inaptos    : ${statusCompleto.comercial.inaptos} (${(
         (statusCompleto.comercial.inaptos /
           statusCompleto.comercial.convocados) *
-          100 || 0
+        100 || 0
       ).toFixed(2)}%)\n` +
       `</pre>`,
   }
@@ -515,17 +523,13 @@ function novaMensagemAviso(
       `\n` +
       `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
       `\n` +
-      `Agência: ${
-        candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"
+      `Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"
       }\n` +
-      `Data: ${
-        candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"
+      `Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"
       }\n` +
-      `Macro: ${
-        candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"
+      `Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"
       }\n` +
-      `Micro: ${
-        candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"
+      `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"
       }\n` +
       `\n` +
       `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
