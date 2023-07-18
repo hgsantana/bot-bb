@@ -62,7 +62,7 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
 
   // comandos abaixo somente permitidos para admins reconhecidos
   if (mensagemRecebida.message.from.id.toString() != AMBIENTE.TELEGRAM_ADMIN_ID)
-  return null
+    return null
 
   if (textoMensagem.startsWith("/status")) return status(mensagemRecebida)
 
@@ -318,11 +318,15 @@ export async function erros() {
         chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
         parse_mode: "HTML",
         text:
-          `Inconsistente` +
+          `<pre>` +
+          `Inconsistente\n` +
+          `-------------` +
           `\n\n` +
-          `Nome: ${c.nome}\n` +
+          `Nome    : ${c.nome}\n` +
           `Situação: ${c.situacao}\n` +
-          `Micro-Região: ${c.microRegiao}`,
+          `Região  : ${c.microRegiao}\n` +
+          `Erro    : ${c.erro}` +
+          `</pre>`,
       }
       pilhaMensagens.push(mensagemCandidato)
     })
@@ -367,7 +371,11 @@ export const enviaMensagemAdmin = async (
     const mensagem: BotUpdateResponse = {
       chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
       parse_mode: "HTML",
-      text: `Inconsistências detectadas: ${total}\n`,
+      text:
+        `<pre>` +
+        `Inconsistências: ${total}\n` +
+        `Envie /erros para ver os erros atuais.` +
+        `</pre>`,
     }
     pilhaMensagens.push(mensagem)
   } catch (error) {
