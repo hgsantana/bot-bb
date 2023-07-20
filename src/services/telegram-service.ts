@@ -55,6 +55,8 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     `Mensagem recebida de '${mensagemRecebida.message.from.username}': '${textoMensagem}'`
   )
 
+  if (textoMensagem.startsWith("/start")) return start(mensagemRecebida)
+
   if (textoMensagem.startsWith("/cadastrar")) return cadastrar(mensagemRecebida)
 
   if (textoMensagem.startsWith("/descadastrar"))
@@ -79,6 +81,69 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
   return null
 }
 
+async function start(
+  mensagemRecebida: BotUpdate
+): Promise<BotUpdateResponse | null> {
+  const nome =
+    mensagemRecebida.message.from.username ||
+    mensagemRecebida.message.from.first_name
+  const idDestinatario = mensagemRecebida.message.from.id
+  const reply_to_message_id = mensagemRecebida?.message?.message_id
+  let text =
+    `Olá, <a href="tg://user?id=${idDestinatario}">@${nome}</a>. Bem vindo ao BOT de Convocações do BB. ` +
+    `Você pode usar três comandos: <pre>/start</pre>, <pre>/cadastrar</pre> e <pre>/descadastrar</pre>. ` +
+    `O comando <pre>/start</pre> mostra esta mensagem de ajuda inicial. Os outros dois comandos serão explicados a seguir.`
+  const mensagem: BotUpdateResponse = {
+    chat_id: mensagemRecebida?.message?.chat?.id,
+    method: "sendMessage",
+    parse_mode: "HTML",
+    reply_to_message_id,
+    text,
+  }
+
+  let cadastrarText =
+    `O comando /cadastrar serve para você ser marcado quando houver alterações para determinado candidato. ` +
+    `Você só pode se cadastrar para um candidato por vez. Se usar o comando mais de uma vez, somente o última vez terá efeito. ` +
+    `Para usar, envie uma mensagem semelhente a esta:\n\n` +
+    `<pre>/cadastrar FULANO DE TAL</pre>\n\n` +
+    `Pronto. A partir daí, você será marcado no chat de atualizações sempre que FULANO DE TAL tiver uma atualização de status.` +
+    `O nome utilizado deve ser exatamente igual consta no Diário Oficial da União (DOU) do resultado final.\n\n`
+  const mensagemCadastrar: BotUpdateResponse = {
+    chat_id: mensagemRecebida?.message?.chat?.id,
+    method: "sendMessage",
+    parse_mode: "HTML",
+    text: cadastrarText,
+  }
+
+  let descadastrarText =
+    `O comando /descadastrar serve para você deixar de ser marcado no grupo de atualizações. ` +
+    `Para usar, envie uma mensagem assim:\n\n` +
+    `<pre>/descadastrar</pre>\n\n` +
+    `Pronto. A partir daí, você não será marcado mais no chat de atualizações.`
+  const mensagemDescadastrar: BotUpdateResponse = {
+    chat_id: mensagemRecebida?.message?.chat?.id,
+    method: "sendMessage",
+    parse_mode: "HTML",
+    text: descadastrarText,
+  }
+
+  let mensagemFinalText =
+    `Importante: as marcações só acontecem no grupo das atualizações. Você não será marcado nem avisado por aqui. Por isso, ` +
+    `não saia do grupo se quiser ser notificado.\n\n ` +
+    `Você acompanha as atualizações em https://t.me/+zN5NEtFGNUsyNGNh`
+  const mensagemFinal: BotUpdateResponse = {
+    chat_id: mensagemRecebida?.message?.chat?.id,
+    method: "sendMessage",
+    parse_mode: "HTML",
+    text: mensagemFinalText,
+  }
+
+  pilhaMensagens.push(mensagemCadastrar)
+  pilhaMensagens.push(mensagemDescadastrar)
+  pilhaMensagens.push(mensagemFinal)
+  return mensagem
+}
+
 const cadastrar = async (
   mensagemRecebida: BotUpdate
 ): Promise<BotUpdateResponse | null> => {
@@ -88,12 +153,11 @@ const cadastrar = async (
     .trim()
     .toUpperCase()
   const idDestinatario = mensagemRecebida.message.from.id
-  const nomeUsuario = `${mensagemRecebida.message.from.username ||
+  const nomeUsuario = `${
+    mensagemRecebida.message.from.username ||
     mensagemRecebida.message.from.first_name
-    }`
-  const usuario = await buscaUsuarioPorIdUsuario(
-    mensagemRecebida.message.from.id
-  )
+  }`
+  const usuario = await buscaUsuarioPorIdUsuario(idDestinatario)
   const reply_to_message_id = mensagemRecebida?.message?.message_id
 
   let text = ``
@@ -104,7 +168,7 @@ const cadastrar = async (
   else if (!candidato) text = `Este nome não existe no resultado final oficial.`
   else {
     text =
-      `Olá, <a href="tg://user?id=${mensagemRecebida.message.from.id}">@${nomeUsuario}</a>. ` +
+      `Olá, <a href="tg://user?id=${idDestinatario}">@${nomeUsuario}</a>. ` +
       `A partir de agora, você será marcado nas alterações para "${nome}" no Grupo de Atualizações. ` +
       `Para cancelar, use o comando <pre>/descadastrar</pre>`
     if (usuario) {
@@ -364,9 +428,7 @@ export async function enviaMensagemAlteracao(
   }
 }
 
-export const enviaMensagemAdmin = async (
-  total: number
-) => {
+export const enviaMensagemAdmin = async (total: number) => {
   try {
     const mensagem: BotUpdateResponse = {
       chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
@@ -431,22 +493,23 @@ async function compilaMensagemStatus(
       } as any)}\n` +
       `\n` +
       `------ TI ------\n` +
-      `Aprovados     : ${statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados
+      `Aprovados     : ${
+        statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados
       }\n` +
       `Convocados    : ${statusCompleto.ti.convocados} (${(
         (statusCompleto.ti.convocados /
           (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `Não Convocados: ${statusCompleto.ti.naoConvocados} (${(
         (statusCompleto.ti.naoConvocados /
           (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `Empossados    : ${statusCompleto.ti.empossados} (${(
         (statusCompleto.ti.empossados /
           (statusCompleto.ti.naoConvocados + statusCompleto.ti.convocados)) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `Autorizadas : ${statusCompleto.ti.autorizadas}\n` +
       `Expedidas   : ${statusCompleto.ti.expedidas}\n` +
@@ -465,26 +528,27 @@ async function compilaMensagemStatus(
       ).toFixed(2)}%)\n` +
       `\n\n` +
       `--- COMERCIAL ---\n` +
-      `Aprovados     : ${statusCompleto.comercial.naoConvocados +
-      statusCompleto.comercial.convocados
+      `Aprovados     : ${
+        statusCompleto.comercial.naoConvocados +
+        statusCompleto.comercial.convocados
       }\n` +
       `Convocados    : ${statusCompleto.comercial.convocados} (${(
         (statusCompleto.comercial.convocados /
           (statusCompleto.comercial.naoConvocados +
             statusCompleto.comercial.convocados)) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `Não Convocados: ${statusCompleto.comercial.naoConvocados} (${(
         (statusCompleto.comercial.naoConvocados /
           (statusCompleto.comercial.naoConvocados +
             statusCompleto.comercial.convocados)) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `Empossados    : ${statusCompleto.comercial.empossados} (${(
         (statusCompleto.comercial.empossados /
           (statusCompleto.comercial.naoConvocados +
             statusCompleto.comercial.convocados)) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `\n` +
       `Autorizadas : ${statusCompleto.comercial.autorizadas}\n` +
@@ -495,17 +559,17 @@ async function compilaMensagemStatus(
       `Cancelados : ${statusCompleto.comercial.cancelados} (${(
         (statusCompleto.comercial.cancelados /
           statusCompleto.comercial.convocados) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `Desistentes: ${statusCompleto.comercial.desistentes} (${(
         (statusCompleto.comercial.desistentes /
           statusCompleto.comercial.convocados) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `Inaptos    : ${statusCompleto.comercial.inaptos} (${(
         (statusCompleto.comercial.inaptos /
           statusCompleto.comercial.convocados) *
-        100 || 0
+          100 || 0
       ).toFixed(2)}%)\n` +
       `</pre>`,
   }
@@ -531,13 +595,17 @@ function novaMensagemAviso(
       `\n` +
       `Anterior: ${situacaoAnterior.toUpperCase()}\n` +
       `\n` +
-      `Agência: ${candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"
+      `Agência: ${
+        candidato.agenciaSituacao ? candidato.agenciaSituacao : "SEM AGÊNCIA"
       }\n` +
-      `Data: ${candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"
+      `Data: ${
+        candidato.dataSituacao ? candidato.dataSituacao : "SEM DATA"
       }\n` +
-      `Macro: ${candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"
+      `Macro: ${
+        candidato.macroRegiao ? candidato.macroRegiao : "SEM MACRO REGIÃO"
       }\n` +
-      `Micro: ${candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"
+      `Micro: ${
+        candidato.microRegiao ? candidato.microRegiao : "SEM MICRO REGIÃO"
       }\n` +
       `\n` +
       `Tipo: ${candidato.tipo ? candidato.tipo : "SEM TIPO"}\n` +
