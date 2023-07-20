@@ -390,7 +390,7 @@ export async function erros() {
           `Nome    : ${o.candidato.nome}\n` +
           `Situação: ${candidato.situacao}\n` +
           `Região  : ${candidato.microRegiao}\n` +
-          `Erro    : ${Array.from(o.erros)}` +
+          `Erros   : ${Array.from(o.erros)}` +
           `</pre>`,
       }
       pilhaMensagens.push(mensagemCandidato)
