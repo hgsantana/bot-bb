@@ -111,14 +111,18 @@ async function processaErros(): Promise<void> {
     )
     for await (const candidato of ERROS) {
       const indice = ERROS.indexOf(candidato)
+      let inconsistente = INCONSISTENCIAS.find(
+        (o) => o.candidato.nome === candidato.nome
+      )
       console.log(`Verificando erro ${candidato.id}: '${candidato.nome}'`)
       try {
         await checaSituacaoCandidato(candidato)
         ERROS.splice(indice, 1)
+        if (inconsistente) {
+          const indiceInconsistente = INCONSISTENCIAS.indexOf(inconsistente)
+          INCONSISTENCIAS.splice(indiceInconsistente, 1)
+        }
       } catch (erro: any) {
-        let inconsistente = INCONSISTENCIAS.find(
-          (o) => o.candidato.nome === candidato.nome
-        )
         if (inconsistente) {
           inconsistente.erros.add(erro)
           inconsistente.quantidade++
