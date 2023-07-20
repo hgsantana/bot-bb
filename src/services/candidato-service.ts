@@ -74,7 +74,13 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
       try {
         await checaSituacaoCandidato(candidato)
       } catch (erro: any) {
-        CANDIDATOS_ERRO.push({ candidato, erros: new Set(erro), quantidade: 1 })
+        const inconsistente = {
+          candidato,
+          erros: new Set<string>(),
+          quantidade: 1,
+        }
+        inconsistente.erros.add(erro)
+        CANDIDATOS_ERRO.push(inconsistente)
       }
       emProcessamento.delete(candidato)
     }, CONFIG.tempoEntreChecagens)

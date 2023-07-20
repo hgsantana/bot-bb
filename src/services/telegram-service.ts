@@ -375,9 +375,10 @@ async function desafixar(mensagemRecebida: BotUpdate) {
 export async function erros() {
   const ids: Array<number> = []
   CANDIDATOS_ERRO.forEach((ocorrencia) => ids.push(ocorrencia.candidato.id))
-  const candidatosErros = await buscaCandidatosPorIds(ids)
-  if (candidatosErros) {
-    candidatosErros.forEach((c) => {
+  const candidatos = await buscaCandidatosPorIds(ids)
+  CANDIDATOS_ERRO.forEach((o) => {
+    const candidato = candidatos?.find((c) => c.nome === o.candidato.nome)
+    if (candidato) {
       const mensagemCandidato: BotUpdateResponse = {
         chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
         parse_mode: "HTML",
@@ -386,15 +387,15 @@ export async function erros() {
           `Inconsistente\n` +
           `-------------` +
           `\n\n` +
-          `Nome    : ${c.nome}\n` +
-          `Situação: ${c.situacao}\n` +
-          `Região  : ${c.microRegiao}\n` +
-          `Erro    : ${c.erro}` +
+          `Nome    : ${o.candidato.nome}\n` +
+          `Situação: ${candidato.situacao}\n` +
+          `Região  : ${candidato.microRegiao}\n` +
+          `Erro    : ${Array.from(o.erros)}` +
           `</pre>`,
       }
       pilhaMensagens.push(mensagemCandidato)
-    })
-  }
+    }
+  })
 }
 
 export async function enviaMensagemAlteracao(
