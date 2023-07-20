@@ -13,7 +13,12 @@ import {
 import { capturaFormulario } from "./html-service"
 import { enviaMensagemAdmin, enviaMensagemAlteracao } from "./telegram-service"
 
-export const INCONSISTENCIAS: Array<{
+export const RELATORIO_ERROS: Array<{
+  candidato: Pick<Candidato, "id" | "nome">
+  erros: Set<string>
+  quantidade: number
+}> = []
+const INCONSISTENCIAS: Array<{
   candidato: Pick<Candidato, "id" | "nome">
   erros: Set<string>
   quantidade: number
@@ -151,6 +156,7 @@ async function processaErros(): Promise<void> {
           }s`
         )
         tentativasErros = 1
+        RELATORIO_ERROS.push(...INCONSISTENCIAS)
         resolve()
       }
     } else {
