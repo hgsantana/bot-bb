@@ -25,7 +25,7 @@ import {
   removeUsuario,
   usuariosCadastrados,
 } from "./bd-service"
-import { CANDIDATOS_ERRO, compilaRelatorio } from "./candidato-service"
+import { INCONSISTENCIAS, compilaRelatorio } from "./candidato-service"
 
 const pilhaMensagens: Array<BotUpdateResponse> = []
 
@@ -374,9 +374,9 @@ async function desafixar(mensagemRecebida: BotUpdate) {
 
 export async function erros() {
   const ids: Array<number> = []
-  CANDIDATOS_ERRO.forEach((ocorrencia) => ids.push(ocorrencia.candidato.id))
+  INCONSISTENCIAS.forEach((ocorrencia) => ids.push(ocorrencia.candidato.id))
   const candidatos = await buscaCandidatosPorIds(ids)
-  CANDIDATOS_ERRO.forEach((o) => {
+  INCONSISTENCIAS.forEach((o) => {
     const candidato = candidatos?.find((c) => c.nome === o.candidato.nome)
     if (candidato) {
       const mensagemCandidato: BotUpdateResponse = {
@@ -390,7 +390,7 @@ export async function erros() {
           `Nome    : ${o.candidato.nome}\n` +
           `Situação: ${candidato.situacao}\n` +
           `Região  : ${candidato.microRegiao}\n` +
-          `Erros   : ${Array.from(o.erros)}` +
+          `Erros   : ${Array.from(o.erros)}\n` +
           `Quant.  : ${o.quantidade}` +
           `</pre>`,
       }

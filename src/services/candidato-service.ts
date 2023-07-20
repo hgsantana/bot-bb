@@ -13,11 +13,12 @@ import {
 import { capturaFormulario } from "./html-service"
 import { enviaMensagemAdmin, enviaMensagemAlteracao } from "./telegram-service"
 
-export const CANDIDATOS_ERRO: Array<{
+export const INCONSISTENCIAS: Array<{
   candidato: Pick<Candidato, "id" | "nome">
   erros: Set<string>
   quantidade: number
 }> = []
+const ERROS: Array<Pick<Candidato, "id" | "nome">> = []
 let inicioErros = new Date()
 let tentativasErros = 1
 
@@ -61,7 +62,7 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
 
       // log parcial
       if (candidato.id != 0 && candidato.id % 100 === 0) {
-        console.log("Erros:", CANDIDATOS_ERRO.length)
+        console.log("Erros:", ERROS.length)
         console.log("Em processamento:", emProcessamento.size)
         console.log(
           "Processados:",
@@ -74,13 +75,7 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
       try {
         await checaSituacaoCandidato(candidato)
       } catch (erro: any) {
-        const inconsistente = {
-          candidato,
-          erros: new Set<string>(),
-          quantidade: 1,
-        }
-        inconsistente.erros.add(erro)
-        CANDIDATOS_ERRO.push(inconsistente)
+        ERROS.push(candidato)
       }
       emProcessamento.delete(candidato)
     }, CONFIG.tempoEntreChecagens)
@@ -112,29 +107,39 @@ async function processaErros(): Promise<void> {
       inicioErros = new Date()
     }
     console.log(
-      `Aguardando o processamento de ${CANDIDATOS_ERRO.length} erros. Tentativa ${tentativasErros}.`
+      `Aguardando o processamento de ${ERROS.length} erros. Tentativa ${tentativasErros}.`
     )
-    for await (const ocorrencia of CANDIDATOS_ERRO) {
-      const indice = CANDIDATOS_ERRO.indexOf(ocorrencia)
-      console.log(
-        `Verificando erro ${ocorrencia.candidato.id}: '${ocorrencia.candidato.nome}'`
-      )
+    for await (const candidato of ERROS) {
+      const indice = ERROS.indexOf(candidato)
+      console.log(`Verificando erro ${candidato.id}: '${candidato.nome}'`)
       try {
-        await checaSituacaoCandidato(ocorrencia.candidato)
-        CANDIDATOS_ERRO.splice(indice, 1)
+        await checaSituacaoCandidato(candidato)
+        ERROS.splice(indice, 1)
       } catch (erro: any) {
-        ocorrencia.erros.add(erro)
-        ocorrencia.quantidade++
+        let inconsistente = INCONSISTENCIAS.find(
+          (o) => o.candidato.nome === candidato.nome
+        )
+        if (inconsistente) {
+          inconsistente.erros.add(erro)
+          inconsistente.quantidade++
+        } else {
+          inconsistente = {
+            candidato,
+            erros: new Set<string>(),
+            quantidade: 1,
+          }
+          INCONSISTENCIAS.push(inconsistente)
+        }
       }
     }
-    if (CANDIDATOS_ERRO.length) {
+    if (ERROS.length) {
       tentativasErros++
-      console.error("Permanecem com erro:", CANDIDATOS_ERRO)
+      console.error("Permanecem com erro:", ERROS)
       if (tentativasErros <= 3) {
         console.log("Tentando novamente.")
         return processaErros()
       } else {
-        await enviaMensagemAdmin(CANDIDATOS_ERRO.length)
+        await enviaMensagemAdmin(ERROS.length)
         const fimErros = new Date()
         console.log(
           `Erros finalizados em ${
