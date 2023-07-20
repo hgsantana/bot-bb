@@ -7,14 +7,19 @@ import { AreaCandidato } from "../models/tipo-candidato"
 import {
   atualizaSituacao,
   buscaCandidatoPorId,
-  buscaCandidatosPorIds,
   listaCandidatos,
   listaNomeCandidatos,
 } from "./bd-service"
 import { capturaFormulario } from "./html-service"
 import { enviaMensagemAdmin, enviaMensagemAlteracao } from "./telegram-service"
 
-export const CANDIDATOS_ERRO = new Set<Pick<Candidato, 'id' | 'nome'>>()
+export const CANDIDATOS_ERRO: Array<{
+  candidato: Pick<Candidato, "id" | "nome">
+  erros: Set<string>
+  quantidade: number
+}> = []
+let inicioErros = new Date()
+let tentativasErros = 1
 
 export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
   console.log("Iniciando checagem de nomes.")
@@ -56,7 +61,7 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
 
       // log parcial
       if (candidato.id != 0 && candidato.id % 100 === 0) {
-        console.log("Erros:", CANDIDATOS_ERRO.size)
+        console.log("Erros:", CANDIDATOS_ERRO.length)
         console.log("Em processamento:", emProcessamento.size)
         console.log(
           "Processados:",
@@ -66,13 +71,12 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
       }
 
       // Verifica situação do candidato
-      const sucesso = await checaSituacaoCandidato(candidato)
-      emProcessamento.delete(candidato)
-      if (sucesso) {
-        CANDIDATOS_ERRO.delete(candidato)
-      } else {
-        CANDIDATOS_ERRO.add(candidato)
+      try {
+        await checaSituacaoCandidato(candidato)
+      } catch (erro: any) {
+        CANDIDATOS_ERRO.push({ candidato, erros: new Set(erro), quantidade: 1 })
       }
+      emProcessamento.delete(candidato)
     }, CONFIG.tempoEntreChecagens)
   } catch (error) {
     console.error(error)
@@ -96,44 +100,64 @@ async function aguardaProcessamento(
   })
 }
 
-async function processaErros() {
-  const inicioErros = new Date()
+async function processaErros(): Promise<void> {
   return new Promise(async (resolve, reject) => {
-    const fila = Array.from(CANDIDATOS_ERRO)
-    console.log(`Aguardando o processamento de ${fila.length} erros.`)
-    for await (const candidato of fila) {
-      console.log(`Verificando erro ${candidato.id}: '${candidato.nome}'`)
-      const sucesso = await checaSituacaoCandidato(candidato)
-      if (sucesso) {
-        CANDIDATOS_ERRO.delete(candidato)
+    if (tentativasErros === 1) {
+      inicioErros = new Date()
+    }
+    console.log(
+      `Aguardando o processamento de ${CANDIDATOS_ERRO.length} erros. Tentativa ${tentativasErros}.`
+    )
+    for await (const ocorrencia of CANDIDATOS_ERRO) {
+      const indice = CANDIDATOS_ERRO.indexOf(ocorrencia)
+      console.log(
+        `Verificando erro ${ocorrencia.candidato.id}: '${ocorrencia.candidato.nome}'`
+      )
+      try {
+        await checaSituacaoCandidato(ocorrencia.candidato)
+        CANDIDATOS_ERRO.splice(indice, 1)
+      } catch (erro: any) {
+        ocorrencia.erros.add(erro)
+        ocorrencia.quantidade++
       }
     }
-    if (CANDIDATOS_ERRO.size) {
+    if (CANDIDATOS_ERRO.length) {
+      tentativasErros++
       console.error("Permanecem com erro:", CANDIDATOS_ERRO)
-      await enviaMensagemAdmin(CANDIDATOS_ERRO.size)
+      if (tentativasErros <= 3) {
+        console.log("Tentando novamente.")
+        return processaErros()
+      } else {
+        await enviaMensagemAdmin(CANDIDATOS_ERRO.length)
+        const fimErros = new Date()
+        console.log(
+          `Erros finalizados em ${
+            (fimErros.getTime() - inicioErros.getTime()) / 1000
+          }s`
+        )
+        tentativasErros = 1
+        resolve()
+      }
+    } else {
+      tentativasErros = 1
+      resolve()
     }
-    const fimErros = new Date()
-    console.log(
-      `Erros finalizados em ${(fimErros.getTime() - inicioErros.getTime()) / 1000
-      }s`
-    )
-    resolve(null)
   })
 }
 
 const checaSituacaoCandidato = async (
-  candidato: Pick<Candidato, "nome" | "id" | 'erro'>
+  candidato: Pick<Candidato, "nome" | "id">
 ) => {
-  const dados = new URLSearchParams({
-    formulario: "formulario",
-    publicadorformvalue: ",802,0,0,2,0,1",
-    "formulario:nomePesquisa": candidato.nome,
-    "formulario:cpfPesquisa": "",
-    "formulario:j_id16": "Confirmar",
-    "javax.faces.ViewState": "j_id1",
-  }).toString()
-
   try {
+    const dados = new URLSearchParams({
+      formulario: "formulario",
+      publicadorformvalue: ",802,0,0,2,0,1",
+      "formulario:nomePesquisa": candidato.nome,
+      "formulario:cpfPesquisa": "",
+      "formulario:j_id16": "Confirmar",
+      "javax.faces.ViewState": "j_id1",
+    }).toString()
+
     const getCookies = await axios.get(
       "https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx"
     )
@@ -156,18 +180,13 @@ const checaSituacaoCandidato = async (
     )
 
     const formulario = await capturaFormulario(resposta.data, axiosConfig)
-
     if (formulario) await alteraSituacaoCandidato(candidato.id, formulario)
     else throw { code: "SEM FORM" }
   } catch (error: any) {
     const erro = `${error?.code || error?.err || error}`
-    console.error(
-      `Erro=> ${candidato.nome} - ${erro}`
-    )
-    candidato.erro = erro
-    return false
+    console.error(`Erro=> ${candidato.nome} - ${erro}`)
+    throw erro
   }
-  return true
 }
 
 const alteraSituacaoCandidato = async (

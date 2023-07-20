@@ -374,7 +374,7 @@ async function desafixar(mensagemRecebida: BotUpdate) {
 
 export async function erros() {
   const ids: Array<number> = []
-  CANDIDATOS_ERRO.forEach((erro) => ids.push(erro.id))
+  CANDIDATOS_ERRO.forEach((ocorrencia) => ids.push(ocorrencia.candidato.id))
   const candidatosErros = await buscaCandidatosPorIds(ids)
   if (candidatosErros) {
     candidatosErros.forEach((c) => {
