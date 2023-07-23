@@ -13,17 +13,10 @@ import {
 import { capturaFormulario } from "./html-service"
 import { enviaMensagemAdmin, enviaMensagemAlteracao } from "./telegram-service"
 
-export const RELATORIO_ERROS: Array<{
-  candidato: Pick<Candidato, "id" | "nome">
-  erros: Set<string>
-  quantidade: number
-}> = []
-const INCONSISTENCIAS: Array<{
-  candidato: Pick<Candidato, "id" | "nome">
-  erros: Set<string>
-  quantidade: number
-}> = []
-const ERROS: Array<Pick<Candidato, "id" | "nome">> = []
+export const RELATORIO_ERROS: Array<
+  Pick<Candidato, "id" | "nome"> & { erros: Set<string> }
+> = []
+const ERROS: Array<Pick<Candidato, "id" | "nome"> & { erros: Set<string> }> = []
 let inicioErros = new Date()
 let tentativasErros = 1
 
@@ -56,8 +49,8 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
           "Tempo transcorrido (s):",
           (fim.getTime() - inicio.getTime()) / 1000
         )
-        await aguardaProcessamento(emProcessamento)
-        await processaErros()
+        await aguardaProcessamento(CONFIG, emProcessamento)
+        await processaErros(CONFIG)
         console.log(`Reiniciando checagem em ${CONFIG.tempoDescansoFila}s`)
         return setTimeout(() => {
           iniciaChecagemCandidatos(CONFIG)
@@ -78,9 +71,11 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
 
       // Verifica situação do candidato
       try {
-        await checaSituacaoCandidato(candidato)
+        await checaSituacaoCandidato(CONFIG, candidato)
       } catch (erro: any) {
-        ERROS.push(candidato)
+        const erros = new Set<string>()
+        erros.add(erro)
+        ERROS.push({ ...candidato, erros })
       }
       emProcessamento.delete(candidato)
     }, CONFIG.tempoEntreChecagens)
@@ -90,6 +85,7 @@ export const iniciaChecagemCandidatos = async (CONFIG: BotConfig) => {
 }
 
 async function aguardaProcessamento(
+  CONFIG: BotConfig,
   emProcessamento: Set<Pick<Candidato, "id" | "nome">>
 ) {
   return new Promise((resolve, reject) => {
@@ -102,73 +98,64 @@ async function aguardaProcessamento(
         console.log(`Processamentos finalizados.`)
         resolve(true)
       }
-    }, 2 * 1000) // 2s entre verificações
+    }, CONFIG.timeout * 1000) // 5s entre verificações
   })
 }
 
-async function processaErros(): Promise<void> {
-  return new Promise(async (resolve, reject) => {
-    if (tentativasErros === 1) {
-      inicioErros = new Date()
-    }
-    console.log(
-      `Aguardando o processamento de ${ERROS.length} erros. Tentativa ${tentativasErros}.`
-    )
-    for await (const candidato of ERROS) {
-      const indice = ERROS.indexOf(candidato)
-      let inconsistente = INCONSISTENCIAS.find(
-        (o) => o.candidato.nome === candidato.nome
-      )
+async function processaErros(CONFIG: BotConfig): Promise<void> {
+  if (ERROS.length === 0) {
+    return console.log("Não há erros para processar.")
+  }
+
+  if (tentativasErros === 1) {
+    inicioErros = new Date()
+  }
+  const errosAtuais = [...ERROS]
+  ERROS.splice(0)
+  console.log(
+    `Aguardando o processamento de ${errosAtuais.length} erros. Tentativa ${tentativasErros}.`
+  )
+  for await (const candidato of errosAtuais) {
+    try {
       console.log(`Verificando erro ${candidato.id}: '${candidato.nome}'`)
-      try {
-        await checaSituacaoCandidato(candidato)
-        ERROS.splice(indice, 1)
-        if (inconsistente) {
-          const indiceInconsistente = INCONSISTENCIAS.indexOf(inconsistente)
-          INCONSISTENCIAS.splice(indiceInconsistente, 1)
-        }
-      } catch (erro: any) {
-        if (inconsistente) {
-          inconsistente.erros.add(erro)
-          inconsistente.quantidade++
-        } else {
-          inconsistente = {
-            candidato,
-            erros: new Set<string>(),
-            quantidade: 1,
-          }
-          INCONSISTENCIAS.push(inconsistente)
-        }
-      }
+      await checaSituacaoCandidato(CONFIG, candidato)
+    } catch (erro: any) {
+      candidato.erros.add(erro)
+      ERROS.push(candidato)
     }
-    if (ERROS.length) {
-      tentativasErros++
-      console.error("Permanecem com erro:", ERROS)
-      if (tentativasErros <= 3) {
-        console.log("Tentando novamente.")
-        return processaErros()
-      } else {
-        await enviaMensagemAdmin(ERROS.length)
-        const fimErros = new Date()
-        console.log(
-          `Erros finalizados em ${
-            (fimErros.getTime() - inicioErros.getTime()) / 1000
-          }s`
-        )
-        tentativasErros = 1
-        RELATORIO_ERROS.push(...INCONSISTENCIAS)
-        resolve()
-      }
+  }
+
+  if (ERROS.length) {
+    tentativasErros++
+    console.error("Permanecem com erro:", ERROS)
+    if (tentativasErros <= 3) {
+      console.log("Tentando novamente.")
+      return processaErros(CONFIG)
     } else {
+      await enviaMensagemAdmin(ERROS.length)
+      const fimErros = new Date()
+      console.log(
+        `Erros finalizados em ${
+          (fimErros.getTime() - inicioErros.getTime()) / 1000
+        }s`
+      )
       tentativasErros = 1
-      resolve()
+      RELATORIO_ERROS.push(...ERROS)
     }
-  })
+  } else {
+    tentativasErros = 1
+  }
 }
 
 const checaSituacaoCandidato = async (
+  CONFIG: BotConfig,
   candidato: Pick<Candidato, "nome" | "id">
 ) => {
+  const controller = new AbortController()
+  const abortSignalTimeout = setTimeout(() => {
+    controller.abort()
+  }, CONFIG.timeout * 1000)
+
   try {
     const dados = new URLSearchParams({
       formulario: "formulario",
@@ -180,7 +167,10 @@ const checaSituacaoCandidato = async (
     }).toString()
 
     const getCookies = await axios.get(
-      "https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx"
+      "https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx",
+      {
+        signal: controller.signal,
+      }
     )
     if (!getCookies) throw { code: "FALHA GET COOKIE" }
     const cookies = getCookies.headers["set-cookie"]
@@ -192,7 +182,8 @@ const checaSituacaoCandidato = async (
     }
     const axiosConfig: AxiosRequestConfig = {
       headers,
-      timeout: 5 * 1000, // 5s para cancelar a requisição
+      timeout: CONFIG.timeout * 1000, // tempo em segundos para cancelar a requisição
+      signal: controller.signal,
     }
     const resposta = await axios.post<string>(
       "https://www37.bb.com.br/portalbb/resultadoConcursos/resultadoconcursos/arh0.bbx",
@@ -208,6 +199,7 @@ const checaSituacaoCandidato = async (
     console.error(`Erro=> ${candidato.nome} - ${erro}`)
     throw erro
   }
+  clearTimeout(abortSignalTimeout)
 }
 
 const alteraSituacaoCandidato = async (

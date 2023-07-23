@@ -374,10 +374,10 @@ async function desafixar(mensagemRecebida: BotUpdate) {
 
 export async function erros() {
   const ids: Array<number> = []
-  RELATORIO_ERROS.forEach((ocorrencia) => ids.push(ocorrencia.candidato.id))
+  RELATORIO_ERROS.forEach((ocorrencia) => ids.push(ocorrencia.id))
   const candidatos = await buscaCandidatosPorIds(ids)
   RELATORIO_ERROS.forEach((o) => {
-    const candidato = candidatos?.find((c) => c.nome === o.candidato.nome)
+    const candidato = candidatos?.find((c) => c.nome === o.nome)
     if (candidato) {
       const mensagemCandidato: BotUpdateResponse = {
         chat_id: AMBIENTE.TELEGRAM_ADMIN_ID,
@@ -387,11 +387,10 @@ export async function erros() {
           `Erros da última verificação:\n` +
           `-------------` +
           `\n\n` +
-          `Nome    : ${o.candidato.nome}\n` +
+          `Nome    : ${o.nome}\n` +
           `Situação: ${candidato.situacao}\n` +
           `Região  : ${candidato.microRegiao}\n` +
           `Erros   : ${Array.from(o.erros)}\n` +
-          `Quant.  : ${o.quantidade}` +
           `</pre>`,
       }
       pilhaMensagens.push(mensagemCandidato)
