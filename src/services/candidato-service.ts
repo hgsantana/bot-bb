@@ -154,7 +154,7 @@ const checaSituacaoCandidato = async (
   const controller = new AbortController()
   const abortSignalTimeout = setTimeout(() => {
     controller.abort()
-  }, CONFIG.timeout * 1000)
+  }, CONFIG.timeout * 2 * 1000) // timeout de abort duas vezes timeout de resposta
 
   try {
     const dados = new URLSearchParams({
