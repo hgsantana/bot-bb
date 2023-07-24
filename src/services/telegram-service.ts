@@ -50,10 +50,13 @@ export const checaMensagem = (mensagemRecebida: BotUpdate) => {
     .trim()
 
   if (!textoMensagem || !textoMensagem.startsWith("/")) return null
+  const usuario =
+    mensagemRecebida.message.from.username ||
+    mensagemRecebida.message.from.first_name ||
+    mensagemRecebida.message.from.last_name ||
+    mensagemRecebida.message.from.id
 
-  console.log(
-    `Mensagem recebida de '${mensagemRecebida.message.from.username}': '${textoMensagem}'`
-  )
+  console.log(`Mensagem recebida de '${usuario}': '${textoMensagem}'`)
 
   if (textoMensagem.startsWith("/start")) return start(mensagemRecebida)
 
