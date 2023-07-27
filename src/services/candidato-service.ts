@@ -140,7 +140,7 @@ async function processaErros(CONFIG: BotConfig): Promise<void> {
         }s`
       )
       tentativasErros = 1
-      RELATORIO_ERROS.push(...ERROS)
+      RELATORIO_ERROS.splice(0, RELATORIO_ERROS.length, ...ERROS)
     }
   } else {
     tentativasErros = 1

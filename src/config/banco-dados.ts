@@ -1,5 +1,5 @@
 import knex from "knex"
-import { AMBIENTE } from "../main"
+import { AMBIENTE } from "../server"
 
 export const configurarBancoDados = () => {
   const KNEX_CONFIG = {
