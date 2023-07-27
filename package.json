@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/main.ts",
+  "engines": {
+    "node": "18"
+  },
   "scripts": {
     "start": "npx ts-node src/main.ts",
     "dev": "npx nodemon src/main.ts --watch ./src/ --ignore ./backup",
