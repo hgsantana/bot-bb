@@ -2,11 +2,11 @@ import webpack from "webpack"
 
 export default {
   devtool: "inline-source-map",
-  entry: "./src/main.ts",
+  entry: "./src/server.ts",
   target: "node",
   mode: "production",
   output: {
-    filename: "main.js",
+    filename: "server.js",
   },
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.

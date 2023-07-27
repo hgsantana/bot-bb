@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios"
-import { AMBIENTE } from "../../src/main"
+import { AMBIENTE } from "../server"
 import { BotPinCommandResponse } from "../../src/models/bot-command-response"
 import { BotEditMessageCommand } from "../../src/models/bot-edit-message-command"
 import { BotMessageResponse } from "../../src/models/bot-message-response"

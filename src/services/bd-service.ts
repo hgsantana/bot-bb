@@ -1,4 +1,4 @@
-import { SQL } from "../main"
+import { SQL } from "../server"
 import { MensagemPinada } from "../models/bot-pinned-message"
 import { Candidato } from "../models/candidato"
 import { ChatCadastrado } from "../models/chat-cadastrado"
